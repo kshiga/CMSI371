@@ -1,0 +1,26 @@
+<!doctype html>
+
+<!-- Problem 26a. A grid of lavender squares, one canvas pixel apart, filling the entire canvas. Completed for Assignment 0129 for CMSI371 Spring 2013-->
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Assignment 0129 Problem 26a</title>
+    </head>
+    <body>
+        <canvas id="canvas" width="512" height="512">
+            Sorry, but you need a web browser that supports the
+            <code>canvas</code> element.
+        </canvas>
+
+        <p>
+            <input type="text" id="sizeInput" />
+            <input type="button" id="boxSize" value="SIZE OF BOX" />
+        </p>
+        <!-- Let's add jQuery, even if you might not always use it. -->
+        <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+
+        <!-- This is where most of your action really will be:
+             rename and edit this file. -->
+        <script src="26a.js"></script>
+    </body>
+</html>
