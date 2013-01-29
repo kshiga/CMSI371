@@ -6,8 +6,8 @@
 
 (function () {
     var canvas = document.getElementById("canvas"),
-        renderingContext = canvas.getContext("2d"),
         height = canvas.height,
+        renderingContext = canvas.getContext("2d"),
         width = canvas.width;
 
     renderingContext.fillStyle="rgb(91, 139, 142)";
