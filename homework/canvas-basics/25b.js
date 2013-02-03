@@ -8,9 +8,9 @@
 (function () {
     var canvas = document.getElementById("canvas"),
         border = canvas.getContext("2d"),
-        bordersize = canvas.width
+        bordersize = canvas.width // JD: Missed a semicolon!
 
     border.lineWidth = "3";
-    border.strokeRect(0, 0, bordersize, bordersize)
+    border.strokeRect(0, 0, bordersize, bordersize) // JD: Another one!
 
 }());

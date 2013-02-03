@@ -9,6 +9,13 @@
         height = canvas.height,
         renderingContext = canvas.getContext("2d"),
         width = canvas.width;
+
+        // JD: Avoid just tacking numbers on to variable names as
+        //     much as possible!  In the end, they do not add useful
+        //     information.
+        //
+        //     In this particular case, things are doubly deceiving
+        //     *because you don't even use radialGradient1* !!!
         radialGradient1 = renderingContext.createRadialGradient(256, 160, 1, 180, 180, 320);
         radialGradient2 = renderingContext.createRadialGradient(256, 150, 1, 300, 150, 160);
 

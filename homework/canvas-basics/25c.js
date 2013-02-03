@@ -8,7 +8,8 @@
 (function () {
     var canvas = document.getElementById("canvas"),
 
-        boxes = canvas.getContext("2d")
+        boxes = canvas.getContext("2d") // JD: Hmmm, make sure this does not
+                                        //     become a habit...
 
         boxes.fillStyle = "rgba(200, 0, 20, 0.5)";
         boxes.fillRect(200, 200, 150, 200);

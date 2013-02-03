@@ -8,9 +8,10 @@
 (function () {
     var canvas = document.getElementById("canvas"),
 
-        lines = canvas.getContext("2d")
-        edgeRight = (canvas.width -1)
-        edgeBottom = (canvas.height -1)
+        lines = canvas.getContext("2d") // JD: Ack, even worse: missing comma!
+        edgeRight = (canvas.width -1)   // <---(this becomes a new statement,
+        edgeBottom = (canvas.height -1) //    which means these variables have
+                                        //    gloval scope)
 
         lines.strokeStyle = "orange"
         lines.lineWidth = "10"

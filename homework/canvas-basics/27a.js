@@ -14,6 +14,10 @@
     renderingContext.strokeStyle = "rgb(0, 252, 17)";
 
     renderingContext.beginPath();
+    // JD: The hardcoding is understandable here, but still
+    //     avoidable for certain values of the "cube."
+    //     (as can be seen with the numbers that you placed
+    //     in your comments)
     renderingContext.moveTo(40, 350); //1
     renderingContext.lineTo(100, 325); //2
     renderingContext.lineTo(160, 350); //3

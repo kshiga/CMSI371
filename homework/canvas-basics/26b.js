@@ -3,7 +3,7 @@
 * Assigment 0129
 * CMSI371
 */
-
+// JD: Very similar comments here as 26a.js.
 (function () {
     var canvas = document.getElementById("canvas"),
         renderingContext = canvas.getContext("2d"),
