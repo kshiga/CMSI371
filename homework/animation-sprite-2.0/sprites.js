@@ -29,37 +29,32 @@
         // intermediate frames are computed.
 
         // Now, to actually define the animated sprites.  Each sprite
-        // has a drawing function and an array of keyframes.
+        // has an array of drawing functions and an array of keyframes.
+
+   
         sprites = [
             {
-                draw: square,
+                draw: [square, circle],
                 keyframes: [
                     {
                         frame: 0,
-                        tx: 20,
-                        ty: 20,
-                        ease: KeyframeTweener.linear
-                    },
-
-                    {
-                        frame: 30,
-                        tx: 100,
+                        tx: 0,
                         ty: 50,
-                        ease: KeyframeTweener.quadEaseInOut
+                        ease: KeyframeTweener.quadEaseInOut,
+                        drawActive: square
                     },
 
-                    // The last keyframe does not need an easing function.
                     {
-                        frame: 80,
-                        tx: 80,
-                        ty: 500,
-                        rotate: 60 // Keyframe.rotate uses degrees.
-                    }
+                        frame: 100,
+                        tx: (canvas.width/2),
+                        ty: 50
+                    },
+
                 ]
             },
 
             {
-                draw: circle,
+                draw: [circle, 2, 3, square],
                 keyframes: [
                     {
                         frame: 50,
@@ -67,7 +62,8 @@
                         ty: 600,
                         sx: 0.5,
                         sy: 0.5,
-                        ease: KeyframeTweener.quadEaseOut
+                        ease: KeyframeTweener.quadEaseOut,
+                        drawActive: circle
                     },
 
                     {
@@ -76,7 +72,8 @@
                         ty: 0,
                         sx: 3,
                         sy: 0.25,
-                        ease: KeyframeTweener.quadEaseOut
+                        ease: KeyframeTweener.quadEaseOut,
+                        drawActive: square
                     },
 
                     {

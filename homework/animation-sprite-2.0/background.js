@@ -38,7 +38,7 @@
        drawPanel(i, 403);
        i+= bevel;
     }
-    drawPanel (485, 209)
+    drawPanel (485, 209);
 
 }());
 

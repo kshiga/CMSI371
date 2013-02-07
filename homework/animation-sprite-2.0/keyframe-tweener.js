@@ -26,6 +26,14 @@ var KeyframeTweener = {
                 (-distance / 2) * ((percentComplete - 1) * (percentComplete - 3) - 1) + start;
     },
 
+    cubicEaseInAndOut: function (currentTime, start, distance, duration) {
+        
+    },
+
+    elasticEaseOut: function (currentTime, start, distance, duration) {
+        
+    },
+
     // The big one: animation initialization.  The settings parameter
     // is expected to be a JavaScript object with the following
     // properties:
@@ -89,7 +97,7 @@ var KeyframeTweener = {
                 currentTweenFrame,
                 duration;
 
-            // Clear the canvas.
+            // Redraw the background
             background(renderingContext);
 
             // For every sprite, go to the current pair of keyframes.
@@ -122,6 +130,7 @@ var KeyframeTweener = {
                         rotateDistance = (endKeyframe.rotate || 0) * Math.PI / 180 - rotateStart;
                         currentTweenFrame = currentFrame - startKeyframe.frame;
                         duration = endKeyframe.frame - startKeyframe.frame + 1;
+                        drawActive = startKeyframe.drawActive || undefined;
 
                         // Build our transform according to where we should be.
                         renderingContext.translate(
@@ -137,7 +146,9 @@ var KeyframeTweener = {
                         );
 
                         // Draw the sprite.
-                        sprites[i].draw(renderingContext);
+                        sprites[i].draw[sprites[i].draw.indexOf(drawActive)](renderingContext);
+                        console.log(sprites[i].draw.indexOf(drawActive));
+                        console.log(drawActive.toString())
 
                         // Clean up.
                         renderingContext.restore();
