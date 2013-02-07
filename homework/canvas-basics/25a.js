@@ -8,6 +8,9 @@
 (function () {
     var canvas = document.getElementById("canvas"),
         square = canvas.getContext("2d"),
+        // JD: ^^^^Interesting approach to naming the rendering context.
+        //     I guess this is mostly OK, but loses meaning when the
+        //     scene becomes more complex.
         squareSide = 150,
         center = ((canvas.width/2) - (squareSide/2));
 

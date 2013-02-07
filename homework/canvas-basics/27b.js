@@ -3,13 +3,14 @@
 * Assigment 0129
 * CMSI371
 */
-
+// JD: Similar comments here to 27a.js.
 (function () {
     var canvas = document.getElementById("canvas"),
         renderingContext = canvas.getContext("2d"),
         height = canvas.height,
         width = canvas.width;
 
+    // JD: Nice use of translate here.
     renderingContext.translate(150, -300);
     renderingContext.fillStyle = "rgb(128, 128, 128)";
 

@@ -8,6 +8,9 @@
 (function () {
     var canvas = document.getElementById("canvas"),
         hex = canvas.getContext("2d");
+    // JD: ^^^^ The var statement ended up here,
+    //     so the lines below should have *less*
+    //     of an indent.
 
         hex.fillStyle = "brown";
 
