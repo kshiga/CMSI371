@@ -17,14 +17,14 @@
             topRight: { x: width, y: 125 },
             bottomLeft: { x: 100, y: 460 }, 
             bottomRight: { x: width, y: 460 },  
-            frontTop: { x: 0, y: 50},
-            frontBottom: { x: 0, y: 560},
-            frontTopIn: { x: 0, y: 90}, 
-            backTopIn: { x: 80, y: 145},
+            frontTop: { x: 0, y: 50 },
+            frontBottom: { x: 0, y: 560 },
+            frontTopIn: { x: 0, y: 90 }, 
+            backTopIn: { x: 80, y: 145 },
             frontBottomIn: { x: 0, y: 510},
-            backBottomIn: { x: 80, y: 440},
-            inTopLeft: { x: 0, y: 145},
-            inBottomLeft: { x: 0, y: 440},
+            backBottomIn: { x: 80, y: 440 },
+            inTopLeft: { x: 0, y: 145 },
+            inBottomLeft: { x: 0, y: 440 },
         },
         //wall panel specifications
         pSide = 95,
@@ -43,26 +43,51 @@
         renderingContext.lineTo(roomCorner.topLeft.x, roomCorner.topLeft.y);
         renderingContext.stroke();
         //side wall
+        renderingContext.fillStyle = "rgb(220, 220, 220)"; 
         renderingContext.beginPath();
         renderingContext.moveTo(roomCorner.frontTop.x, roomCorner.frontTop.y);
         renderingContext.lineTo(roomCorner.topLeft.x, roomCorner.topLeft.y);
         renderingContext.lineTo(roomCorner.bottomLeft.x, roomCorner.bottomLeft.y);
         renderingContext.lineTo(roomCorner.frontBottom.x, roomCorner.frontBottom.y);
-        renderingContext.stroke();
+        renderingContext.fill();
         //side wall insert
+        renderingContext.fillStyle = "rgb(210, 210, 210)";
         renderingContext.beginPath();
         renderingContext.moveTo(roomCorner.frontTopIn.x, roomCorner.frontTopIn.y);
         renderingContext.lineTo(roomCorner.backTopIn.x, roomCorner.backTopIn.y);
         renderingContext.lineTo(roomCorner.backBottomIn.x, roomCorner.backBottomIn.y);
         renderingContext.lineTo(roomCorner.frontBottomIn.x, roomCorner.frontBottomIn.y);
-        renderingContext.stroke();
+        renderingContext.lineTo(roomCorner.frontTopIn.x, roomCorner.frontTopIn.y);
+        renderingContext.fill();
         //side wall insert ceil/floor
+        renderingContext.fillStyle = "rgb(230, 230, 230)"; 
         renderingContext.beginPath();
         renderingContext.moveTo(roomCorner.inTopLeft.x, roomCorner.inTopLeft.y);
         renderingContext.lineTo(roomCorner.backTopIn.x, roomCorner.backTopIn.y);
         renderingContext.lineTo(roomCorner.backBottomIn.x, roomCorner.backBottomIn.y);
         renderingContext.lineTo(roomCorner.inBottomLeft.x, roomCorner.inBottomLeft.y);
-        renderingContext.stroke();        
+        renderingContext.lineTo(roomCorner.inTopLeft.x, roomCorner.inTopLeft.y);
+        renderingContext.fill();
+        //ceiling
+        renderingContext.fillStyle = "rgb(240, 240, 240)"; 
+        renderingContext.beginPath();
+        renderingContext.moveTo(0, 0);
+        renderingContext.lineTo(width, 0);
+        renderingContext.lineTo(roomCorner.topRight.x, roomCorner.topRight.y);
+        renderingContext.lineTo(roomCorner.topLeft.x, roomCorner.topLeft.y);
+        renderingContext.lineTo(roomCorner.frontTop.x, roomCorner.frontTop.y);
+        renderingContext.lineTo(0, 0);
+        renderingContext.fill();
+        //floor
+        renderingContext.fillStyle = "rgb(230, 230, 230)"; 
+        renderingContext.beginPath();
+        renderingContext.moveTo(0, height);
+        renderingContext.lineTo(width, height);
+        renderingContext.lineTo(roomCorner.bottomRight.x, roomCorner.bottomRight.y);
+        renderingContext.lineTo(roomCorner.bottomLeft.x, roomCorner.bottomLeft.y);
+        renderingContext.lineTo(roomCorner.frontBottom.x, roomCorner.frontBottom.y);
+        renderingContext.lineTo(0, height);
+        renderingContext.fill();
 
         drawPanel = function(x, y){
             renderingContext.fillStyle="rgb(230, 230, 230)";
