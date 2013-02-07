@@ -2,6 +2,7 @@
  * A simple keyframe-tweening animation module for 2D
  * canvas elements.
  */
+
 var KeyframeTweener = {
     // The module comes with a library of common easing functions.
     linear: function (currentTime, start, distance, duration) {
@@ -27,11 +28,14 @@ var KeyframeTweener = {
     },
 
     cubicEaseInAndOut: function (currentTime, start, distance, duration) {
-        
+        var percentComplete = currentTime / (duration / 2);
+        return (percentComplete < 1) ?
+                (distance / 2) * percentComplete * percentComplete * percentComplete + start :
+                (-distance / 2) * (percentComtplete * (percentComplete - 1) * (percentComplete - 3) - 1) + start;
     },
 
     elasticEaseOut: function (currentTime, start, distance, duration) {
-        
+        //TODO
     },
 
     // The big one: animation initialization.  The settings parameter
@@ -95,7 +99,8 @@ var KeyframeTweener = {
                 rotateStart,
                 rotateDistance,
                 currentTweenFrame,
-                duration;
+                duration,
+                drawActive;
 
             // Redraw the background
             background(renderingContext);
@@ -147,8 +152,6 @@ var KeyframeTweener = {
 
                         // Draw the sprite.
                         sprites[i].draw[sprites[i].draw.indexOf(drawActive)](renderingContext);
-                        console.log(sprites[i].draw.indexOf(drawActive));
-                        console.log(drawActive.toString())
 
                         // Clean up.
                         renderingContext.restore();

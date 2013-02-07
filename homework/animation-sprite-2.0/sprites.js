@@ -1,7 +1,10 @@
-/*
- * This file demonstrates how our homebrew keyframe-tweening
- * engine is used.
+ /*
+  *Sprites
+  *Assignment 0212 
+  *CMSI371 
+  *Spring 2013
  */
+
 (function () {
     var canvas = document.getElementById("canvas"),
 
