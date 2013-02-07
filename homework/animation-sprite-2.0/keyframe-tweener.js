@@ -34,7 +34,6 @@ var KeyframeTweener = {
     // - width: the width of the canvas element
     // - height: the height of the canvas element
     // - sprites: the array of sprites to animate
-    // - background: static background of scene
     // - frameRate: number of frames per second (default 24)
     //
     // In turn, each sprite is a JavaScript object with the following
@@ -66,8 +65,7 @@ var KeyframeTweener = {
             width = settings.width,
             height = settings.height,
             sprites = settings.sprites,
-            background = settings.background(settings.renderingContext);
-
+            background = settings.background;
 
         setInterval(function () {
             // Some reusable loop variables.
@@ -91,8 +89,8 @@ var KeyframeTweener = {
                 currentTweenFrame,
                 duration;
 
-            // reset background
-            renderingContext.background(renderingContext);
+            // Clear the canvas.
+            background(renderingContext);
 
             // For every sprite, go to the current pair of keyframes.
             // Then, draw the sprite based on the current frame.

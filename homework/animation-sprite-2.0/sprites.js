@@ -8,11 +8,6 @@
         // First, a selection of "drawing functions" from which we
         // can choose.  Their common trait: they all accept a single
         // renderingContext argument.
-        background = function(renderingContext){
-            renderingContext.fillStyle="rgb(170, 170, 170)" 
-            renderingContext.drawRect()
-        }
-
         square = function (renderingContext) {
             renderingContext.fillStyle = "blue";
             renderingContext.fillRect(-20, -20, 40, 40);
@@ -25,7 +20,10 @@
             renderingContext.stroke();
         },
 
-
+        background = function (renderingContext) {
+            renderingContext.fillStyle = "rgb(200, 200, 200)";
+            renderingContext.fillRect(0, -0, canvas.width, canvas.height);
+        }
 
         // Then, we have "easing functions" that determine how
         // intermediate frames are computed.
@@ -92,9 +90,6 @@
             }
         ];
 
-
-
-
     // Finally, we initialize the engine.  Mainly, it needs
     // to know the rendering context to use.  And the animations
     // to display, of course.
@@ -103,6 +98,6 @@
         width: canvas.width,
         height: canvas.height,
         sprites: sprites,
-        background: background(renderingContext)
+        background: background
     });
 }());
