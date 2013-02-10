@@ -31,11 +31,21 @@ var KeyframeTweener = {
         var percentComplete = currentTime / (duration / 2);
         return (percentComplete < 1) ?
                 (distance / 2) * percentComplete * percentComplete * percentComplete + start :
-                (-distance / 2) * (percentComtplete * (percentComplete - 1) * (percentComplete - 3) - 1) + start;
+                (-distance / 2) * ((percentComtplete -= 2) * percentComplete * percentComplete + 2) + start;
     },
 
     elasticEaseOut: function (currentTime, start, distance, duration) {
-        //TODO
+		var s=1.70158;
+        var p=0;
+        var a=c;
+        var percentComplete = currentTime / (duration);
+        
+		if (currentTime == 0) return start;  
+        if (percentComplete == 1) return (start + distance);  
+        if (!p) p = duration * 0.3;
+		if (a < Math.abs(distance)) { a = distance; var s=p/4; }
+		else var s = p/(2*Math.PI) * Math.asin (distance/a);
+		return a * Math.pow(2, -10*percentComplete) * Math.sin( (percentComplete * duration - s)*(2*Math.PI)/p ) + distance + start;
     },
 
     // The big one: animation initialization.  The settings parameter
