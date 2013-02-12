@@ -8,13 +8,13 @@
 (function () {
     var canvas = document.getElementById("canvas"),
 
-        // First, a selection of "drawing functions" from which we
-        // can choose.  Their common trait: they all accept a single
-        // renderingContext argument.
         square = function (renderingContext) {
             renderingContext.fillStyle = "blue";
             renderingContext.fillRect(-20, -20, 40, 40);
         },
+       
+       linear = KeyframeTweener.linear;
+       console.log(linear.toString());
 
         circle = function (renderingContext) {
             renderingContext.strokeStyle = "red";
@@ -23,10 +23,8 @@
             renderingContext.stroke();
         },
 
-        background = function (renderingContext) {
-            renderingContext.fillStyle = "rgb(200, 200, 200)";
-            renderingContext.fillRect(0, -0, canvas.width, canvas.height);
-        }
+        background = background.drawBgnd;
+
 
         // Then, we have "easing functions" that determine how
         // intermediate frames are computed.
