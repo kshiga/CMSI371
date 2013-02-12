@@ -5,6 +5,10 @@
 
 var KeyframeTweener = {
     // The module comes with a library of common easing functions.
+    nop: function (currentTime, start, distance, duration) {
+        return start;
+    },
+
     linear: function (currentTime, start, distance, duration) {
         var percentComplete = currentTime / duration;
         return distance * percentComplete + start;
@@ -31,7 +35,7 @@ var KeyframeTweener = {
         var percentComplete = currentTime / (duration / 2);
         return (percentComplete < 1) ?
                 (distance / 2) * percentComplete * percentComplete * percentComplete + start :
-                (-distance / 2) * ((percentComplete -= 2) * percentComplete * percentComplete + 2) + start;
+                (-distance / 2) * ((percentComplete -2) * (percentComplete -1) * percentComplete + 2) + start;
     },
 
     elasticEaseOut: function (currentTime, start, distance, duration) {
@@ -88,6 +92,7 @@ var KeyframeTweener = {
             height = settings.height,
             sprites = settings.sprites,
             background = settings.background;
+            frameTotal = settings.frameTotal
 
         setInterval(function () {
             // Some reusable loop variables.
@@ -144,8 +149,8 @@ var KeyframeTweener = {
                         rotateStart = (startKeyframe.rotate || 0) * Math.PI / 180;
                         rotateDistance = (endKeyframe.rotate || 0) * Math.PI / 180 - rotateStart;
                         currentTweenFrame = currentFrame - startKeyframe.frame;
-                        duration = endKeyframe.frame - startKeyframe.frame + 1;
                         drawActive = startKeyframe.drawActive || undefined;
+                        duration = endKeyframe.frame - startKeyframe.frame + 1;
 
                         // Build our transform according to where we should be.
                         renderingContext.translate(

@@ -22,42 +22,47 @@ var DrawSprites = {
             renderingContext.fillStyle = 'rgb(204, 255, 229)';
             renderingContext.fillRect(0, 0, 10, 80);
 
+            renderingContext.fillStyle = 'rgb(0, 0, 0)';
             renderingContext.beginPath();
             renderingContext.moveTo(0, 80);
             renderingContext.lineTo(-30, (80 + 30));
             renderingContext.lineTo(5, 80);
             renderingContext.lineTo(0, 80);
-            renderingContext.stroke();
+            renderingContext.fill();
 
             renderingContext.beginPath();
             renderingContext.moveTo(10, 80);
             renderingContext.lineTo(30, (80 + 30));
             renderingContext.lineTo(0, 80);
             renderingContext.lineTo(10, 80);
-            renderingContext.stroke();
+            renderingContext.fill();
+           console.log("placed run1");
         },
 
         run2 : function(renderingContext) {
             renderingContext.fillStyle = 'rgb(204, 255, 229)';
             renderingContext.fillRect(0, 0, 10, 80);
 
+            renderingContext.fillStyle = 'rgb(0, 0, 0)';
             renderingContext.beginPath();
             renderingContext.moveTo(0, 80);
             renderingContext.lineTo(30, (80 + 30));
             renderingContext.lineTo(5, 80);
             renderingContext.lineTo(10, 80);
-            renderingContext.stroke();
+            renderingContext.fill();
 
             renderingContext.beginPath();
             renderingContext.moveTo(10, 80);
             renderingContext.lineTo((-30), (80 + 30));
             renderingContext.lineTo(0, 80);
             renderingContext.lineTo(10, 80);
-            renderingContext.stroke();
+            renderingContext.fill();
+           console.log("placed run2");
         },
 
         
         stop1: function(renderingContext) {
+           renderingContext.fillStyle = 'rgb(204, 255, 229)';
            renderingContext.beginPath();
            renderingContext.moveTo(0, 0);
            renderingContext.lineTo(10, 0);
@@ -66,12 +71,14 @@ var DrawSprites = {
            renderingContext.lineTo(0, 0);
            renderingContext.fill();
 
+           renderingContext.fillStyle = 'rgb(0, 0, 0)';
            renderingContext.beginPath();
            renderingContext.moveTo((10 + 36), 54);
            renderingContext.lineTo(30, 96);
            renderingContext.lineTo(36, 54);
            renderingContext.moveTo((10 + 36), 54);
-           renderingContext.stroke();
+           renderingContext.fill();
+           console.log("placed stop1");
         },
         
         
@@ -85,12 +92,14 @@ var DrawSprites = {
            renderingContext.lineTo(0, 0);
            renderingContext.fill();
 
+           renderingContext.fillStyle = 'rgb(0, 0, 0)';
            renderingContext.beginPath();
            renderingContext.moveTo((-10 - 36), 54);
            renderingContext.lineTo((-30), 96);
            renderingContext.lineTo((-36), 54);
            renderingContext.moveTo((-10 - 36), 54);
-           renderingContext.stroke();
+           renderingContext.fill();
+           console.log("placed stop2");
         },
 
 
@@ -98,12 +107,13 @@ var DrawSprites = {
            renderingContext.fillStyle = 'rgb(204, 255, 229)';
            renderingContext.fillRect(0, 0, 10, 80);
 
+           renderingContext.fillStyle = 'rgb(0, 0, 0)';
            renderingContext.beginPath();
            renderingContext.moveTo(0, 80);
            renderingContext.lineTo(0, (80 + 40));
            renderingContext.lineTo(10, 80);
            renderingContext.moveTo(0, 80);
-           renderingContext.stroke();
+           renderingContext.fill();
 
         },
         
@@ -148,7 +158,7 @@ var DrawSprites = {
            renderingContext.lineTo(10, (80 - 9)); 
            renderingContext.lineTo(10, (80 + 30)); 
            renderingContext.lineTo(3 , 80); 
-           renderingContext.stroke();
+           renderingContext.fill();
         },        
         
         kneel1: function(renderingContext) {
@@ -195,7 +205,7 @@ var DrawSprites = {
            renderingContext.lineTo(10, (80 + 30)); 
            renderingContext.lineTo(5, (80 + 5)); 
            renderingContext.lineTo((-3) , 80); 
-           renderingContext.stroke();  
+           renderingContext.fill();  
         },
 
         kneel2: function(renderingContext) {
@@ -232,6 +242,7 @@ var DrawSprites = {
            renderingContext.fillRect(12, 13, 3, 10);
            renderingContext.fillRect(11, 33, 4, 4);
 
+           renderingContext.fillStyle = 'rgb(0, 0, 0)';
            renderingContext.beginPath();
            renderingContext.moveTo(24, (80 - 18));
            renderingContext.lineTo(42, (80 - 15));  
@@ -243,7 +254,7 @@ var DrawSprites = {
            renderingContext.lineTo(10, (80 + 30)); 
            renderingContext.lineTo(15, (80 + 4)); 
            renderingContext.lineTo((-3) , 80); 
-           renderingContext.stroke();  
+           renderingContext.fill();  
         },
 
         kneelExt: function(renderingContext) {
@@ -289,7 +300,7 @@ var DrawSprites = {
            renderingContext.lineTo(10, (80 + 30)); 
            renderingContext.lineTo(15, (80 + 4)); 
            renderingContext.lineTo((-3) , 80); 
-           renderingContext.stroke();  
+           renderingContext.fill();  
         },
 
         forward: function(renderingContext) {
@@ -310,7 +321,7 @@ var DrawSprites = {
             renderingContext.lineTo((3 * (80/ 4)), (80 + 40));
             renderingContext.lineTo(80, 80);
             renderingContext.lineTo(0, 80);
-            renderingContext.stroke();            
+            renderingContext.fill();            
         },
 
         forwardQ: function(renderingContext) {
@@ -331,7 +342,7 @@ var DrawSprites = {
             renderingContext.lineTo((3 * (80/ 4)), (80 + 40));
             renderingContext.lineTo(80, 80);
             renderingContext.lineTo(0, 80);
-            renderingContext.stroke();     
+            renderingContext.fill();     
 
             renderingContext.beginPath();
             renderingContext.moveTo((80 + 7), 10);
@@ -380,7 +391,7 @@ var DrawSprites = {
             renderingContext.lineTo((3 *(80 / 4)), (80 + 40));
             renderingContext.lineTo(80, 80);
             renderingContext.lineTo(0, 80);
-            renderingContext.stroke();            
+            renderingContext.fill();            
         
         },
  
@@ -419,7 +430,7 @@ var DrawSprites = {
             renderingContext.lineTo((5 *(80 / 4)), (80 + 40));
             renderingContext.lineTo(80, 80);
             renderingContext.lineTo(0, 80);
-            renderingContext.stroke(); 
+            renderingContext.fill(); 
         } 
       
 };
