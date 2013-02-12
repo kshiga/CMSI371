@@ -12,10 +12,7 @@
             renderingContext.fillStyle = "blue";
             renderingContext.fillRect(-20, -20, 40, 40);
         },
-       
-       linear = KeyframeTweener.linear;
-       
-
+     
         circle = function (renderingContext) {
             renderingContext.strokeStyle = "red";
             renderingContext.beginPath();
@@ -23,8 +20,26 @@
             renderingContext.stroke();
         },
 
-        background = background.drawBgnd;
-        console.log(background.toString());
+        run1 = DrawSprites.run1,
+        run2 = DrawSprites.run2,
+        stop1 = DrawSprites.stop1, 
+        stop2 = DrawSprites.stop2, 
+        kneel1 = DrawSprites.kneel1, 
+        kneel2 = DrawSprites.kneel2,
+        kneelExt = DrawSprites.kneelExt, 
+        jump = DrawSprites.jump, 
+        tQuarters = DrawSprites.tQuarters, 
+        stand = DrawSprites.stand, 
+        forward = DrawSprites.forward, 
+        forwardQ = DrawSprites.forwardQ, 
+        falling = DrawSprites.falling, 
+        portalO = DrawSprites.portalO, 
+        portalB = DrawSprites.portalB,
+
+       
+
+        background = Background.drawBgnd;
+
 
 
         // Then, we have "easing functions" that determine how
@@ -36,55 +51,50 @@
    
         sprites = [
             {
-                draw: [square, circle],
+                draw: [run1, run2, stop1, stop2, kneel1, kneel2, kneelExt, jump, tQuarters, stand, forward, forwardQ, falling],
                 keyframes: [
                     {
                         frame: 0,
-                        tx: 0,
-                        ty: 50,
-                        ease: KeyframeTweener.cubicEaseInAndOut,
-                        drawActive: square
+                        tx: 600,
+                        ty: 0,
+                        drawActive: falling
                     },
 
                     {
                         frame: 150,
-                        tx: (canvas.width),
-                        ty: 50
+                        tx: 600,
+                        ty: 585
                     },
 
                 ]
             },
 
             {
-                draw: [circle, 2, 3, square],
+                draw: [portalO],
                 keyframes: [
                     {
-                        frame: 50,
-                        tx: 300,
-                        ty: 600,
-                        sx: 0.5,
-                        sy: 0.5,
-                        ease: KeyframeTweener.quadEaseOut,
-                        drawActive: circle
+                        frame: 0,
+                        drawActive: portalO
                     },
-
-                    {
-                        frame: 100,
-                        tx: 300,
-                        ty: 0,
-                        sx: 3,
-                        sy: 0.25,
-                        ease: KeyframeTweener.quadEaseOut,
-                        drawActive: square
-                    },
-
                     {
                         frame: 150,
-                        tx: 300,
-                        ty: 600,
-                        sx: 0.5,
-                        sy: 0.5
+                        drawActive: portalO
                     }
+                  
+                ]
+            },
+            {
+                draw: [portalB],
+                keyframes: [
+                    {
+                        frame: 0,
+                        drawActive: portalB
+                    },
+                    {
+                        frame: 150,
+                        drawActive: portalB
+                    }
+                  
                 ]
             }
         ];

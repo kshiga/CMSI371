@@ -5,7 +5,7 @@
  *Spring 2013
  */
 
- var background = {
+ var Background = {
        drawBgnd: function (renderingContext) {
         var canvas = document.getElementById("canvas"),
             width = canvas.width,
