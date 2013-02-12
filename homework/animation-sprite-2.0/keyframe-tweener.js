@@ -31,13 +31,13 @@ var KeyframeTweener = {
         var percentComplete = currentTime / (duration / 2);
         return (percentComplete < 1) ?
                 (distance / 2) * percentComplete * percentComplete * percentComplete + start :
-                (-distance / 2) * ((percentComtplete -= 2) * percentComplete * percentComplete + 2) + start;
+                (-distance / 2) * ((percentComplete -= 2) * percentComplete * percentComplete + 2) + start;
     },
 
     elasticEaseOut: function (currentTime, start, distance, duration) {
-		var s=1.70158;
-        var p=0;
-        var a=c;
+		var s = 1.70158;
+        var p = 0;
+        var a = distance;
         var percentComplete = currentTime / (duration);
         
 		if (currentTime == 0) return start;  

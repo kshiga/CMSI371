@@ -21,16 +21,17 @@
             frontBottom: { x: 0, y: 560 },
             frontTopIn: { x: 0, y: 90 }, 
             backTopIn: { x: 80, y: 145 },
-            frontBottomIn: { x: 0, y: 510},
+            frontBottomIn: { x: 0, y: 510 },
             backBottomIn: { x: 80, y: 440 },
             inTopLeft: { x: 0, y: 145 },
             inBottomLeft: { x: 0, y: 440 },
         },
         //wall panel specifications
-        pHeight = ((roomCorner.bottomLeft.y - roomCorner.topLeft.y) / 7),
+        pHeight = ((roomCorner.bottomLeft.y - roomCorner.topLeft.y) / 3),
         pWidth = ((roomCorner.bottomRight.x - roomCorner.bottomLeft .x) / 10),
         bevelH = pHeight + 2;
         bevelW = pWidth + 2;
+        j = 80;
 
         //basic room structure
         renderingContext.strokeStyle = "rgb(170, 170, 170)"; 
@@ -79,7 +80,7 @@
         renderingContext.lineTo(0, 0);
         renderingContext.fill();
         //floor
-        renderingContext.fillStyle = "rgb(225, 225, 225)"; 
+        renderingContext.fillStyle = "rgb(180, 180, 185)"; 
         renderingContext.beginPath();
         renderingContext.moveTo(0, height);
         renderingContext.lineTo(width, height);
@@ -89,42 +90,50 @@
         renderingContext.lineTo(0, height);
         renderingContext.fill();
 
+        renderingContext.fillStyle = "rgb(255, 255, 255)"; 
+        renderingContext.beginPath();
+        renderingContext.moveTo(0, 200);
+        renderingContext.lineTo(50, 200);
+        renderingContext.lineTo(50, 410);
+        renderingContext.lineTo(0, 410);
+        renderingContext.lineTo(0, 200);
+        renderingContext.fill();
+
         drawPanel = function(x, y){
+            renderingContext.save();
             renderingContext.fillStyle="rgb(230, 230, 230)";
-            renderingContext.strokeStyle = "rgb(170, 170, 170)";
+            renderingContext.strokeStyle = "rgb(170, 170, 175)";
             renderingContext.fillRect(x, y, pWidth, pHeight);
             renderingContext.strokeRect((x-2), (y-2), bevelW, bevelH); 
+            renderingContext.restore();
         }
        
-        drawGrid = function (x1, y1, x2, y2){
-           renderingContext.lineWidth = "2";
+        drawLine = function (x1, y1, x2, y2){
+           renderingContext.save();
+           renderingContext.lineWidth = "3";
            renderingContext.beginPath();
            renderingContext.moveTo(x1, y1);
            renderingContext.lineTo(x2, y2);
            renderingContext.stroke();
-
+           renderingContext.restore();
        }
 
 
     // drawing recusive background elements
-
-
     for (i = roomCorner.bottomLeft.x; i < roomCorner.bottomRight.x; i+= bevelW){
-    console.log(pWidth);
-    console.log(roomCorner.bottomLeft.y - (bevelH));
-    console.log(roomCorner.bottomLeft.y - (2 * bevelH));
-    console.log(roomCorner.bottomLeft.y - (3 * bevelH));
-    console.log(roomCorner.bottomLeft.y - (4 * bevelH));
-    console.log(roomCorner.bottomLeft.y - (5 * bevelH));
-    console.log(roomCorner.bottomLeft.y - (6 * bevelH));
-    console.log(roomCorner.bottomLeft.y - (7 * bevelH));
-
-
+        drawPanel((i + 2), (roomCorner.bottomLeft.y - pHeight));
+        drawPanel((i + (pWidth + 4)), (roomCorner.bottomLeft.y - (2 * pHeight) + 2));
+        drawPanel((i + (4 * pWidth) + 10), (roomCorner.bottomLeft.y - (3 * pHeight)));
     }
 
-
-
-
+    for (i = 480; i < height; i += 30){
+        drawLine(j, i, width, i);
+        j -= 31;
+   }
+    for (i = 135; i < width; i += 60){
+            var qw  = i - 150 + ( i * 0.2) ; 
+            drawLine(i, 460, qw, height);
+   }
 }());
 
 

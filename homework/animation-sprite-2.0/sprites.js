@@ -43,7 +43,7 @@
                         frame: 0,
                         tx: 0,
                         ty: 50,
-                        ease: KeyframeTweener.quadEaseInOut,
+                        ease: KeyframeTweener.cubicEaseInAndOut,
                         drawActive: square
                     },
 
