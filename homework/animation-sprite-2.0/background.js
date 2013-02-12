@@ -123,7 +123,6 @@
     
             renderingContext.fillStyle = 'black';
             renderingContext.font = '125px Arial';
-            renderingContext.font = 'condensed';
             renderingContext.textBaseline = 'bottom';
             renderingContext.fillText('5', -25, 340);
 
