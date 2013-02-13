@@ -72,6 +72,7 @@
                         drawActive: run2
 
                     },
+
                     {
                         frame: 15,
                         tx: 150,
@@ -95,160 +96,246 @@
                         rotate: -15,
                         drawActive: run1
                     },
+
                     {
                         frame: 27,
-                        tx: 450,
-                        ty: 407,
+                        tx: 490,
+                        ty: 370,
                         rotate: 15,
                         drawActive: run2
                     },
 
-                    {
-                        frame: 30,
-                        tx: 495,
-                        ty: 430,
-                        drawActive: stop1
-                    },
+
                     {
                         frame: 33,
-                        tx: 550,
-                        ty: 420,
+                        tx: 500,
+                        ty: 410,
+                        drawActive: stop1
+                    },
+
+                    {
+                        frame: 38,
+                        tx: 540,
+                        ty: 410,
                         drawActive: stop2
                     },
+
                     {
-                        frame: 36,
-                        tx: 510,
+                        frame: 42,
+                        tx: 530,
                         ty: 400,
+                        ease: KeyframeTweener.nop,
                         drawActive: stand
                     },
+
                     {
-                        frame: 45,
-                        tx: 510,
-                        ty: 400,
+                        frame: 58,
+                        tx: 515,
+                        ty: 415,
                         drawActive: tQuarters
-                    },                    {
-                        frame: 53,
-                        tx: 510,
-                        ty: 400,
-                        drawActive: forward
-                    },
+                    },                    
                     {
-                        frame: 55,
-                        tx: 460,
-                        ty: 400,
-                        drawActive: forward
-                    },
+                        frame: 59,
+                        tx: 515,
+                        ty: 415,
+                        ease: KeyframeTweener.nop,
+                        drawActive: tQuarters
+                    },         
+
                     {
                         frame: 60,
-                        tx: 460,
-                        ty: 400,
-                        drawActive: forwardQ
-                    },
+                        tx: 515,
+                        ty: 415,
+                        ease: KeyframeTweener.nop,
+                        drawActive: kneel2
+                    },                    
+
                     {
                         frame: 64,
-                        tx: 510,
-                        ty: 400,
-                        drawActive: forwardQ
-                    },
-                    {
-                        frame: 65,
-                        tx: 510,
-                        ty: 400,
-                        drawActive: tQuarters
-                    },
-                    {
-                        frame: 70,
-                        tx: 525,
-                        ty: 430,
+                        tx: 515,
+                        ty: 415,
                         drawActive: kneel1
-                    },
+                    },            
+
+                    {
+                        frame: 67,
+                        tx: 450,
+                        ty: 350,
+                        rotate: -10,
+                        drawActive: tQuarters
+                    },       
+                    {
+                        frame: 75,
+                        tx: 360,
+                        ty: 400,
+                        rotate: 0,
+                        ease: KeyframeTweener.quadEaseInAndOut,
+                        drawActive: tQuarters
+                    }, 
                     {
                         frame: 80,
-                        tx: 525,
-                        ty: 430,
+                        tx: 360,
+                        ty: 400,
+                        drawActive: forward
+                    },                    
+
+                    {
+                        frame: 84,
+                        tx: 360,
+                        ty: 400,
+                        ease: KeyframeTweener.quadEaseInAndOut,
+                        drawActive: forwardQ
+                    },          
+
+                    {
+                        frame: 95,
+                        tx: 360,
+                        ty: 400,
+                        ease: KeyframeTweener.quadEaseInAndOut,
+                        drawActive: tQuarters
+                    },         
+
+                    {
+                        frame: 98,
+                        tx: 360,
+                        ty: 400,
+                        ease: KeyframeTweener.nop,
+                        drawActive: kneel1
+                    },                    
+
+                    {
+                        frame: 100,
+                        tx: 360,
+                        ty: 400,
+                        drawActive: kneel2
+                    }, 
+
+                    {
+                        frame: 105,
+                        tx: 450,
+                        ty: 350,
+                        drawActive: tQuarters
+                    }, 
+
+                    {
+                        frame: 110,
+                        tx: 515,
+                        ty: 415,
+                        drawActive: tQuarters
+                    }, 
+
+                    {
+                        frame: 111,
+                        tx: 515,
+                        ty: 415,
+                        drawActive: kneel1
+                    }, 
+                    {
+                        frame: 113,
+                        tx: 515,
+                        ty: 415,
+                        drawActive: tQuarters
+                    },            
+
+                    {
+                        frame: 125,
+                        tx: 515,
+                        ty: 415,
+                        drawActive: kneel1
+                    },
+
+                    {
+                        frame: 129,
+                        tx: 515,
+                        ty: 415,
+                        ease: KeyframeTweener.nop,
                         drawActive: kneel2
                     },
+
                     {
-                        frame: 89,
+                        frame: 135,
                         tx: 525,
-                        ty: 430,
+                        ty: 425,
                         rotate: 15,
+                        ease: KeyframeTweener.nop,
                         drawActive: kneelExt
                     },
                     {
-                        frame: 96,
-                        tx: 525,
-                        ty: 430,
+                        frame: 141,
+                        tx: 515,
+                        ty: 415,
                         drawActive: kneel2
                     },
                     {
-                        frame: 105,
-                        tx: 525,
-                        ty: 430,
+                        frame: 145,
+                        tx: 515,
+                        ty: 415,
                         drawActive: kneel1
                     },
                     {
-                        frame: 106,
-                        tx: 590,
-                        ty: 360,
+                        frame: 151,
+                        tx: 515,
+                        ty: 415,
+                        ease: KeyframeTweener.quadEaseIn,
                         drawActive: tQuarters
                     },
                     {
-                        frame: 113,
+                        frame: 153,
                         tx: 600,
                         ty: 330,
+                        ease: KeyframeTweener.quadEaseInAndOut,
                         drawActive: jump
                     },
                     {
-                        frame: 120,
+                        frame: 155,
                         tx: 600,
                         ty: 585,
                         drawActive: falling
                     },
                     {
-                        frame: 121,
+                        frame: 160,
                         tx: 600,
                         ty: 0,
                         drawActive: falling
                     },
                     {
-                        frame: 125,
+                        frame: 161,
                         tx: 600,
                         ty: 585,
                         drawActive: falling
                     },
                     {
-                        frame: 126,
+                        frame: 165,
                         tx: 600,
                         ty: 0,
                         drawActive: falling
                     },
                     {
-                        frame: 130,
+                        frame: 166,
                         tx: 600,
                         ty: 585,
                         drawActive: falling
                     },
                     {
-                        frame: 131,
+                        frame: 169,
                         tx: 600,
                         ty: 0,
                         drawActive: falling
                     },
                     {
-                        frame: 133,
+                        frame: 170,
                         tx: 600,
                         ty: 585,
                         drawActive: falling
                     },
                     {
-                        frame: 134,
+                        frame: 172,
                         tx: 600,
                         ty: 0,
                         drawActive: falling
                     },
                     {
-                        frame: 136,
+                        frame: 173,
                         tx: 600,
                         ty: 585,
                         drawActive: falling
@@ -259,14 +346,14 @@
                 draw: [kneelExt],
                 keyframes: [
                     {
-                        frame: 89,
+                        frame: 135,
                         tx: 600,
                         ty: -60,
                         rotate: 45,
                         drawActive: kneelExt
                     },
                     {
-                        frame: 96,
+                        frame: 141,
                         tx:600,
                         ty: -60,
                         rotate: 45,
@@ -279,11 +366,11 @@
                 draw: [portalO],
                 keyframes: [
                     {
-                        frame: 106,
+                        frame: 0,
                         drawActive: portalO
                     },
                     {
-                        frame: 150,
+                        frame: 550,
                         drawActive: portalO
                     }
                   
@@ -297,7 +384,7 @@
                         drawActive: portalB
                     },
                     {
-                        frame: 150,
+                        frame: 550,
                         drawActive: portalB
                     }
                   

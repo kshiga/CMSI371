@@ -6,15 +6,15 @@ var DrawSprites = {
 
         portalO: function(renderingContext) {
            portalO = new Image();
-           portalO.src = 'portalO.png'; 
-           renderingContext.drawImage(portalO, 525, 517);
+           portalO.src = 'portalO1.png'; 
+           renderingContext.drawImage(portalO, 506, 519);
            console.log("placed orange");
         },
 
         portalB: function(renderingContext) {
            portalB = new Image();
-           portalB.src = 'portalB.png';
-           renderingContext.drawImage(portalB, 515, 0);     
+           portalB.src = 'portalB1.png';
+           renderingContext.drawImage(portalB, 505, 0);     
            console.log("placed blue");
         },
 
@@ -29,6 +29,7 @@ var DrawSprites = {
             renderingContext.lineTo(5, 80);
             renderingContext.lineTo(0, 80);
             renderingContext.fill();
+            renderingContext.fillRect(-25, 105, 8, 5);
 
             renderingContext.beginPath();
             renderingContext.moveTo(10, 80);
@@ -36,12 +37,16 @@ var DrawSprites = {
             renderingContext.lineTo(0, 80);
             renderingContext.lineTo(10, 80);
             renderingContext.fill();
+            renderingContext.fillRect(25, 105, 8, 5);
+           
+
            console.log("placed run1");
         },
 
         run2 : function(renderingContext) {
             renderingContext.fillStyle = 'rgb(204, 255, 229)';
             renderingContext.fillRect(0, 0, 10, 80);
+
 
             renderingContext.fillStyle = 'rgb(0, 0, 0)';
             renderingContext.beginPath();
@@ -50,12 +55,14 @@ var DrawSprites = {
             renderingContext.lineTo(5, 80);
             renderingContext.lineTo(10, 80);
             renderingContext.fill();
+            renderingContext.fillRect(-25, 105, 8, 5);
 
             renderingContext.beginPath();
             renderingContext.moveTo(10, 80);
             renderingContext.lineTo((-30), (80 + 30));
             renderingContext.lineTo(0, 80);
             renderingContext.lineTo(10, 80);
+            renderingContext.fillRect(25, 105, 8, 5);
             renderingContext.fill();
            console.log("placed run2");
         },
@@ -78,6 +85,7 @@ var DrawSprites = {
            renderingContext.lineTo(36, 54);
            renderingContext.moveTo((10 + 36), 54);
            renderingContext.fill();
+           renderingContext.fillRect(15, 105, 8, 5);
            console.log("placed stop1");
         },
         
@@ -99,6 +107,7 @@ var DrawSprites = {
            renderingContext.lineTo((-36), 54);
            renderingContext.moveTo((-10 - 36), 54);
            renderingContext.fill();
+           renderingContext.fillRect(-15, 105, 8, 5);
            console.log("placed stop2");
         },
 
@@ -396,6 +405,7 @@ var DrawSprites = {
         },
  
         falling: function(renderingContext) {
+            renderingContext.save();
             renderingContext.fillStyle = 'rgb(204, 255, 229)';
             renderingContext.fillRect(0, 0, 80, 80);
 
@@ -431,6 +441,7 @@ var DrawSprites = {
             renderingContext.lineTo(80, 80);
             renderingContext.lineTo(0, 80);
             renderingContext.fill(); 
+            renderingContext.restore();
         } 
       
 };

@@ -93,7 +93,7 @@
             renderingContext.lineTo(0, 0);
             renderingContext.fill();
             //floor
-            renderingContext.fillStyle = "rgb(180, 180, 185)"; 
+            renderingContext.fillStyle = "rgb(180, 180, 185)";
             renderingContext.beginPath();
             renderingContext.moveTo(0, height);
             renderingContext.lineTo(width, height);
@@ -102,6 +102,8 @@
             renderingContext.lineTo(roomCorner.frontBottom.x, roomCorner.frontBottom.y);
             renderingContext.lineTo(0, height);
             renderingContext.fill();
+
+
             //instruction panel
             renderingContext.fillStyle = "rgb(255, 255, 255)"; 
             renderingContext.beginPath();
@@ -161,6 +163,60 @@
                 var qw  = i - 150 + ( i * 0.2) ; 
                 drawLine(i, 460, qw, height);
         }
+       //bottom
+        renderingContext.fillStyle = "rgb(200, 200, 200)";
+        renderingContext.beginPath();
+        renderingContext.moveTo(520, 500);
+        renderingContext.lineTo(505, 540);
+        renderingContext.lineTo(787, 540);
+        renderingContext.lineTo(795, 500);
+        renderingContext.lineTo(530, 500);
+        renderingContext.fill();
+
+        renderingContext.fillStyle = "rgb(160, 160, 160)";
+        renderingContext.beginPath();
+        renderingContext.moveTo(505, 540);
+        renderingContext.lineTo(505, 575);
+        renderingContext.lineTo(787, 575);
+        renderingContext.lineTo(787, 540);
+        renderingContext.lineTo(505, 540);
+        renderingContext.fill();
+
+        renderingContext.fillStyle = "rgb(100, 100, 100)";
+        renderingContext.beginPath();
+        renderingContext.moveTo(787, 540);
+        renderingContext.lineTo(787, 575);
+        renderingContext.lineTo(795, 535);
+        renderingContext.lineTo(795, 500);
+        renderingContext.lineTo(787, 540);
+        renderingContext.fill();
+        //top
+        renderingContext.fillStyle = "rgb(200, 200, 200)";
+        renderingContext.beginPath();
+        renderingContext.moveTo(505, 15);
+        renderingContext.lineTo(530, 45);
+        renderingContext.lineTo(805, 45);
+        renderingContext.lineTo(780, 15);
+        renderingContext.lineTo(505, 15);
+        renderingContext.fill();
+
+        renderingContext.fillStyle = "rgb(130, 130, 130)";
+        renderingContext.beginPath();
+        renderingContext.moveTo(780, -10);
+        renderingContext.lineTo(805, 20);
+        renderingContext.lineTo(805, 45);
+        renderingContext.lineTo(780, 15);
+        renderingContext.lineTo(780, -10);
+        renderingContext.fill();
+
+        renderingContext.fillStyle = "rgb(160, 160, 160)";
+        renderingContext.beginPath();
+        renderingContext.moveTo(780, 15);
+        renderingContext.lineTo(780, 0);
+        renderingContext.lineTo(505, 0);
+        renderingContext.lineTo(505, 15);
+        renderingContext.lineTo(780, 15);
+        renderingContext.fill();
 
         //portals
         renderingContext.save();

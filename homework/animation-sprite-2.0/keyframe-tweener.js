@@ -115,7 +115,8 @@ var KeyframeTweener = {
                 rotateDistance,
                 currentTweenFrame,
                 duration,
-                drawActive;
+                drawActive,
+                loop;
 
             // Redraw the background
             background(renderingContext);
@@ -151,6 +152,7 @@ var KeyframeTweener = {
                         currentTweenFrame = currentFrame - startKeyframe.frame;
                         drawActive = startKeyframe.drawActive || undefined;
                         duration = endKeyframe.frame - startKeyframe.frame + 1;
+                        loop = startKeyframe.loop || false;
 
                         // Build our transform according to where we should be.
                         renderingContext.translate(
@@ -167,6 +169,7 @@ var KeyframeTweener = {
 
                         // Draw the sprite.
                         sprites[i].draw[sprites[i].draw.indexOf(drawActive)](renderingContext);
+
 
                         // Clean up.
                         renderingContext.restore();
