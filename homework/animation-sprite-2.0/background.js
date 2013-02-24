@@ -28,9 +28,9 @@
 
             pHeight = ((roomCorner.bottomLeft.y - roomCorner.topLeft.y) / 3),
             pWidth = ((roomCorner.bottomRight.x - roomCorner.bottomLeft .x) / 10),
-            bevelH = pHeight + 2;
-            bevelW = pWidth + 2;
-            j = 80;
+            bevelH = pHeight + 2; // JD: Watch out!!!  This semicolon ends the
+            bevelW = pWidth + 2;  //     var statement.  This means that all
+            j = 80;               //     other declarations are no longer local!
 
             blueGradient =  renderingContext.createRadialGradient(650, 10, 50, 660, 30, 120);
             blueGradient.addColorStop(0, 'rgba(0, 0, 70, 0.45)');
@@ -135,7 +135,9 @@
                 renderingContext.fillRect(x, y, pWidth, pHeight);
                 renderingContext.strokeRect((x-2), (y-2), bevelW, bevelH); 
                 renderingContext.restore();
-            }
+            } // JD: Syntax check---you missed a semicolon here.
+              //     JavaScript forgives this in this context, but
+              //     in others it can cause harm, so watch out.
        
            drawLine = function (x1, y1, x2, y2){
                renderingContext.save();
@@ -145,7 +147,7 @@
                renderingContext.lineTo(x2, y2);
                renderingContext.stroke();
                renderingContext.restore();
-           }
+           } // JD: Another missed semicolon.
 
 
         // drawing recusive background elements

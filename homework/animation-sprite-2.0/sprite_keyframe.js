@@ -9,6 +9,8 @@
     var canvas = document.getElementById("canvas"),
         frameTotal = 10000,
 
+        // JD: These functions from the sample are no longer used
+        //     ---delete them wit confidence.
         square = function (renderingContext) {
             renderingContext.fillStyle = "blue";
             renderingContext.fillRect(-20, -20, 40, 40);
@@ -39,7 +41,7 @@
 
        
 
-        background = Background.drawBgnd;
+        background = Background.drawBgnd; // JD: Here's another var-breaking semicolon.
 
 
 
