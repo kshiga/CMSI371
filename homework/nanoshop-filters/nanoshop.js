@@ -34,6 +34,12 @@ var Nanoshop = {
     },
     
     bAndw: function(r, g, b, a) {
-                return [0.21 * r, 0.71 * g, 0.07 * b, a]
+        var avg = (r + g + b) /3
+        return [avg, avg, avg, a];
+    },
+
+    invert: function(r, g, b, a) {
+        var n = 255;
+        return [(n - r), (n - g), (n - b), a];
     }
 };

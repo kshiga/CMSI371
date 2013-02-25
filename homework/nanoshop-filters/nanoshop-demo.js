@@ -6,10 +6,7 @@
     var canvas = $("#picture")[0],
         renderingContext = canvas.getContext("2d"),
         gradient;
-        sampleIMG = new Image();
-        sampleIMG.src = 'sample.jpg';
-        renderingContext.drawImage(sampleIMG, 0, 0);
-/*
+
     // Adapted from original code by Tyler Nichols.
     gradient = renderingContext.createRadialGradient(120, 120, 15, 120, 120, 75);
     gradient.addColorStop(0, "rgb(255, 102, 102)");
@@ -52,7 +49,7 @@
     renderingContext.fill();
     renderingContext.closePath();
     // (end of adapted code by Tyler Nichols)
-*/
+
     // Set a little event handler to apply the filter.
     $("#darken-filter-button").click(function () {
         renderingContext.putImageData(
@@ -70,6 +67,17 @@
             Nanoshop.applyFilter(
                 renderingContext.getImageData(0, 0, canvas.width, canvas.height),
                 Nanoshop.bAndw
+            ),
+            0, 0
+        );
+
+    });
+
+    $("#invert-filter-button").click(function () {
+        renderingContext.putImageData(
+            Nanoshop.applyFilter(
+                renderingContext.getImageData(0, 0, canvas.width, canvas.height),
+                Nanoshop.invert
             ),
             0, 0
         );
