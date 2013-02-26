@@ -8,6 +8,8 @@
         gradient;
 
     // Some edge lines to test for wraparound bleeding.
+
+
     renderingContext.strokeStyle = "yellow";
     renderingContext.beginPath();
     renderingContext.moveTo(0, 0);
@@ -79,13 +81,14 @@
     renderingContext.lineTo(435, 265);
     renderingContext.fill();
     renderingContext.closePath();
+
     // (end of adapted code by Tyler Nichols)
 
     $("#darken-filter-button").click(function () {
         renderingContext.putImageData(
-            NanoshopNeighborhoo.applyFilter(
+            Nanoshop.applyFilter(
                 renderingContext.getImageData(0, 0, canvas.width, canvas.height),
-                NanoshopNeighborhoo.darken
+                Nanoshop.darken
             ),
             0, 0
         );
@@ -94,9 +97,9 @@
 
     $("#bAndw-filter-button").click(function () {
         renderingContext.putImageData(
-            NanoshopNeighborhoo.applyFilter(
+            Nanoshop.applyFilter(
                 renderingContext.getImageData(0, 0, canvas.width, canvas.height),
-                NanoshopNeighborhoo.bAndw
+                Nanoshop.bAndw
             ),
             0, 0
         );
@@ -105,25 +108,47 @@
 
     $("#invert-filter-button").click(function () {
         renderingContext.putImageData(
-            NanoshopNeighborhoo.applyFilter(
+            Nanoshop.applyFilter(
                 renderingContext.getImageData(0, 0, canvas.width, canvas.height),
-                NanoshopNeighborhoo.invert
+                Nanoshop.invert
             ),
             0, 0
         );
 
     });
 
-
     // Set a little event handler to apply the filter.
-    $("#apply-filter-button").click(function () {
+    $("#darkenN-filter-button").click(function () {
         // Filter time.
         renderingContext.putImageData(
-            NanoshopNeighborhood.applyFilterN(
+            Nanoshop.applyFilterN(
                 renderingContext,
                 renderingContext.getImageData(0, 0, canvas.width, canvas.height),
-                NanoshopNeighborhood.darkener
-                //NanoshopNeighborhood.averager // Convenience comment for easy switching.
+                Nanoshop.darkener
+            ),
+            0, 0
+        );
+    });
+
+    $("#average-filter-button").click(function () {
+        // Filter time.
+        renderingContext.putImageData(
+            Nanoshop.applyFilterN(
+                renderingContext,
+                renderingContext.getImageData(0, 0, canvas.width, canvas.height),
+                Nanoshop.averager 
+            ),
+            0, 0
+        );
+    });
+
+    $("#scramble-filter-button").click(function () {
+        // Filter time.
+        renderingContext.putImageData(
+            Nanoshop.applyFilterN(
+                renderingContext,
+                renderingContext.getImageData(0, 0, canvas.width, canvas.height),
+                Nanoshop.scramble 
             ),
             0, 0
         );

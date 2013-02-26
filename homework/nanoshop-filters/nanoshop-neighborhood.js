@@ -1,14 +1,6 @@
-/*
- * This is a very simple module that demonstrates rudimentary,
- * pixel-level image processing using a pixel's "neighborhood."
- */
 var Nanoshop = {
-    /*
-     * A basic "darkener"---this one does not even use the entire pixel neighborhood;
-     * just the exact current pixel like the original Nanoshop.
-     */
+
     applyFilter: function (imageData, filter) {
-        // For every pixel, replace with something determined by the filter.
         var i,
             j,
             max,
@@ -40,6 +32,7 @@ var Nanoshop = {
         return [(n - r), (n - g), (n - b), a];
     },
 
+
     darkener: function (rgbaNeighborhood) {
         return [
             rgbaNeighborhood[4].r / 2,
@@ -49,10 +42,6 @@ var Nanoshop = {
         ];
     },
 
-    /*
-     * A basic "averager"---this one returns the average of all the pixels in the
-     * given neighborhood.
-     */
     averager: function (rgbaNeighborhood) {
         var rTotal = 0,
             gTotal = 0,
@@ -70,16 +59,12 @@ var Nanoshop = {
         return [ rTotal / 9, gTotal / 9, bTotal / 9, aTotal / 9 ];
     },
 
-    /*
-     * Applies the given filter to the given ImageData object,
-     * then modifies its pixels according to the given filter.
-     *
-     * A filter is a function ({r, g, b, a}[9]) that returns another
-     * color as a 4-element array representing the new RGBA value
-     * that should go in the center pixel.
-     */
+    median: function (rgbaNeighborhood) {
+
+        
+    },
+
     applyFilterN: function (renderingContext, imageData, filter) {
-        // For every pixel, replace with something determined by the filter.
         var result = renderingContext.createImageData(imageData.width, imageData.height),
             i,
             j,
