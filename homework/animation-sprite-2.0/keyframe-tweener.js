@@ -5,6 +5,8 @@
 
 var KeyframeTweener = {
     // The module comes with a library of common easing functions.
+
+    // JD: Haha, clever one.
     nop: function (currentTime, start, distance, duration) {
         return start;
     },
@@ -31,6 +33,7 @@ var KeyframeTweener = {
                 (-distance / 2) * ((percentComplete - 1) * (percentComplete - 3) - 1) + start;
     },
 
+    // JD: You took the trouble to implement these---you should have used them!
     cubicEaseInAndOut: function (currentTime, start, distance, duration) {
         var percentComplete = currentTime / (duration / 2);
         return (percentComplete < 1) ?
@@ -91,7 +94,7 @@ var KeyframeTweener = {
             width = settings.width,
             height = settings.height,
             sprites = settings.sprites,
-            background = settings.background;
+            background = settings.background; // JD: Badly placed semicolon strike three!
             frameTotal = settings.frameTotal
 
         setInterval(function () {
