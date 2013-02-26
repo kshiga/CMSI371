@@ -60,7 +60,7 @@ var Nanoshop = {
     },
 
     median: function (rgbaNeighborhood) {
-
+        
         
     },
 

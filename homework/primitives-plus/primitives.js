@@ -250,7 +250,6 @@ var Primitives = {
             k2 = (dy - dx) << 1; // dy - dx divided by 2.
             breakAt = dash || 0;
         color = color || [0, 0, 0];
-        console.log("breakAt:" + breakAt);
         while (true) {
             if(x % breakAt === 0) {
               x += 1;
@@ -277,20 +276,39 @@ var Primitives = {
      * permutations of that eighth's coordinates.  So we define a helper
      * function that all of the circle implementations will use...
      */
-    plotCirclePoints: function (context, xc, yc, x, y, color) {
-        color = color || [0, 0, 0];
-        this.setPixel(context, xc + x, yc + y, color[0], color[1], color[2]);
-        this.setPixel(context, xc + x, yc - y, color[0], color[1], color[2]);
-        this.setPixel(context, xc + y, yc + x, color[0], color[1], color[2]);
-        this.setPixel(context, xc + y, yc - x, color[0], color[1], color[2]);
-        this.setPixel(context, xc - x, yc + y, color[0], color[1], color[2]);
-        this.setPixel(context, xc - x, yc - y, color[0], color[1], color[2]);
-        this.setPixel(context, xc - y, yc + x, color[0], color[1], color[2]);
-        this.setPixel(context, xc - y, yc - x, color[0], color[1], color[2]);
+    plotCirclePoints: function (context, xc, yc, x, y, r, color1, color2) {
+        color1 = color1 || [0, 0, 0];
+        color2 = color2 || [255, 255, 255];     
+        var redRange = Math.abs(color1[0] - color2[0]),
+            greenRange = Math.abs(color1[1] - color2[1]),
+            blueRange = Math.abs(color1[2] - color2[2]),
+            ymin1 = yc - y,
+            ymax1 = yc + y,
+            ymin2 = yc - x,
+            ymax2 = yc + x,
+            gradientAt,
+            gradArray;
+
+        for(var i = ymin1; i < ymax1; i++){
+            gradientAt = i/(2*r),
+            gradArray = [redRange * gradientAt, greenRange * gradientAt, blueRange * gradientAt];
+            this.setPixel(context, xc + x, i, gradArray[0], gradArray[1], gradArray[2]); 
+            this.setPixel(context, xc - x, i, gradArray[0], gradArray[1], gradArray[2]); 
+            console.log("i: " + i);
+            console.log("r: " + gradArray[0] + " g: " + gradArray[1] + " b: "+ gradArray[2]);
+        }
+
+        for(var j = ymin2; j < ymax2; j++){
+            gradientAt = j/(2*r),
+            gradArray = [redRange * gradientAt, greenRange * gradientAt, blueRange * gradientAt];
+            this.setPixel(context, xc + y, j, gradArray[0], gradArray[1], gradArray[2]); 
+            this.setPixel(context, xc - y, j, gradArray[0], gradArray[1], gradArray[2]); 
+        }
+
     },
 
     // First, the most naive possible implementation: circle by trigonometry.
-    circleTrig: function (context, xc, yc, r, color) {
+    circleTrig: function (context, xc, yc, r, color1, color2) {
         var theta = 1 / r,
 
             // At the very least, we compute our sine and cosine just once.
@@ -302,33 +320,33 @@ var Primitives = {
             y = 0;
 
         while (x >= y) {
-            this.plotCirclePoints(context, xc, yc, x, y, color);
+            this.plotCirclePoints(context, xc, yc, x, y, r, color1, color2);
             x = x * c - y * s;
             y = x * s + y * c;
         }
     },
 
     // Now DDA.
-    circleDDA: function (context, xc, yc, r, color) {
+    circleDDA: function (context, xc, yc, r, color1, color2) {
         var epsilon = 1 / r,
             x = r,
             y = 0;
 
         while (x >= y) {
-            this.plotCirclePoints(context, xc, yc, x, y, color);
+            this.plotCirclePoints(context, xc, yc, x, y, r, color1, color2);
             x = x - (epsilon * y);
             y = y + (epsilon * x);
         }
     },
 
     // One of three Bresenham-like approaches.
-    circleBres1: function (context, xc, yc, r, color) {
+    circleBres1: function (context, xc, yc, r, color1, color2) {
         var p = 3 - 2 * r,
             x = 0,
             y = r;
 
         while (x < y) {
-            this.plotCirclePoints(context, xc, yc, x, y, color);
+            this.plotCirclePoints(context, xc, yc, x, y, r, color1, color2);
             if (p < 0) {
                 p = p + 4 * x + 6;
             } else {
@@ -338,12 +356,12 @@ var Primitives = {
             x += 1;
         }
         if (x === y) {
-            this.plotCirclePoints(context, xc, yc, x, y, color);
+            this.plotCirclePoints(context, xc, yc, x, y, r, color1, color2);
         }
     },
 
     // And another...
-    circleBres2: function (context, xc, yc, r, color) {
+    circleBres2: function (context, xc, yc, r, color1, color2) {
         var x = 0,
             y = r,
             e = 1 - r,
@@ -351,7 +369,7 @@ var Primitives = {
             v = e - r;
 
         while (x <= y) {
-            this.plotCirclePoints(context, xc, yc, x, y, color);
+            this.plotCirclePoints(context, xc, yc, x, y, r, color1, color2);
             if (e < 0) {
                 x += 1;
                 u += 2;
@@ -368,13 +386,13 @@ var Primitives = {
     },
 
     // Last but not least...
-    circleBres3: function (context, xc, yc, r, color) {
+    circleBres3: function (context, xc, yc, r, color1, color2) {
         var x = r,
             y = 0,
             e = 0;
 
         while (y <= x) {
-            this.plotCirclePoints(context, xc, yc, x, y, color);
+            this.plotCirclePoints(context, xc, yc, x, y, r, color1, color2);
             y += 1;
             e += (2 * y - 1);
             if (e > x) {
