@@ -5,7 +5,7 @@
 (function () {
     var renderingContext = document.getElementById("scratch").getContext("2d");
 
-/*    // Start with rectangles.
+/   // Start with rectangles.
     renderingContext.fillStyle = "gray"; // For demonstrating the no-color case.
     Primitives.fillRect(renderingContext, 5, 5, 200, 100);
     Primitives.fillRect(renderingContext, 210, 5, 200, 100, [0, 100, 255]);
@@ -22,7 +22,7 @@
     Primitives.lineBres2(renderingContext, 415, 210, 614, 110);
     Primitives.lineBres3(renderingContext, 620, 210, 819, 110);
     Primitives.lineBresenham(renderingContext, 825, 210, 1024, 110, 10);
-*/
+
     // A few circles.
     Primitives.circleTrig(renderingContext, 105, 315, 100);
     Primitives.circleDDA(renderingContext, 310, 315, 100);
