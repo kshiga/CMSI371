@@ -13,6 +13,7 @@ var Primitives = {
                 parseInt(g, 10) + "," + parseInt(b, 10) + ")";
         context.fillRect(x, y, 1, 1);
         context.restore();
+        console.log("set pixel at: (" + x + "," + y + ") \n with color values: [r: " + r + ", g: " + g + ", b: " + b + "]");
     },
 
     /*
@@ -290,16 +291,14 @@ var Primitives = {
             gradArray;
 
         for(var i = ymin1; i < ymax1; i++){
-            gradientAt = i/(2*r),
+            gradientAt = (i - ymin1) / (2 * r),
             gradArray = [redRange * gradientAt, greenRange * gradientAt, blueRange * gradientAt];
             this.setPixel(context, xc + x, i, gradArray[0], gradArray[1], gradArray[2]); 
             this.setPixel(context, xc - x, i, gradArray[0], gradArray[1], gradArray[2]); 
-            console.log("i: " + i);
-            console.log("r: " + gradArray[0] + " g: " + gradArray[1] + " b: "+ gradArray[2]);
         }
 
         for(var j = ymin2; j < ymax2; j++){
-            gradientAt = j/(2*r),
+            gradientAt = (j - ymin2) / (2 * r),
             gradArray = [redRange * gradientAt, greenRange * gradientAt, blueRange * gradientAt];
             this.setPixel(context, xc + y, j, gradArray[0], gradArray[1], gradArray[2]); 
             this.setPixel(context, xc - y, j, gradArray[0], gradArray[1], gradArray[2]); 
