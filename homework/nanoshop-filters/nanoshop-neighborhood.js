@@ -59,9 +59,86 @@ var Nanoshop = {
         return [ rTotal / 9, gTotal / 9, bTotal / 9, aTotal / 9 ];
     },
 
-    median: function (rgbaNeighborhood) {
+    noise: function (rgbaNeighborhood) {
+      var redRand = Math.floor((Math.random()*9)+1),
+         greenRand = Math.floor((Math.random()*9)+1),
+         blueRand = Math.floor((Math.random()*9)+1),
+         alphaRand = Math.floor((Math.random()*9)+1),
+         red,
+         green,
+         blue,
+         alpha;
+
+
+        rgbaNeighborhood[redRand] != null ? red = rgbaNeighborhood[redRand].r : red = rgbaNeighborhood[4].r
+        rgbaNeighborhood[greenRand] != null ? green = rgbaNeighborhood[greenRand].g : green = rgbaNeighborhood[4].g
+        rgbaNeighborhood[blueRand] != null ? blue = rgbaNeighborhood[blueRand].b : blue = rgbaNeighborhood[4].b
+        rgbaNeighborhood[alphaRand] != null ? alpha = rgbaNeighborhood[alphaRand].a : alpha = rgbaNeighborhood[4].a
+
+
+
+      return [red, green, blue, alpha]
+
         
-        
+    },
+
+    vBlur: function (rgbaNeighborhood) {
+      var top = rgbaNeighborhood[1],
+         self = rgbaNeighborhood[4],
+         red = (top.r + self.r) / 2,
+         green = (top.g + self.g) / 2,
+         blue = (top.b + self.b) / 2,
+         alpha = (top.a + self.a) / 2;
+       return [red, green, blue, alpha];
+       
+    },
+
+    dBlur: function (rgbaNeighborhood) {
+     var degree,
+         self = rgbaNeighborhood[4],
+         ratioX,
+         ratioY,
+         pX,
+         pY,
+         red,
+         blue,
+         green,
+         alpha;
+ 
+     degree = $("#INPUT").val() || 0;
+
+    while (degree > 360 || degree <= -1){
+         degree > 360 ? degree -= 360 : degree += 360;
+     }
+
+     if(degree > 0 && degree <= 90){
+       rgbaNeighborhood[1] != null ? pY = rgbaNeighborhood[1] : pY = rgbaNeighborhood[4];
+       rgbaNeighborhood[5] != null ? pX = rgbaNeighborhood[5] : pX = rgbaNeighborhood[4];
+     } else if(degree > 90 && degree <= 180) {
+       rgbaNeighborhood[1] != null ? pY = rgbaNeighborhood[1] : pY = rgbaNeighborhood[4];
+       rgbaNeighborhood[3] != null ? pX = rgbaNeighborhood[3] : pX = rgbaNeighborhood[4];
+       degree -= 90;
+     } else if(degree > 180 && degree <= 270) {
+       rgbaNeighborhood[7] != null ? pY = rgbaNeighborhood[7] : pY = rgbaNeighborhood[4];
+       rgbaNeighborhood[3] != null ? pX = rgbaNeighborhood[3] : pX = rgbaNeighborhood[4];
+       degree -= 180;
+     } else {
+       rgbaNeighborhood[7] != null ? pY = rgbaNeighborhood[7] : pY = rgbaNeighborhood[4];
+       rgbaNeighborhood[5] != null ? pX = rgbaNeighborhood[5] : pX = rgbaNeighborhood[4];
+       degree -= 270;
+     } 
+  
+    ratioY = (degree / 90);
+    ratioX = (1 - ratioY);
+
+    red = ((ratioX * pX.r) + (ratioY * pY.r) + self.r) / 2
+    green = ((ratioX * pX.g) + (ratioY * pY.g) + self.g) / 2
+    blue = ((ratioX * pX.b) + (ratioY * pY.b) + self.b) / 2
+    alpha = ((ratioX * pX.a) + (ratioY * pY.a) + self.a) / 2
+      
+    return [red, green, blue, alpha];
+    
+       
     },
 
     applyFilterN: function (renderingContext, imageData, filter) {

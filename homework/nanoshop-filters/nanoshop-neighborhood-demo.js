@@ -8,6 +8,21 @@
         gradient;
 
     // Some edge lines to test for wraparound bleeding.
+        height = canvas.height,
+        renderingContext = canvas.getContext("2d"),
+        width = canvas.width;
+
+    renderingContext.fillStyle="rgb(91, 139, 142)";
+    renderingContext.fillRect(0, 0, width, (height/3));
+
+
+    renderingContext.fillStyle="rgb(250, 178, 83)";
+    renderingContext.beginPath();
+    renderingContext.arc(256, (height/3),100,0,Math.PI,true); 
+    renderingContext.fill();
+
+    renderingContext.fillStyle="rgb(36, 112, 34)";
+    renderingContext.fillRect(0, (height/3), width, (2*(height/3)+1));
 
 
     renderingContext.strokeStyle = "yellow";
@@ -142,15 +157,42 @@
         );
     });
 
-    $("#scramble-filter-button").click(function () {
+    $("#noise-filter-button").click(function () {
         // Filter time.
         renderingContext.putImageData(
             Nanoshop.applyFilterN(
                 renderingContext,
                 renderingContext.getImageData(0, 0, canvas.width, canvas.height),
-                Nanoshop.scramble 
+                Nanoshop.noise 
             ),
             0, 0
         );
     });
+
+
+    $("#vBlur-filter-button").click(function () {
+        // Filter time.
+        renderingContext.putImageData(
+            Nanoshop.applyFilterN(
+                renderingContext,
+                renderingContext.getImageData(0, 0, canvas.width, canvas.height),
+                Nanoshop.vBlur 
+            ),
+            0, 0
+        );
+    });
+
+
+    $("#dBlur-filter-button").click(function () {
+        // Filter time.
+        renderingContext.putImageData(
+            Nanoshop.applyFilterN(
+                renderingContext,
+                renderingContext.getImageData(0, 0, canvas.width, canvas.height),
+                Nanoshop.dBlur 
+            ),
+            0, 0
+        );
+    });
+
 }());
