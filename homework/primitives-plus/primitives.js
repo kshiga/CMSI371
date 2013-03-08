@@ -252,9 +252,15 @@ var Primitives = {
             breakAt = dash || 0;
         color = color || [0, 0, 0];
         while (true) {
-            if(x % breakAt === 0) {
-              x += 1;
-            } else {
+            // JD: Take note of this---if the mod is zero, then you just
+            //     increment x.  But in reality, for a dash, when the mod
+            //     is zero, you simply want to *skip drawing*.  Structuring
+            //     the condition in this manner skips a bunch of other logic
+            //     that you actually *don't* want to skip so that the drawing
+            //     of this line can continue!
+//            if(x % breakAt === 0) {
+//              x += 1;
+//            } else {
                 this.setPixel(context, x, y, color[0], color[1], color[2]);
                 if (x === x2) {
                     return;
@@ -267,7 +273,7 @@ var Primitives = {
                     y -= 1;
                     err += k2;
                 }
-            }
+//            }
         }
     },
 
@@ -279,7 +285,18 @@ var Primitives = {
      */
     plotCirclePoints: function (context, xc, yc, x, y, r, color1, color2) {
         color1 = color1 || [0, 0, 0];
-        color2 = color2 || [255, 255, 255];     
+        color2 = color2 || [255, 255, 255];
+        // JD: Issue here with your *Range variables---these do not produce
+        //     the right colors.  For example, if color1 is [255, 0, 0] and
+        //     color2 is [255, 255, 0], you should see a gradient from red
+        //     to yellow.  Instead, redRange becomes zero, and the resulting
+        //     colors don't have any red at all!
+        //
+        //     Revisit the way the rectangles do their gradients.  Something
+        //     got lost in the translation here.
+        //
+        //     (although, interestingly, the results that your algorithm
+        //     produces do look pretty cool)
         var redRange = Math.abs(color1[0] - color2[0]),
             greenRange = Math.abs(color1[1] - color2[1]),
             blueRange = Math.abs(color1[2] - color2[2]),
@@ -290,6 +307,8 @@ var Primitives = {
             gradientAt,
             gradArray;
 
+        // JD: Your for loops are not spaced right.  Look for other for loops
+        //     in this code to see the right way.
         for(var i = ymin1; i < ymax1; i++){
             gradientAt = (i - ymin1) / (2 * r),
             gradArray = [redRange * gradientAt, greenRange * gradientAt, blueRange * gradientAt];

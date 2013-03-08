@@ -5,7 +5,9 @@
 (function () {
     var renderingContext = document.getElementById("scratch").getContext("2d");
 
-/   // Start with rectangles.
+    // Start with rectangles.
+    // JD: There was a stray slash in the line above---be careful with
+    //     things like that!
     renderingContext.fillStyle = "gray"; // For demonstrating the no-color case.
     Primitives.fillRect(renderingContext, 5, 5, 200, 100);
     Primitives.fillRect(renderingContext, 210, 5, 200, 100, [0, 100, 255]);

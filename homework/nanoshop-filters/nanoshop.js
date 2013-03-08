@@ -34,7 +34,7 @@ var Nanoshop = {
     },
     
     bAndw: function(r, g, b, a) {
-        var avg = (r + g + b) /3
+        var avg = (r + g + b) /3 // JD: Missing space after / and semicolon at EOL.
         return [avg, avg, avg, a];
     },
 
