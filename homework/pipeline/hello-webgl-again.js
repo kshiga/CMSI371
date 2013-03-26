@@ -128,13 +128,14 @@
         {
             color: { r: 0.5, g: 0.0, b: 0.0 },
             vertices: Shapes.toRawTriangleArray(Shapes.cylinder()),
-            mode: gl.LINES
+            mode: gl.LINES // JD: Should be gl.TRIANGLES---this is what is
+                           //     supposed to match the raw triangle array.
         },
 
         {
             color: { r: 0.5, g: 0.0, b: 0.0 },
             vertices: Shapes.toRawTriangleArray(Shapes.sqPyramid()),
-            mode: gl.LINES
+            mode: gl.LINES // JD: Ditto with gl.TRIANGLES.
         },
     ];
 
