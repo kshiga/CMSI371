@@ -1,167 +1,199 @@
-/*matrix4x4
-• A basic Matrix4x4 object that initializes, by default, to the identity matrix
-• A  multiply function which multiplies two  Matrix4x4 objects and returns the result (as a Matrix4x4 object, of  course)
-• A translate function which takes three parameters dx, dy, and dz, returning a Matrix4x4 object 
-that accurately represents this transformation
-• A  scale function which takes three parameters 
-sx, sy, and sz, returning a Matrix4x4 object that 
-accurately represents this transformation
-• The rotate function given in the sample code, 
-but refactored to fit your Matrix4x4 object
-• The ortho projection function given in the sample code, but, as with  rotate, refactored to fit 
-your Matrix4x4 object
-• A frustum projection function based on the matrix derived from the course handout
-• Conversion/convenience functions to prepare 
-the matrix data for direct consumption by 
-WebGL and GLSL
-*/
+
 var Matrix4x4 = (function () {
-    // Define the constructor.
     var matrix4x4 = function () {
+        if(arguments.length === 16){
         this.elements = [].slice.call(arguments);
-    },
+        } else if (arguments.length === 0){
+        this.elements = [ 1, 0, 0, 0,
+                          0, 1, 0, 0,
+                          0, 0, 1, 0,
+                          0, 0, 0, 1];
+        } else {
+            throw new Error("Invalid number of arguments");
+        }
+    };
+
+    matrix4x4.prototype.returnMatrix = function () {
+        return this.elements;
+    };
+    matrix4x4.prototype.valueAt = function (i) {
+        if(i >= 0 && i < 16){
+            return this.elements[Math.floor(i)];
+        } else {
+            throw new Error("No.");
+        }
+    };
+
+
+   matrix4x4.prototype.toWebGLMatrix = function(){
+       var result = new matrix4x4();
+       result.elements = [
+           this.elements[0],
+           this.elements[4],
+           this.elements[8],
+           this.elements[12],
+
+           this.elements[1],
+           this.elements[5],
+           this.elements[9],
+           this.elements[13],
+
+           this.elements[2],
+           this.elements[6],
+           this.elements[10],
+           this.elements[14],
+
+           this.elements[3],
+           this.elements[7],
+           this.elements[11],
+           this.elements[15]
+      ];
+
+      return result;
+   };
+
     
-
-        // A private method for checking dimensions,
-        // throwing an exception when different.
-        checkDimensions = function (v1, v2) {
-            if (v1.dimensions() !== v2.dimensions()) {
-                throw "Vectors have different dimensions";
-            }
-        };
-
-    // Basic methods.
-    vector.prototype.dimensions = function () {
-        return this.elements.length;
-    };
-
-    vector.prototype.x = function () {
-        return this.elements[0];
-    };
-
-    vector.prototype.y = function () {
-        return this.elements[1];
-    };
-
-    vector.prototype.z = function () {
-        return this.elements[2];
-    };
-
-    vector.prototype.w = function () {
-        return this.elements[3];
-    };
-
-    // Addition and subtraction.
-    vector.prototype.add = function (v) {
-        var result = new Vector(),
-            i,
-            max;
-
-        // Dimensionality check.
-        checkDimensions(this, v);
-
-        for (i = 0, max = this.dimensions(); i < max; i += 1) {
-            result.elements[i] = this.elements[i] + v.elements[i];
+    matrix4x4.prototype.multiply = function (m) {
+        var result = new matrix4x4(),
+            m0 = this.returnMatrix(),
+            m1 = m.toWebGLMatrix().returnMatrix(),
+            i = 0,
+            j = 0;
+        while(i < 16){
+            result.elements[i] = (m0[i] * m1[0]) + (m0[i + 1] * m1[1]) + (m0[i + 2] * m1[2]) + (m0[i + 3] * m1[3]);
+            result.elements[i + 1] = (m0[i] * m1[4]) + (m0[i + 1] * m1[5]) + (m0[i + 2] * m1[6]) + (m0[i + 3] * m1[7]);
+            result.elements[i + 2] = (m0[i] * m1[8]) + (m0[i + 1] * m1[9]) + (m0[i + 2] * m1[10]) + (m0[i + 3] * m1[11]);
+            result.elements[i + 3] = (m0[i] * m1[12]) + (m0[i + 1] * m1[13]) + (m0[i + 2] * m1[14]) + (m0[i + 3] * m1[15]);
+            i += 4;
         }
 
         return result;
     };
 
-    vector.prototype.subtract = function (v) {
-        var result = new Vector(),
-            i,
-            max;
 
-        // Dimensionality check.
-        checkDimensions(this, v);
+    matrix4x4.prototype.translate = function (dx, dy, dz) {
+        var result = new matrix4x4();
+        result.elements = [1, 0, 0, dx,
+                           0, 1, 0, dy,
+                           0, 0, 1, dz,
+                           0, 0, 0, 1];
+        return result;
+    }
+      
 
-        for (i = 0, max = this.dimensions(); i < max; i += 1) {
-            result.elements[i] = this.elements[i] - v.elements[i];
-        }
+    matrix4x4.prototype.scale = function (sx, sy, sz) {
+        var result = new matrix4x4(),
+            scaleX = sx === 0 ? 1 : sx,
+            scaleY = sy === 0 ? 1 : sy,
+            scaleZ = sz === 0 ? 1 : sz;
+        result.elements = [scaleX,      0,      0, 0,
+                                0, scaleY,      0, 0,
+                                0,      0, scaleZ, 0,
+                                0,      0,      0, 1];
+        return result;
+    }
+     
+
+
+    matrix4x4.prototype.rotate = function (angle, x, y, z) {
+            var result = new matrix4x4(),
+                axisLength = Math.sqrt((x * x) + (y * y) + (z * z)),
+                s = Math.sin(angle * Math.PI / 180.0),
+                c = Math.cos(angle * Math.PI / 180.0),
+                oneMinusC = 1.0 - c,
+                x2, 
+                y2,
+                z2,
+                xy,
+                yz,
+                xz,
+                xs,
+                ys,
+                zs;
+
+            x /= axisLength;
+            y /= axisLength;
+            z /= axisLength;
+
+            x2 = x * x;
+            y2 = y * y;
+            z2 = z * z;
+            xy = x * y;
+            yz = y * z;
+            xz = x * z;
+            xs = x * s;
+            ys = y * s;
+            zs = z * s;
+
+            result.elements = [
+                (x2 * oneMinusC) + c,
+                (xy * oneMinusC) - zs,
+                (xz * oneMinusC) + ys,
+                0.0,
+
+                (xy * oneMinusC) + zs,
+                (y2 * oneMinusC) + c,
+                (yz * oneMinusC) - xs,
+                0.0,
+
+                (xz * oneMinusC) - ys,
+                (yz * oneMinusC) + xs,
+                (z2 * oneMinusC) + c,
+                0.0,
+
+                0.0,
+                0.0,
+                0.0,
+                1.0
+            ];
+        return result;
+    } 
+
+    matrix4x4.prototype.ortho = function (left, right, bottom, top, zFar, zNear) {
+        var result = new matrix4x4(),
+            width = right - left,
+            height = top - bottom,
+            depth = zFar - zNear;
+        
+        result.elements = [
+               2.0/width,        0.0,        0.0, -(right + left) / width,
+                     0.0, 2.0/height,        0.0, -(top + bottom) / height,
+                     0.0,        0.0, -2.0/depth, -(zFar + zNear) / depth,
+                     0.0,        0.0,        0.0,                        1];
+
 
         return result;
-    };
+    }
 
-    // Scalar multiplication and division.
-    vector.prototype.multiply = function (s) {
-        var result = new Vector(),
-            i,
-            max;
+    matrix4x4.prototype.frustum = function (left, right, bottom, top, Far, Near) {
+        var result = new matrix4x4();
+       
+        result.elements = [
+                   (2.0 * Near) / (right - left),
+                                             0.0, 
+                 (right + left) / (right - left), 
+                                             0.0,
+ 
+                                             0.0, 
+                   (2.0 * Near) / (top - bottom), 
+                 (top + bottom) / (top - bottom), 
+                                             0.0,
 
-        for (i = 0, max = this.dimensions(); i < max; i += 1) {
-            result.elements[i] = this.elements[i] * s;
-        }
+                                             0.0,
+                                             0.0,
+                    -(Far + Near) / (Far - Near),
+                (-2 * Near * Far) / (Far - Near), 
+             
+                                             0.0,
+                                             0.0,  
+                                            -1.0,                       
+                                             0.0
+        ];
 
-        return result;
-    };
-
-    vector.prototype.divide = function (s) {
-        var result = new Vector(),
-            i,
-            max;
-
-        for (i = 0, max = this.dimensions(); i < max; i += 1) {
-            result.elements[i] = this.elements[i] / s;
-        }
-
-        return result;
-    };
-
-    // Dot product.
-    vector.prototype.dot = function (v) {
-        var result = 0,
-            i,
-            max;
-
-        // Dimensionality check.
-        checkDimensions(this, v);
-
-        for (i = 0, max = this.dimensions(); i < max; i += 1) {
-            result += this.elements[i] * v.elements[i];
-        }
 
         return result;
-    };
+    }
 
-    // Cross product.
-    vector.prototype.cross = function (v) {
-        // This method is for 3D vectors only.
-        if (this.dimensions() !== 3 || v.dimensions() !== 3) {
-            throw "Cross product is for 3D vectors only.";
-        }
 
-        // With 3D vectors, we can just return the result directly.
-        return new Vector(
-            (this.y() * v.z()) - (this.z() * v.y()),
-            (this.z() * v.x()) - (this.x() * v.z()),
-            (this.x() * v.y()) - (this.y() * v.x())
-        );
-    };
-
-    // Magnitude and unit vector.
-    vector.prototype.magnitude = function () {
-        // Make use of the dot product.
-        return Math.sqrt(this.dot(this));
-    };
-
-    vector.prototype.unit = function () {
-        // At this point, we can leverage our more "primitive" methods.
-        return this.divide(this.magnitude());
-    };
-
-    // Projection.
-    vector.prototype.projection = function (v) {
-        var unitv;
-
-        // Dimensionality check.
-        checkDimensions(this, v);
-
-        // Plug and chug :)
-        // The projection of u onto v is u dot the unit vector of v
-        // times the unit vector of v.
-        unitv = v.unit();
-        return unitv.multiply(this.dot(unitv));
-    };
-
-    return vector;
+    return matrix4x4;
 })();
