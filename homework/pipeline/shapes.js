@@ -12,6 +12,10 @@ var Shapes = {
             q = 0.25,
             m = 0.433012702;
 
+        // JD: This is nicely done and nearly complete (I think you are missing
+        //     a face or two), but this is borderline better done computationally
+        //     (i.e., loop around the circle, calculate vertices and indices
+        //     vased on that).
         return {
             vertices: [
               [ 0.0, h, 0.0 ],
