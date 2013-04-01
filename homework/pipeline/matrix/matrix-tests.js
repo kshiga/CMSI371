@@ -1,3 +1,4 @@
+// JD: Well done!  Very nice test coverage with well-selected cases.
 $(function () {
     test("Creation and Data Access", function () {
         var m = new Matrix4x4().returnMatrix();

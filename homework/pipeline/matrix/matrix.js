@@ -1,6 +1,8 @@
 
 var Matrix4x4 = (function () {
     var matrix4x4 = function () {
+        // JD: This is good, but please indent and space this
+        //     better.
         if(arguments.length === 16){
         this.elements = [].slice.call(arguments);
         } else if (arguments.length === 0){
@@ -9,10 +11,16 @@ var Matrix4x4 = (function () {
                           0, 0, 1, 0,
                           0, 0, 0, 1];
         } else {
+            // JD: Nice touch.
             throw new Error("Invalid number of arguments");
         }
     };
 
+    // JD: Another nice touch, these two functions.
+    //     Though I suggest that valueAt would be more
+    //     useful if it takes a row and column instead
+    //     of i; the way you have it, returnMatrix[i]
+    //     can pretty much substitute for it.
     matrix4x4.prototype.returnMatrix = function () {
         return this.elements;
     };
@@ -83,6 +91,13 @@ var Matrix4x4 = (function () {
 
     matrix4x4.prototype.scale = function (sx, sy, sz) {
         var result = new matrix4x4(),
+            // JD: I see what you are doing here, but there's nothing
+            //     actually technically wrong with zeroing something
+            //     out along a dimension.  More useful, I think, would
+            //     be logic that sets things up so that if there is only
+            //     one argument (i.e., only sx is supplied, leaving sy
+            //     and sz as undefined), then the scale is assumed to
+            //     be uniform across all dimensions.
             scaleX = sx === 0 ? 1 : sx,
             scaleY = sy === 0 ? 1 : sy,
             scaleZ = sz === 0 ? 1 : sz;
