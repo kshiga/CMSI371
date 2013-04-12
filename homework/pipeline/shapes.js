@@ -4,9 +4,38 @@
  * converting these into "raw" coordinate arrays.
  */
 var Shapes = {
-    /*
-     * Returns the vertices for a small icosahedron.
-     */
+
+    cube: function () {
+        return {
+            vertices: [
+                [ 0.5, 0.5, 0.5 ],
+                [ 0.5, 0.5, -0.5 ],
+                [ -0.5, 0.5, -0.5 ],
+                [ -0.5, 0.5, 0.5 ],
+                [ 0.5, -0.5, 0.5 ],
+                [ 0.5, -0.5, -0.5 ],
+                [ -0.5, -0.5, -0.5 ],
+                [ -0.5, -0.5, 0.5 ]
+            ],
+
+            indices: [
+                [ 0, 1, 3 ],
+                [ 2, 3, 1 ],
+                [ 0, 3, 4 ],
+                [ 7, 4, 3 ],
+                [ 0, 4, 1 ],
+                [ 5, 1, 4 ],
+                [ 1, 5, 6 ],
+                [ 2, 1, 6 ],
+                [ 2, 7, 3 ],
+                [ 6, 7, 2 ],
+                [ 4, 7, 6 ],
+                [ 5, 4, 6 ]
+            ]
+        };
+    },
+
+
     cylinder: function () {
         var h = 0.5,
             q = 0.25,
@@ -148,6 +177,49 @@ var Shapes = {
         };
     },
 
+    sphere: function () {
+        var vertices = [],
+           indicies = [],
+           radius = 0.5,
+           latDiv = 20,
+           longDiv = 40,
+           currentAngle,
+           i,
+           j,
+           x,
+           y,
+           z;
+
+        //Creates Verticies
+        for(i = 0; i < latDiv; i++){
+            y = radius - (i / latDiv);
+            while(j < longDiv){ 
+                currentAngle = (j / longDiv) * 360;
+                x = radius * Math.cos(currentAngle);
+                z = radius * Math.sin(currentAngle);
+                verticies.push([x, y, z]);
+                j++;
+            }
+            j = 0;
+        }
+
+        //Creates faces
+        j = verticies.length;
+        indicies.push([verticies[0], verticies[(longDiv - 1)], verticies[((2 * longDiv) - 1)]]);
+        indicies.push([verticies[0], verticies[(2 * longDiv) -1], verticies[(2 * longDiv)]]);
+        
+        for(i = 1; i < j; i++) {
+            indicies.push([verticies[i], verticies[(i - 1)], verticies[(i - 1) + longDiv]]);
+            indicies.push([verticies[i], verticies[(i - 1) + longDiv], verticies[i + longDiv]]);
+        }
+
+        { return {
+                verticies: verticies,
+                indicies: indicies
+        };
+    },
+
+  
     sqPyramid: function () {
         var y = 0.707106781,
            half = 0.5;
@@ -172,6 +244,7 @@ var Shapes = {
             ]
         };
     },
+
 
 
 

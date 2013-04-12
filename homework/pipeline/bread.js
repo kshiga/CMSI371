@@ -1,7 +1,4 @@
-/*
- * For maximum modularity, we place everything within a single function that
- * takes the canvas that it will need.
- */
+
 (function (canvas) {
 
     // Because many of these variables are best initialized then immediately
@@ -9,7 +6,6 @@
     // are used.
     var gl, // The WebGL context.
 
-        // This variable stores 3D model information.
         objectsToDraw,
 
         // The shader program to use.
@@ -28,6 +24,7 @@
         perspectiveMatrix,
         vertexPosition,
         vertexColor,
+
 
         // An individual "draw object" function.
         drawObject,
@@ -59,7 +56,6 @@
 
     // Build the objects to display.
     objectsToDraw = [
-
         {
             color: { r: 0.5, g: 0.0, b: 0.0 },
             vertices: Shapes.toRawTriangleArray(Shapes.cylinder()),
@@ -131,12 +127,29 @@
     vertexColor = gl.getAttribLocation(shaderProgram, "vertexColor");
     gl.enableVertexAttribArray(vertexColor);
     rotationMatrix = gl.getUniformLocation(shaderProgram, "rotationMatrix");
-    gl.enableVertexAttribArray(rotationMatrix);
 
     /*
-     * Displays an individual object.
+     * Displays an individual object and extracts its subshapes to be drawn.
      */
     drawObject = function (object) {
+        if(subshapes.length > 0){
+            for(i = 0; i < subshapes.length; i++){
+                subshapes[i].buffer = GLSLUtilities.initVertexBuffer(gl, subshapes[i].vertices);
+
+                if (!subshapes[i].colors) {
+                    subshapes[i].colors = [];
+                    for (j = 0, maxj = subshapes[i].vertices.length / 3; j < maxj; j += 1) {
+                        subshapes[i].colors = subshapes[i].colors.concat(
+                            subshapes[i].color.r,
+                            subshapes[i].color.g,
+                            subshapes[i].color.b
+                        );
+                    }
+                }
+                objectsToDraw.push(subshapes[i]);
+            }          
+        }
+
         // Set the varying colors.
         gl.bindBuffer(gl.ARRAY_BUFFER, object.colorBuffer);
         gl.vertexAttribPointer(vertexColor, 3, gl.FLOAT, false, 0, 0);
@@ -154,9 +167,8 @@
         // Clear the display.
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-        // Set up matricies
-        gl.uniformMatrix4fv(rotationMatrix, gl.FALSE, new Float32Array(Matrix4x4.rotate(currentRotation, 0, 1, 0)));
-        gl.uniformMatrix4fv(orthoMatrix, gl.FALSE, new Float32Array(Matrix4x4.ortho(currentRotation, 0, 1, 0)));
+        // Set up the rotation matrix.
+        gl.uniformMatrix4fv(rotationMatrix, gl.FALSE, new Float32Array(getRotationMatrix(currentRotation, 0, 1, 0)));
 
         // Display the objects.
         for (i = 0, maxi = objectsToDraw.length; i < maxi; i += 1) {

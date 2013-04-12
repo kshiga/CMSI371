@@ -4,12 +4,12 @@ var Matrix4x4 = (function () {
         // JD: This is good, but please indent and space this
         //     better.
         if(arguments.length === 16){
-        this.elements = [].slice.call(arguments);
+            this.elements = [].slice.call(arguments);
         } else if (arguments.length === 0){
-        this.elements = [ 1, 0, 0, 0,
-                          0, 1, 0, 0,
-                          0, 0, 1, 0,
-                          0, 0, 0, 1];
+            this.elements = [ 1, 0, 0, 0,
+                            0, 1, 0, 0,
+                            0, 0, 1, 0,
+                            0, 0, 0, 1];
         } else {
             // JD: Nice touch.
             throw new Error("Invalid number of arguments");
@@ -101,10 +101,10 @@ var Matrix4x4 = (function () {
             scaleX = sx === 0 ? 1 : sx,
             scaleY = sy === 0 ? 1 : sy,
             scaleZ = sz === 0 ? 1 : sz;
-        result.elements = [scaleX,      0,      0, 0,
-                                0, scaleY,      0, 0,
-                                0,      0, scaleZ, 0,
-                                0,      0,      0, 1];
+        result.elements = [scaleX,      0,      0,  0,
+                             0, scaleY,      0,  0,
+                             0,      0, scaleZ,  0,
+                             0,      0,      0,  1];
         return result;
     }
      
@@ -209,6 +209,11 @@ var Matrix4x4 = (function () {
         return result;
     }
 
+
+    matrix4x4.prototype.instance = function (scaleMatrix, translateMatrix, rotateMatrix) {
+        var result = scaleMatrix.multiply(translateMatrix).multiply(rotateMatrix);
+        return result;
+    }
 
     return matrix4x4;
 })();
