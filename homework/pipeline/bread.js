@@ -132,6 +132,9 @@
      * Displays an individual object and extracts its subshapes to be drawn.
      */
     drawObject = function (object) {
+        // JD: Remember, the if condition below still assumes that
+        //     an object even *has* a subshapes array, even if it
+        //     might be empty.
         if(subshapes.length > 0){
             for(i = 0; i < subshapes.length; i++){
                 subshapes[i].buffer = GLSLUtilities.initVertexBuffer(gl, subshapes[i].vertices);
@@ -168,6 +171,8 @@
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
         // Set up the rotation matrix.
+        // JD: Take note that you have now moved the getRotationMatrix function to
+        //     your matrix library, so you should use that.
         gl.uniformMatrix4fv(rotationMatrix, gl.FALSE, new Float32Array(getRotationMatrix(currentRotation, 0, 1, 0)));
 
         // Display the objects.

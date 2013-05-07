@@ -213,6 +213,8 @@ var Shapes = {
             indicies.push([verticies[i], verticies[(i - 1) + longDiv], verticies[i + longDiv]]);
         }
 
+        // JD: Please make sure that your code actually *compiles* before
+        //     pushing, especially for very simple issues like the one below.
         { return {
                 verticies: verticies,
                 indicies: indicies
