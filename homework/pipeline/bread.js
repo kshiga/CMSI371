@@ -35,14 +35,17 @@
         maxi,
         j,
         maxj,
-        m,
-
+        ms,
+        mt,
+        mr,
+        mi,
+        // Grab the WebGL rendering context.
+        gl = GLSLUtilities.getGL(canvas);
 
 
 /* ~*~*~*~*~*~**~*~*~*~*~*~*~*~* Canvas Set-up ~*~*~*~*~*~**~*~*~*~*~*~*~*~*~ */
 
-    // Grab the WebGL rendering context.
-    gl = GLSLUtilities.getGL(canvas);
+
     if (!gl) {
         alert("No WebGL context found...sorry.");
 
@@ -58,7 +61,7 @@
     gl.viewport(0, 0, canvas.width, canvas.height);
 
 
-
+/*
 
 
 
@@ -76,14 +79,7 @@
         {
             color: { r: 0.5, g: 0.0, b: 0.0 },
             vertices: Shapes.toRawTriangleArray(Shapes.cylinder()),
-            mode: gl.LINES // JD: Should be gl.TRIANGLES---this is what is
-                           //     supposed to match the raw triangle array.
-        },
-
-        {
-            color: { r: 0.5, g: 0.0, b: 0.0 },
-            vertices: Shapes.toRawTriangleArray(Shapes.sqPyramid()),
-            mode: gl.LINES // JD: Ditto with gl.TRIANGLES.
+            mode: gl.TRIANGLES
         },
     ];
 
@@ -111,6 +107,7 @@
             objectArray[i].colorBuffer = GLSLUtilities.initVertexBuffer(gl,
                     objectArray[i].colors);
         }
+        console.log("got verticies");
     }
 
     getVerticies(objectsToDraw);
@@ -187,7 +184,7 @@
      * Displays an individual object and extracts its subshapes to be drawn.
      */
     drawObject = function (object) {
-        if(object.subshapes.length > 0){
+        if(object.subshapes){
             getVerticies(object.subshapes);
         }
         objectsToDraw.concat(object.subshapes);
@@ -197,8 +194,14 @@
 
         // Set up the model-view matrix, if an axis is included.  If not, we
         // specify the identity matrix.
-        gl.uniformMatrix4fv(modelViewMatrix, gl.FALSE, new Float32Array(object.axis ?
-                getRotationMatrix(currentRotation, object.axis.x, object.axis.y, object.axis.z) : (m = new Matrix4x4());  m.toWebGLMatrix.returnMatrix() ;));
+        
+        ms = object.scale ? scale(object.scale.x, object.scale.y, object.scale.z).toWebGLMatrix().returnMatrix() : scale(1, 1, 1).toWebGLMatrix().returnMatrix();
+        mt = object.translate ? translate(object.translate.x, object.translate.y, object.translate.z).toWebGLMatrix().returnMatrix() : translate(0, 0, 0).toWebGLMatrix().returnMatrix();
+        mr = object.axis ? rotate(currentRotation, object.axis.x, object.axis.y, object.axis.z).toWebGLMatrix().returnMatrix() : getAMatrix().toWebGLMatrix().returnMatrix();
+        mi = ms.multiply(mt).multiply(mr);
+
+        gl.uniformMatrix4fv(modelViewMatrix, gl.FALSE, new Float32Array(mi));
+
 
         // Set the varying vertex coordinates.
         gl.bindBuffer(gl.ARRAY_BUFFER, object.buffer);
@@ -214,7 +217,7 @@
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
         // Set up the rotation matrix.
-        gl.uniformMatrix4fv(rotationMatrix, gl.FALSE, new Float32Array(getRotationMatrix(currentRotation, 0, 1, 0)));
+        gl.uniformMatrix4fv(rotationMatrix, gl.FALSE, new Float32Array(rotate(currentRotation, 0, 1, 0)));
 
         // Display the objects.
         for (i = 0, maxi = objectsToDraw.length; i < maxi; i += 1) {
@@ -232,8 +235,7 @@
 
 
 /* ~*~*~*~*~*~**~*~*~*~*~*~*~*~* Scene Creation  ~*~*~*~*~*~**~*~*~*~*~*~*~*~*~ */
-gl.uniformMatrix4fv(projectionMatrix, gl.FALSE, new Float32Array(matrix
-    )));
+gl.uniformMatrix4fv(projectionMatrix, gl.FALSE, new Float32Array( frustum(-20, 20, -20, 20, 5, 200) ));
 
     // Draw the initial scene.
     drawScene();
@@ -262,4 +264,4 @@ gl.uniformMatrix4fv(projectionMatrix, gl.FALSE, new Float32Array(matrix
 
 
 
-}(document.getElementById("bread")));
+}(document.getElementById("sandwich")));

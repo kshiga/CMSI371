@@ -115,7 +115,7 @@ var Shapes = {
 
         }
 
-    }
+    },
 
 
     cylinder: function () {
@@ -299,6 +299,7 @@ var Shapes = {
                 verticies: verticies,
                 indicies: indicies
         };
+       }
     },
 
   
@@ -383,8 +384,7 @@ var Shapes = {
         }
 
         return result;
-    }
-
+    },
 
     toNormalArray: function (indexedVertices) {
         var result = [],
