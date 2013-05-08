@@ -1,9 +1,9 @@
 
 (function (canvas) {
 
-    // Because many of these variables are best initialized then immediately
-    // used in context, we merely name them here.  Read on to see how they
-    // are used.
+
+/* ~*~*~*~*~*~**~*~*~*~*~*~*~*~* Variables Set-up ~*~*~*~*~*~**~*~*~*~*~*~*~*~*~ */
+
     var gl, // The WebGL context.
 
         objectsToDraw,
@@ -17,16 +17,14 @@
         // Important state variables.
         currentRotation = 0.0,
         currentInterval,
-        rotationMatrix,
-        orthoMatrix,
-        scaleMatrix,
-        translateMatrix,
-        perspectiveMatrix,
+
+        modelViewMatrix,
+        projectionMatrix,
         vertexPosition,
         vertexColor,
 
-
         // An individual "draw object" function.
+        getVerticies,
         drawObject,
 
         // The big "draw scene" function.
@@ -37,6 +35,11 @@
         maxi,
         j,
         maxj,
+        m,
+
+
+
+/* ~*~*~*~*~*~**~*~*~*~*~*~*~*~* Canvas Set-up ~*~*~*~*~*~**~*~*~*~*~*~*~*~*~ */
 
     // Grab the WebGL rendering context.
     gl = GLSLUtilities.getGL(canvas);
@@ -54,6 +57,20 @@
     gl.clearColor(0.0, 0.0, 0.0, 0.0);
     gl.viewport(0, 0, canvas.width, canvas.height);
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ~*~*~*~*~*~**~*~*~*~*~*~*~*~* Objects Set-up ~*~*~*~*~*~**~*~*~*~*~*~*~*~*~ */
     // Build the objects to display.
     objectsToDraw = [
         {
@@ -70,27 +87,40 @@
         },
     ];
 
-    // Pass the vertices to WebGL.
-    for (i = 0, maxi = objectsToDraw.length; i < maxi; i += 1) {
-        objectsToDraw[i].buffer = GLSLUtilities.initVertexBuffer(gl,
-                objectsToDraw[i].vertices);
 
-        if (!objectsToDraw[i].colors) {
-            // If we have a single color, we expand that into an array
-            // of the same color over and over.
-            objectsToDraw[i].colors = [];
-            for (j = 0, maxj = objectsToDraw[i].vertices.length / 3;
-                    j < maxj; j += 1) {
-                objectsToDraw[i].colors = objectsToDraw[i].colors.concat(
-                    objectsToDraw[i].color.r,
-                    objectsToDraw[i].color.g,
-                    objectsToDraw[i].color.b
-                );
+
+/*~*~*~*~*~*~**~*~*~*~*~*~*~*~* Retrieve Verticies ~*~*~*~*~*~**~*~*~*~*~*~*~*~**/
+
+    // Pass the vertices to WebGL.
+   getVerticies = function(objectArray){
+        for (i = 0, maxi = objectArray.length; i < maxi; i += 1) {
+            objectArray[i].buffer = GLSLUtilities.initVertexBuffer(gl,
+                    objectArray[i].vertices);
+
+            if (!objectArray[i].colors) {
+                objectArray[i].colors = [];
+                for (j = 0, maxj = objectArray[i].vertices.length / 3;
+                        j < maxj; j += 1) {
+                    objectArray[i].colors = objectArray[i].colors.concat(
+                        objectArray[i].color.r,
+                        objectArray[i].color.g,
+                        objectArray[i].color.b
+                    );
+                }
             }
+            objectArray[i].colorBuffer = GLSLUtilities.initVertexBuffer(gl,
+                    objectArray[i].colors);
         }
-        objectsToDraw[i].colorBuffer = GLSLUtilities.initVertexBuffer(gl,
-                objectsToDraw[i].colors);
     }
+
+    getVerticies(objectsToDraw);
+
+
+
+
+
+
+/* ~*~*~*~*~*~**~*~*~*~*~*~*~*~* Shader Set-up ~*~*~*~*~*~**~*~*~*~*~*~*~*~*~ */
 
     // Initialize the shaders.
     shaderProgram = GLSLUtilities.initSimpleShaderProgram(
@@ -118,6 +148,15 @@
         return;
     }
 
+
+
+
+
+
+
+
+/* ~*~*~*~*~*~**~*~*~*~*~*~*~*~* Shader Program Initialization ~*~*~*~*~*~**~*~*~*~*~*~*~*~*~ */
+
     // All done --- tell WebGL to use the shader program from now on.
     gl.useProgram(shaderProgram);
 
@@ -128,34 +167,38 @@
     gl.enableVertexAttribArray(vertexColor);
     rotationMatrix = gl.getUniformLocation(shaderProgram, "rotationMatrix");
 
+    modelViewMatrix = gl.getUniformLocation(shaderProgram, "modelViewMatrix");
+    projectionMatrix = gl.getUniformLocation(shaderProgram, "projectionMatrix");
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ~*~*~*~*~*~**~*~*~*~*~*~*~*~* Drawing Functions ~*~*~*~*~*~**~*~*~*~*~*~*~*~*~ */
     /*
      * Displays an individual object and extracts its subshapes to be drawn.
      */
     drawObject = function (object) {
-        // JD: Remember, the if condition below still assumes that
-        //     an object even *has* a subshapes array, even if it
-        //     might be empty.
-        if(subshapes.length > 0){
-            for(i = 0; i < subshapes.length; i++){
-                subshapes[i].buffer = GLSLUtilities.initVertexBuffer(gl, subshapes[i].vertices);
-
-                if (!subshapes[i].colors) {
-                    subshapes[i].colors = [];
-                    for (j = 0, maxj = subshapes[i].vertices.length / 3; j < maxj; j += 1) {
-                        subshapes[i].colors = subshapes[i].colors.concat(
-                            subshapes[i].color.r,
-                            subshapes[i].color.g,
-                            subshapes[i].color.b
-                        );
-                    }
-                }
-                objectsToDraw.push(subshapes[i]);
-            }          
+        if(object.subshapes.length > 0){
+            getVerticies(object.subshapes);
         }
-
+        objectsToDraw.concat(object.subshapes);
         // Set the varying colors.
         gl.bindBuffer(gl.ARRAY_BUFFER, object.colorBuffer);
         gl.vertexAttribPointer(vertexColor, 3, gl.FLOAT, false, 0, 0);
+
+        // Set up the model-view matrix, if an axis is included.  If not, we
+        // specify the identity matrix.
+        gl.uniformMatrix4fv(modelViewMatrix, gl.FALSE, new Float32Array(object.axis ?
+                getRotationMatrix(currentRotation, object.axis.x, object.axis.y, object.axis.z) : (m = new Matrix4x4());  m.toWebGLMatrix.returnMatrix() ;));
 
         // Set the varying vertex coordinates.
         gl.bindBuffer(gl.ARRAY_BUFFER, object.buffer);
@@ -171,8 +214,6 @@
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
         // Set up the rotation matrix.
-        // JD: Take note that you have now moved the getRotationMatrix function to
-        //     your matrix library, so you should use that.
         gl.uniformMatrix4fv(rotationMatrix, gl.FALSE, new Float32Array(getRotationMatrix(currentRotation, 0, 1, 0)));
 
         // Display the objects.
@@ -184,9 +225,25 @@
         gl.flush();
     };
 
+
+
+
+
+
+
+/* ~*~*~*~*~*~**~*~*~*~*~*~*~*~* Scene Creation  ~*~*~*~*~*~**~*~*~*~*~*~*~*~*~ */
+gl.uniformMatrix4fv(projectionMatrix, gl.FALSE, new Float32Array(matrix
+    )));
+
     // Draw the initial scene.
     drawScene();
 
+
+
+
+
+
+/* ~*~*~*~*~*~**~*~*~*~*~*~*~*~* jQuery Integration Set-up ~*~*~*~*~*~**~*~*~*~*~*~*~*~*~ */
     // Set up the rotation toggle: clicking on the canvas does it.
     $(canvas).click(function () {
         if (currentInterval) {
@@ -203,4 +260,6 @@
         }
     });
 
-}(document.getElementById("hello-webgl")));
+
+
+}(document.getElementById("bread")));
