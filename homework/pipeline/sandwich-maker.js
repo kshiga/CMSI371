@@ -1,3 +1,14 @@
+// Interactive Variables
+        var leftJelly,
+            rightJelly,
+            confirmL = false,
+            confirmR = false,
+            oneClickL = 0,
+            oneClickR = 0;
+        
+
+
+
 
 (function (canvas) {
 
@@ -32,11 +43,6 @@
 
 
 
-        // Interactive Variables
-        leftJelly,
-        rightJelly,
-        confirmedL = false,
-        confirmedR = false,
         
            
         // Reusable loop variables.
@@ -251,24 +257,6 @@
 
 
 
-/* ~*~*~*~*~*~**~*~*~*~*~*~*~*~* jQuery Integration Set-up ~*~*~*~*~*~**~*~*~*~*~*~*~*~*~ */
-    // Set up the rotation toggle: clicking on the canvas does it.
-    $(canvas).click(function () {
-        if (currentInterval) {
-            clearInterval(currentInterval);
-            currentInterval = null;
-        } else {
-            currentInterval = setInterval(function () {
-                currentRotation += 1.0;
-                drawScene();
-                if (currentRotation >= 360.0) {
-                    currentRotation -= 360.0;
-                }
-            }, 30);
-        }
-    });
-
-  
 
 
 

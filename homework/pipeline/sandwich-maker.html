@@ -24,7 +24,9 @@
             <p><button id = "right-slice-confirm"> confirm!</button><br>
             <button id = "right-slice-cancel"> cancel </button></p>
         </div>
-
+        <div>
+            <p id = "dynamic-instructions"> </p>
+        </div>
         <p>You’ll need a WebGL-capable web browser to see anything here;
             instructions can be found in this
             <a href="http://www.khronos.org/webgl/wiki/Getting_a_WebGL_Implementation">official
@@ -100,27 +102,7 @@
 
         <!-- This script sets up the specific scene for this page. -->
         <script src="sandwich-maker.js"></script> 
-
-        <script id = "color-pickers">
-            $("#left-color-picker").spectrum({
-                color: "#fff",
-                showInput: true,
-                change: function(color){
-                    jellyLeft = color;   
-                    console.log(jellyLeft.toRgbString());
-                }
-            });
-          
-
-            $("#right-color-picker").spectrum({
-                color: "#fff",
-                showInput: true,
-                change: function(color){
-                    jellyRight = color;   
-                    console.log(jellyRight.toRgbString());
-                }
-            });
-        </script>
+        <script src="interactivity.js"></script> 
 
   </body>
 </html>
