@@ -2,8 +2,8 @@ $("#left-color-picker").spectrum({
     color: "#fff",
     showInput: true,
     change: function(color){
-        jellyLeft = color;   
-        console.log(jellyLeft.toRgbString());
+        jellyLeftColor = color;   
+        console.log(jellyLeftColor.toRgbString());
     }
 });
           
@@ -12,8 +12,8 @@ $("#right-color-picker").spectrum({
     color: "#fff",
     showInput: true,
     change: function(color){
-        jellyRight = color;   
-        console.log(jellyRight.toRgbString());
+        jellyRightColor = color;   
+        console.log(jellyRightColor.toRgbString());
     }
 });
 

@@ -1,6 +1,6 @@
 // Interactive Variables
-        var leftJelly,
-            rightJelly,
+        var leftJellyColor,
+            rightJellyColor,
             confirmL = false,
             confirmR = false,
             oneClickL = 0,
@@ -58,6 +58,21 @@
         gl = GLSLUtilities.getGL(canvas);
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* ~*~*~*~*~*~**~*~*~*~*~*~*~*~* Canvas Set-up ~*~*~*~*~*~**~*~*~*~*~*~*~*~*~ */
 
 
@@ -94,9 +109,59 @@
     objectsToDraw = [
         {
             color: { r: 0.5, g: 0.0, b: 0.0 },
-            vertices: Shapes.toRawTriangleArray(Shapes.cylinder()),
+            vertices: Shapes.toRawTriangleArray(Shapes.pyramid()),
+            mode: gl.TRIANGLES
+        }
+        /*
+        {
+            name: "leftSlice",
+            color: crustColor,
+            vertices: Shapes.toRawTriangleArray(Shapes.crust()),
+            mode: gl.TRIANGLES,
+            subshapes: [
+                {
+                    name: "leftBread",
+                    color: breadColor, 
+                    verticies: Shapes.toRawTriangleArray(Shapes.bread()),
+                    mode:gl.TRIANGLES
+                },
+                {
+                    name: "leftJelly",
+                    color: leftJellyColor, 
+                    verticies: Shapes.toRawTriangleArray(Shapes.jelly()),
+                    mode:gl.TRIANGLES
+                }
+            ]
+            
+        },        
+        {
+            name: "rightSlice",
+            color: crustColor,
+            vertices: Shapes.toRawTriangleArray(Shapes.crust()),
+            mode: gl.TRIANGLES,
+            subshapes: [
+                {
+                    name: "rightBread",
+                    color: breadColor, 
+                    verticies: Shapes.toRawTriangleArray(Shapes.bread()),
+                    mode:gl.TRIANGLES
+                },
+                {
+                    name: "rightJelly",
+                    color: rightJellyColor, 
+                    verticies: Shapes.toRawTriangleArray(Shapes.jelly()),
+                    mode:gl.TRIANGLES
+                }
+            ]
+            
+        },
+        {
+            name: "background",
+            color: { r: 0.5, g: 0.0, b: 0.0 },
+            vertices: Shapes.toRawTriangleArray(Shapes.background()),
             mode: gl.TRIANGLES
         },
+        */
     ];
 
 
@@ -247,7 +312,8 @@
 
 /* ~*~*~*~*~*~**~*~*~*~*~*~*~*~* Scene Creation  ~*~*~*~*~*~**~*~*~*~*~*~*~*~*~ */
     //Set up projection matrix.
-    gl.uniformMatrix4fv(projectionMatrix, gl.FALSE, new Float32Array( frustum(-20, 20, -20, 20, 5, 200) ) );
+    gl.uniformMatrix4fv(projectionMatrix, gl.FALSE, new Float32Array( 
+        frustum(-20, 20, -20, 20, 5, 200) ) );
 
     // Draw the initial scene.
     drawScene();

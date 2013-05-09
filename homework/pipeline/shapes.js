@@ -85,10 +85,11 @@ var Shapes = {
         frontVerticies,
         backVerticies,
         crustVerticies,
+        crustIndicies,
         i;
 
-        frontVerticies.push(topLeft);
-        frontVerticies.push(bottomLeft);
+        frontVerticies.concat(topLeft);
+        frontVerticies.concat(bottomLeft);
         for(i = 0; i < topLeft.length; i++){
             var topLeftVertice = topLeft[i],
                newTRVertice = [-topLeftVertice[0], topLeftVertice[0], 0.0];
@@ -100,19 +101,29 @@ var Shapes = {
                newBRVertice = [-topLeftVertice[0], topLeftVertice[0], 0.0];
             bottomRight.push(newTRVertice);
         }
-        frontVerticies.push(bottomRight);
-
+        frontVerticies.concat(bottomRight);
+        crustVerticies.concat(frontVerticies);
         for(i = 0; i < frontVerticies.length; i++){
             var vertice = frontVerticies[i],
                 newBackVerticie = [vertice[0], vertice[1], -1.0];
             backVerticies.push(newBackVerticie);
         }
+        crustVerticies.concat(backVerticies);
+
+        for(i = 0; i < crustVerticies.length; i+=4){
+            crustIndicies.push([i, (i + 1), (i + 2)]);            
+            crustIndicies.push([i, (i + 2), (i + 3)]);
+        }
+
+        for(i = (crustVerticies.length/2); i < crustVerticies.length; i+=4){
+            crustIndicies.push([i, (i + 1), (i - (crustVerticies.length/2) + 1)]);            
+            crustIndicies.push([i, (i - (crustVerticies.length/2) + 1), (i - (crustVerticies.length/2))]);
+        }
+
 
         return{
-            verticies: [
-
-            ],
-
+            verticies: crustVerticies,
+            indicies: crustIndicies
         }
 
     },
@@ -126,7 +137,7 @@ var Shapes = {
         // JD: This is nicely done and nearly complete (I think you are missing
         //     a face or two), but this is borderline better done computationally
         //     (i.e., loop around the circle, calculate vertices and indices
-        //     vased on that).
+        //     based on that).
         return {
             vertices: [
               [ 0.0, h, 0.0 ],
