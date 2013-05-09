@@ -8,16 +8,22 @@
     <body>
     <br>
     <center>
-         <div id = "right-color-picker"> abcd</div>
-         <div id = "right-slice-confirm"> </div>
 
+        <div id = "left">
+            <p><input type='text' id="left-color-picker" /></p>
+            <p><button id = "left-slice-confirm"> confirm!</button><br>
+            <button id = "left-slice-cancel"> cancel </button></p>
+        </div>
         <canvas id="sandwich" width="512" height="512">
             Sorry, your web browser does not appear to support
             the <code>canvas</code> element, either.
         </canvas>
-         <div id = "left-color-picker"> sdf </div>
-         <div id = "left-slice-confirm"> </div>
 
+        <div id = "right">
+            <p><input type='text' id="right-color-picker" /></p>
+            <p><button id = "right-slice-confirm"> confirm!</button><br>
+            <button id = "right-slice-cancel"> cancel </button></p>
+        </div>
 
         <p>You’ll need a WebGL-capable web browser to see anything here;
             instructions can be found in this
@@ -27,6 +33,7 @@
 
     </center>
 
+        
         <!-- jQuery makes some things more convenient. -->
         <script src="http://code.jquery.com/jquery-latest.min.js"></script>
 
@@ -39,6 +46,12 @@
 
         <!-- Matrix is a library of matricies that provide transforms. -->
         <script src="matrix/matrix.js"></script>
+
+
+        <script src='spectrum.js'></script>
+        <link rel='stylesheet' href='spectrum.css' />
+
+
 
 
         <!-- Set up shaders: we've placed the source in script elements for
@@ -86,6 +99,28 @@
         </script>
 
         <!-- This script sets up the specific scene for this page. -->
-        <script src="sandwich-maker.js"></script>
+        <script src="sandwich-maker.js"></script> 
+
+        <script id = "color-pickers">
+            $("#left-color-picker").spectrum({
+                color: "#fff",
+                showInput: true,
+                change: function(color){
+                    jellyLeft = color;   
+                    console.log(jellyLeft.toRgbString());
+                }
+            });
+          
+
+            $("#right-color-picker").spectrum({
+                color: "#fff",
+                showInput: true,
+                change: function(color){
+                    jellyRight = color;   
+                    console.log(jellyRight.toRgbString());
+                }
+            });
+        </script>
+
   </body>
 </html>

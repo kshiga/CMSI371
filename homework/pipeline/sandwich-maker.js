@@ -30,6 +30,15 @@
         // The big "draw scene" function.
         drawScene,
 
+
+
+        // Interactive Variables
+        leftJelly,
+        rightJelly,
+        confirmedL = false,
+        confirmedR = false,
+        
+           
         // Reusable loop variables.
         i,
         maxi,
@@ -258,6 +267,11 @@
             }, 30);
         }
     });
+
+  
+
+
+
 
 
 
