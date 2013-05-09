@@ -1,0 +1,31 @@
+canvas {
+    border: solid 1px rgb(200, 200, 255);
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#canvas-body {
+    position: relative;
+}
+
+#right-color-picker {
+    position: absolute;
+    top: 20%;
+    right: 80%;
+    height: 32px; 
+    width: 50px;
+    color: red;   
+
+}
+
+
+#left-color-picker {
+    position: absolute;
+    top: 20%;
+    right: 15%;
+    height: 32px; 
+    width: 50px;
+    color: blue;   
+
+}

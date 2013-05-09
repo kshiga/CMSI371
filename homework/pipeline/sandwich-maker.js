@@ -61,7 +61,8 @@
     gl.viewport(0, 0, canvas.width, canvas.height);
 
 
-/*
+
+
 
 
 
@@ -90,14 +91,14 @@
     // Pass the vertices to WebGL.
    getVerticies = function(objectArray){
         for (i = 0, maxi = objectArray.length; i < maxi; i += 1) {
-            objectArray[i].buffer = GLSLUtilities.initVertexBuffer(gl,
+            objectsToDraw[i].buffer = GLSLUtilities.initVertexBuffer(gl,
                     objectArray[i].vertices);
 
             if (!objectArray[i].colors) {
-                objectArray[i].colors = [];
+                objectsToDraw[i].colors = [];
                 for (j = 0, maxj = objectArray[i].vertices.length / 3;
                         j < maxj; j += 1) {
-                    objectArray[i].colors = objectArray[i].colors.concat(
+                    objectsToDraw[i].colors = objectArray[i].colors.concat(
                         objectArray[i].color.r,
                         objectArray[i].color.g,
                         objectArray[i].color.b
@@ -192,9 +193,6 @@
         gl.bindBuffer(gl.ARRAY_BUFFER, object.colorBuffer);
         gl.vertexAttribPointer(vertexColor, 3, gl.FLOAT, false, 0, 0);
 
-        // Set up the model-view matrix, if an axis is included.  If not, we
-        // specify the identity matrix.
-        
         ms = object.scale ? scale(object.scale.x, object.scale.y, object.scale.z).toWebGLMatrix().returnMatrix() : scale(1, 1, 1).toWebGLMatrix().returnMatrix();
         mt = object.translate ? translate(object.translate.x, object.translate.y, object.translate.z).toWebGLMatrix().returnMatrix() : translate(0, 0, 0).toWebGLMatrix().returnMatrix();
         mr = object.axis ? rotate(currentRotation, object.axis.x, object.axis.y, object.axis.z).toWebGLMatrix().returnMatrix() : getAMatrix().toWebGLMatrix().returnMatrix();
@@ -216,8 +214,6 @@
         // Clear the display.
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-        // Set up the rotation matrix.
-        gl.uniformMatrix4fv(rotationMatrix, gl.FALSE, new Float32Array(rotate(currentRotation, 0, 1, 0)));
 
         // Display the objects.
         for (i = 0, maxi = objectsToDraw.length; i < maxi; i += 1) {
@@ -235,7 +231,8 @@
 
 
 /* ~*~*~*~*~*~**~*~*~*~*~*~*~*~* Scene Creation  ~*~*~*~*~*~**~*~*~*~*~*~*~*~*~ */
-gl.uniformMatrix4fv(projectionMatrix, gl.FALSE, new Float32Array( frustum(-20, 20, -20, 20, 5, 200) ));
+    //Set up projection matrix.
+    gl.uniformMatrix4fv(projectionMatrix, gl.FALSE, new Float32Array( frustum(-20, 20, -20, 20, 5, 200) ) );
 
     // Draw the initial scene.
     drawScene();
