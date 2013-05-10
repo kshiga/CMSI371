@@ -33,6 +33,14 @@
         projectionMatrix,
         vertexPosition,
         vertexColor,
+        vertexDiffuseColor,
+        vertexSpecularColor,
+        shininess,
+        
+        normalVector,
+        lightPosition,
+        lightDiffuse,
+        lightSpecular,
 
         // An individual "draw object" function.
         getVerticies,
@@ -118,18 +126,23 @@
             color: crustColor,
             vertices: Shapes.toRawTriangleArray(Shapes.crust()),
             mode: gl.TRIANGLES,
+            normals: Shapes.toNormalArray(Shapes.crust()),
             subshapes: [
                 {
                     name: "leftBread",
                     color: breadColor, 
                     verticies: Shapes.toRawTriangleArray(Shapes.bread()),
                     mode:gl.TRIANGLES
+                    normals: Shapes.toNormalArray(Shapes.bread()),
                 },
                 {
                     name: "leftJelly",
                     color: leftJellyColor, 
                     verticies: Shapes.toRawTriangleArray(Shapes.jelly()),
                     mode:gl.TRIANGLES
+                    normals: Shapes.toNormalArray(Shapes.jelly()),
+                    specularColors: { r: 1.0, g: 1.0, b: 1.0 },
+                    shininess: 16,
                 }
             ]
             
@@ -139,18 +152,23 @@
             color: crustColor,
             vertices: Shapes.toRawTriangleArray(Shapes.crust()),
             mode: gl.TRIANGLES,
+            normals: Shapes.toNormalArray(Shapes.crust()),
             subshapes: [
                 {
                     name: "rightBread",
                     color: breadColor, 
                     verticies: Shapes.toRawTriangleArray(Shapes.bread()),
                     mode:gl.TRIANGLES
+                    normals: Shapes.toNormalArray(Shapes.bread()),
                 },
                 {
                     name: "rightJelly",
                     color: rightJellyColor, 
                     verticies: Shapes.toRawTriangleArray(Shapes.jelly()),
                     mode:gl.TRIANGLES
+                    normals: Shapes.toNormalArray(Shapes.jelly()),
+                    specularColors: { r: 1.0, g: 1.0, b: 1.0 },
+                    shininess: 16,
                 }
             ]
             
@@ -188,7 +206,26 @@
             objectArray[i].colorBuffer = GLSLUtilities.initVertexBuffer(gl,
                     objectArray[i].colors);
         }
-        console.log("got verticies");
+        
+        if (!objectArray[i].specularColors) {
+            // Future refactor: helper function to convert a single value or
+            // array into an array of copies of itself.
+            objectsToDraw[i].specularColors = [];
+            for (j = 0, maxj = objectArray[i].vertices.length / 3;
+                    j < maxj; j += 1) {
+                objectsToDraw[i].specularColors = objectsToDraw[i].specularColors.concat(
+                    objectArray[i].specularColor.r,
+                    objectArray[i].specularColor.g,
+                    objectArray[i].specularColor.b
+                );
+            }
+        }
+        objectsToDraw[i].specularBuffer = GLSLUtilities.initVertexBuffer(gl,
+                objectArray[i].specularColors);
+
+        // One more buffer: normals.
+        objectsToDraw[i].normalBuffer = GLSLUtilities.initVertexBuffer(gl,
+                objectArray[i].normals);
     }
 
     getVerticies(objectsToDraw);
@@ -248,7 +285,10 @@
     modelViewMatrix = gl.getUniformLocation(shaderProgram, "modelViewMatrix");
     projectionMatrix = gl.getUniformLocation(shaderProgram, "projectionMatrix");
 
-
+    lightPosition = gl.getUniformLocation(shaderProgram, "lightPosition");
+    lightDiffuse = gl.getUniformLocation(shaderProgram, "lightDiffuse");
+    lightSpecular = gl.getUniformLocation(shaderProgram, "lightSpecular");
+    shininess = gl.getUniformLocation(shaderProgram, "shininess");
 
 
 
