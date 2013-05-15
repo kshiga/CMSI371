@@ -16,6 +16,10 @@ var Matrix4x4 = (function () {
         }
     };
 
+    matrix4x4.prototype.getAMatrix = function() {
+       return new matrix4x4();
+    },
+
     // JD: Another nice touch, these two functions.
     //     Though I suggest that valueAt would be more
     //     useful if it takes a row and column instead
@@ -91,16 +95,9 @@ var Matrix4x4 = (function () {
 
     matrix4x4.prototype.scale = function (sx, sy, sz) {
         var result = new matrix4x4(),
-            // JD: I see what you are doing here, but there's nothing
-            //     actually technically wrong with zeroing something
-            //     out along a dimension.  More useful, I think, would
-            //     be logic that sets things up so that if there is only
-            //     one argument (i.e., only sx is supplied, leaving sy
-            //     and sz as undefined), then the scale is assumed to
-            //     be uniform across all dimensions.
-            scaleX = sx === 0 ? 1 : sx,
-            scaleY = sy === 0 ? 1 : sy,
-            scaleZ = sz === 0 ? 1 : sz;
+            scaleX = sx
+            scaleY = sy ? sy : sx,
+            scaleZ = sz ? sz : sx;
         result.elements = [scaleX,      0,      0,  0,
                              0, scaleY,      0,  0,
                              0,      0, scaleZ,  0,
@@ -210,10 +207,9 @@ var Matrix4x4 = (function () {
     }
 
 
-    matrix4x4.prototype.instance = function (scaleMatrix, translateMatrix, rotateMatrix) {
-        var result = scaleMatrix.multiply(translateMatrix).multiply(rotateMatrix);
-        return result;
-    }
+ 
 
     return matrix4x4;
+
+
 })();

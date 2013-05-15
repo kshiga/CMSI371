@@ -1,0 +1,108 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="UTF-8"/>
+        <title>sand wich</title>
+        <link rel="stylesheet" href="sandwich-maker.css" />
+    </head>
+    <body>
+    <br>
+    <center>
+
+        <div id = "left">
+            <p><input type='text' id="left-color-picker" /></p>
+            <p><button id = "left-slice-confirm"> confirm!</button><br>
+            <button id = "left-slice-cancel"> cancel </button></p>
+        </div>
+        <canvas id="sandwich" width="512" height="512">
+            Sorry, your web browser does not appear to support
+            the <code>canvas</code> element, either.
+        </canvas>
+
+        <div id = "right">
+            <p><input type='text' id="right-color-picker" /></p>
+            <p><button id = "right-slice-confirm"> confirm!</button><br>
+            <button id = "right-slice-cancel"> cancel </button></p>
+        </div>
+        <div>
+            <p id = "dynamic-instructions"> </p>
+        </div>
+        <p>You’ll need a WebGL-capable web browser to see anything here;
+            instructions can be found in this
+            <a href="http://www.khronos.org/webgl/wiki/Getting_a_WebGL_Implementation">official
+            WebGL wiki page</a>.</p>
+
+
+    </center>
+
+        
+        <!-- jQuery makes some things more convenient. -->
+        <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+
+        <!-- GLSLUtilities is a starting point for holding functionality that
+             is common to many WebGL programs. -->
+        <script src="glsl-utilities.js"></script>
+
+        <!-- Shapes is a library that generates "canned" shapes. -->
+        <script src="shapes.js"></script>
+
+        <!-- Matrix is a library of matricies that provide transforms. -->
+        <script src="matrix/matrix.js"></script>
+
+
+        <script src='spectrum.js'></script>
+        <link rel='stylesheet' href='spectrum.css' />
+
+
+
+
+        <!-- Set up shaders: we've placed the source in script elements for
+            simplicity.  Shaders are ideally kept in separate files for easier
+            maintenance, but in that situation, additional code and security
+            constraints are involved. -->
+
+        <!-- The vertex shader is a complete pass-through. -->
+        <script id="vertex-shader" type="x-shader/x-vertex">
+            #ifdef GL_ES
+            precision highp float;
+            #endif
+
+            attribute vec3 vertexPosition;
+
+            // Note this new additional output.
+            attribute vec3 vertexColor;
+            varying vec4 finalVertexColor;
+            uniform mat4 rotationMatrix;
+            uniform mat4 orthoMatrix;
+            uniform mat4 translationMatrix;
+            uniform mat4 scaleMatrix;
+            uniform mat4 perspectiveMatrix;
+
+            void main(void) {
+                gl_Position = rotationMatrix * vec4(vertexPosition, 1.0);
+                finalVertexColor = vec4(vertexColor, 1.0);
+            }
+        </script>
+
+        <!-- The fragment shader produces a single unconditional color. -->
+        <script id="fragment-shader" type="x-shader/x-fragment">
+            #ifdef GL_ES
+            precision highp float;
+            #endif
+
+            varying vec4 finalVertexColor;
+
+            void main(void) {
+                // We vary the color based on the fragment's z coordinate,
+                // which, at this point, ranges from 0 (near) to 1 (far).
+                // Note the ".rgb" subselector.
+                gl_FragColor = vec4((1.0 - gl_FragCoord.z) * finalVertexColor.rgb, 1.0);
+            }
+        </script>
+
+        <!-- This script sets up the specific scene for this page. -->
+        <script src="sandwich-maker.js"></script> 
+        <script src="interactivity.js"></script> 
+
+  </body>
+</html>
