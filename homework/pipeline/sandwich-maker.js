@@ -117,7 +117,7 @@
     objectsToDraw = [
         {
             color: { r: 0.5, g: 0.0, b: 0.0 },
-            vertices: Shapes.toRawTriangleArray(Shapes.pyramid()),
+            vertices: Shapes.toRawTriangleArray(Shapes.sqPyramid()),
             mode: gl.TRIANGLES
         }
         /*
@@ -207,7 +207,7 @@
                     objectArray[i].colors);
         }
         
-        if (!objectArray[i].specularColors) {
+       /* if (!objectArray[i].specularColors) {
             // Future refactor: helper function to convert a single value or
             // array into an array of copies of itself.
             objectsToDraw[i].specularColors = [];
@@ -226,8 +226,9 @@
         // One more buffer: normals.
         objectsToDraw[i].normalBuffer = GLSLUtilities.initVertexBuffer(gl,
                 objectArray[i].normals);
+       */
     }
-
+  
     getVerticies(objectsToDraw);
 
 

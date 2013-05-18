@@ -2,8 +2,8 @@ $("#left-color-picker").spectrum({
     color: "#fff",
     showInput: true,
     change: function(color){
-        jellyLeftColor = color;   
-        console.log(jellyLeftColor.toRgbString());
+         jellyLeftColor = color;   
+        console.log( jellyLeftColor.toRgbString());
     }
 });
           
@@ -18,9 +18,9 @@ $("#right-color-picker").spectrum({
 });
 
 $("#left-slice-confirm").click(function (){
-    confirmL = true;
-    oneClickL++;
-    if(oneClickL === 1){
+     confirmL = true;
+     oneClickL++;
+    if( oneClickL === 1){
         console.log("LEFT CONFIRMED");
         $("#dynamic-instructions").text("Left Slice confirmed");
         //confirmBread(leftSlice);
@@ -29,9 +29,9 @@ $("#left-slice-confirm").click(function (){
 
 
 $("#right-slice-confirm").click(function (){
-    confirmR = true;
-    oneClickR++;
-    if(oneClickR === 1){
+     confirmR = true;
+     oneClickR++;
+    if( oneClickR === 1){
         console.log("RIGHT CONFIRMED");
         $("#dynamic-instructions").text("Right Slice confirmed");
         //confirmBread(rightSlice);
@@ -39,9 +39,9 @@ $("#right-slice-confirm").click(function (){
 });
 
 $("#left-slice-cancel").click(function (){
-    confirmL = false;
-    oneClickL = 0;
-    if(!confirmL){
+     confirmL = false;
+     oneClickL = 0;
+    if(! confirmL){
         console.log("LEFT cancelled");
         //cancelBread(leftSlice);
     } else {
@@ -50,9 +50,9 @@ $("#left-slice-cancel").click(function (){
 });
 
 $("#right-slice-cancel").click(function (){
-    confirmR = false;
-    oneClickR = 0;
-    if(!confirmR){
+     confirmR = false;
+     oneClickR = 0;
+    if(! confirmR){
         console.log("RIGHT cancelled");
         //cancelBread(rightSlice);
     } else {
@@ -62,7 +62,7 @@ $("#right-slice-cancel").click(function (){
 
 $(document).keypress(function(e) {
     if(e.which === 13){
-        if(confirmR && confirmL){
+        if( confirmR &&  confirmL){
         console.log("sandwich makin time");
         //makeSandwich();
         $("#dynamic-instructions").text("SANDWICH MAKIN TIME")
