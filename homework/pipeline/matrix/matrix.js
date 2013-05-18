@@ -207,6 +207,31 @@ var Matrix4x4 = (function () {
     }
 
 
+    //  The set up of this mirror matrix can only currently handle 
+    //  reflections over  ONLY ONE of either the x, y, or z axes 
+    matrix4x4.prototype.mirror = function (axis){
+        var result = new matrix4x4(),
+            xM = 1,
+            yM = 1,
+            zM = 1;
+        if(axis === "x"){
+            xM = -1
+        } else if (axis === "y") {
+            yM = -1
+        } else if(axis === "z" ){
+            zM = -1
+        } else {
+            console.log("callin the mirror function without declaring and x, y, or z axis? uncool");
+        }
+        
+        result.elements = [ x, 0, 0, 0,
+                            0, y, 0, 0,
+                            0, 0, z, 0,
+                            0, 0, 0, 1 ];
+        return result;  
+    }
+    
+
  
 
     return matrix4x4;
