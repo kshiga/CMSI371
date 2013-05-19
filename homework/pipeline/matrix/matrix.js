@@ -95,13 +95,13 @@ var Matrix4x4 = (function () {
 
     matrix4x4.prototype.scale = function (sx, sy, sz) {
         var result = new matrix4x4(),
-            scaleX = sx
-            scaleY = sy ? sy : sx,
-            scaleZ = sz ? sz : sx;
+            scaleX = sx,
+            scaleY = sy,
+            scaleZ = sz;
         result.elements = [scaleX,      0,      0,  0,
-                             0, scaleY,      0,  0,
-                             0,      0, scaleZ,  0,
-                             0,      0,      0,  1];
+                                0, scaleY,      0,  0,
+                                0,      0, scaleZ,  0,
+                                0,      0,      0,  1];
         return result;
     }
      
@@ -214,19 +214,19 @@ var Matrix4x4 = (function () {
             xM = 1,
             yM = 1,
             zM = 1;
-        if(axis === "x"){
+        if(axis === 0){
             xM = -1
-        } else if (axis === "y") {
+        } else if (axis === 1) {
             yM = -1
-        } else if(axis === "z" ){
+        } else if(axis === 2){
             zM = -1
         } else {
             console.log("callin the mirror function without declaring and x, y, or z axis? uncool");
         }
         
-        result.elements = [ x, 0, 0, 0,
-                            0, y, 0, 0,
-                            0, 0, z, 0,
+        result.elements = [ xM, 0, 0, 0,
+                            0, yM, 0, 0,
+                            0, 0, zM, 0,
                             0, 0, 0, 1 ];
         return result;  
     }

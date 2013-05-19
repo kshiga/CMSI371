@@ -84,21 +84,21 @@ $(function () {
         sy = -0.75,
         sz = 0.25;
 
-        deepEqual(m.scale(sx, 0, 0).returnMatrix(), 
+        deepEqual(m.scale(sx, 1, 1).returnMatrix(), 
                   [1, 0, 0, 0,
                    0, 1, 0, 0,
                    0, 0, 1, 0,
                    0, 0, 0, 1],
                  "scaled on x");
 
-        deepEqual(m.scale(0, sy, 0).returnMatrix(), 
+        deepEqual(m.scale(1, sy, 1).returnMatrix(), 
                   [1, 0, 0, 0,
                    0, -0.75, 0, 0,
                    0, 0, 1, 0,
                    0, 0, 0, 1],
                  "scaled on y");
 
-        deepEqual(m.scale(0, 0, sz).returnMatrix(), 
+        deepEqual(m.scale(1, 1, sz).returnMatrix(), 
                   [1, 0, 0, 0,
                    0, 1, 0, 0,
                    0, 0, 0.25, 0,
@@ -229,6 +229,32 @@ $(function () {
                    2, 6, 10, 14,
                    3, 7, 11, 15],
                  "Matrix4x4 to WebGL Matrix");
+        
+    });
+
+    test("Mirror Tests", function () {
+        var m = new Matrix4x4();
+        
+        deepEqual(m.mirror(0).returnMatrix(), 
+                  [ -1, 0, 0, 0,
+                     0, 1, 0, 0,
+                     0, 0, 1, 0,
+                     0, 0, 0, 1],
+                 "x-axis reflection");
+
+        deepEqual(m.mirror(1).returnMatrix(), 
+                  [  1,  0, 0, 0,
+                     0, -1, 0, 0,
+                     0,  0, 1, 0,
+                     0,  0, 0, 1],
+                 "y-axis reflection");
+
+        deepEqual(m.mirror(2).returnMatrix(), 
+                  [  1, 0,  0, 0,
+                     0, 1,  0, 0,
+                     0, 0, -1, 0,
+                     0, 0,  0, 1],
+                 "z-axis reflection");
         
     });
 
