@@ -1,3 +1,15 @@
+var confirmBread = function (){
+    // keyframe tween to center
+    //set variable for mixing
+    },
+
+    makeSandwich = function(){
+        //combine bread
+        //change jelly colors
+    };
+
+
+
 $("#left-color-picker").spectrum({
     color: "#fff",
     showInput: true,

@@ -313,11 +313,16 @@
         // Set the varying colors.
         gl.bindBuffer(gl.ARRAY_BUFFER, object.colorBuffer);
         gl.vertexAttribPointer(vertexColor, 3, gl.FLOAT, false, 0, 0);
-
-        ms = object.scale ? scale(object.scale.x, object.scale.y, object.scale.z).toWebGLMatrix().returnMatrix() : scale(1, 1, 1).toWebGLMatrix().returnMatrix();
-        mt = object.translate ? translate(object.translate.x, object.translate.y, object.translate.z).toWebGLMatrix().returnMatrix() : translate(0, 0, 0).toWebGLMatrix().returnMatrix();
-        mr = object.axis ? rotate(currentRotation, object.axis.x, object.axis.y, object.axis.z).toWebGLMatrix().returnMatrix() : getAMatrix().toWebGLMatrix().returnMatrix();
-        mi = ms.multiply(mt).multiply(mr);
+        
+        ms = new Matrix4x4();
+        mt = new Matrix4x4();
+        mr = new Matrix4x4();
+        
+        
+        ms = object.scale ?  ms.scale(object.scale.x, object.scale.y, object.scale.z): ms.scale(1, 1, 1);
+        mt = object.translate ? mt.translate(object.translate.x, object.translate.y, object.translate.z) : mt.translate(0, 0, 0);
+        mr = object.axis ? mr.rotate(currentRotation, object.axis.x, object.axis.y, object.axis.z): mr;
+        mi = ms.multiply(mt).multiply(mr).toWebGLMatrix().returnMatrix();
 
         gl.uniformMatrix4fv(modelViewMatrix, gl.FALSE, new Float32Array(mi));
 
@@ -353,8 +358,9 @@
 
 /* ~*~*~*~*~*~**~*~*~*~*~*~*~*~* Scene Creation  ~*~*~*~*~*~**~*~*~*~*~*~*~*~*~ */
     //Set up projection matrix.
+    var m = new Matrix4x4();
     gl.uniformMatrix4fv(projectionMatrix, gl.FALSE, new Float32Array( 
-        frustum(-20, 20, -20, 20, 5, 200) ) );
+        m.frustum(-20, 20, -20, 20, 5, 200).toWebGLMatrix().returnMatrix() ) );
 
     // Draw the initial scene.
     drawScene();
