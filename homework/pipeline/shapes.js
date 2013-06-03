@@ -5,6 +5,10 @@
  */
 var Shapes = {
 
+
+    /*
+     * This creates a very angular piece of bread insides
+     */
     bread: function () {
         var topLeft = [
                 [0.0, 4.0, 0.0],
@@ -35,55 +39,64 @@ var Shapes = {
 
            bottomLeft = [
                 [0.0, 0.0, 0.0],
-                [-4.0, 0.0, 0.0],
+                [-4.0, 0.0, 0.0]
                 [-4.0, -6.0, 0.0],
                 [0.0, -6.0, 0.0]
             ],
 
-        topRight,
-        bottomRight,
-        frontVerticies,
-        backVerticies,
-        breadVerticies,
-        breadIndicies,
-        i;
+        topRight = [],
+        bottomRight = [],
+        frontVertices = [],
+        backVertices = [],
+        breadVertices =[],
+        breadIndicies = [],
+        i = 0;
 
-        frontVerticies.concat(topLeft);
-        frontVerticies.concat(bottomLeft);
+        frontVertices = frontVertices.concat(topLeft);
+
+        
+        frontVertices = frontVertices.concat(bottomLeft);
+
+        
         for(i = 0; i < topLeft.length; i++){
             var topLeftVertice = topLeft[i],
                newTRVertice = [-topLeftVertice[0], topLeftVertice[0], 0.0];
             topRight.push(newTRVertice);
+            
         }
-        frontVerticies.push(topRight);
+     
+        frontVertices = frontVertices.concat(topRight);
+
+        
         for(i = 0; i < bottomLeft.length; i++){
             var bottomLeftVertice = topLeft[i],
                newBRVertice = [-topLeftVertice[0], topLeftVertice[0], 0.0];
             bottomRight.push(newTRVertice);
         }
-        frontVerticies.concat(bottomRight);
-        breadVerticies.concat(frontVerticies);
-        for(i = 0; i < frontVerticies.length; i++){
-            var vertice = frontVerticies[i],
+        frontVertices = frontVertices.concat(bottomRight);
+        
+        breadVertices = breadVertices.concat(frontVertices);
+        for(i = 0; i < frontVertices.length; i++){
+            var vertice = frontVertices[i],
                 newBackVerticie = [vertice[0], vertice[1], -1.0];
-            backVerticies.push(newBackVerticie);
+            backVertices.push(newBackVerticie);
         }
-        breadVerticies.concat(backVerticies);
+        breadVertices = breadVertices.concat(backVertices);
 
-        for(i = 0; i < breadVerticies.length; i+=4){
+        for(i = 0; i < breadVertices.length; i+=4){
             breadIndicies.push([i, (i + 1), (i + 2)]);            
             breadIndicies.push([i, (i + 2), (i + 3)]);
         }
 
-        for(i = (breadVerticies.length/2); i < breadVerticies.length; i+=4){
-            breadIndicies.push([i, (i + 1), (i - (breadVerticies.length/2) + 1)]);            
-            breadIndicies.push([i, (i - (breadVerticies.length/2) + 1), (i - (breadVerticies.length/2))]);
+        for(i = (breadVertices.length/2); i < breadVertices.length; i+=4){
+            breadIndicies.push([i, (i + 1), (i - (breadVertices.length/2) + 1)]);            
+            breadIndicies.push([i, (i - (breadVertices.length/2) + 1), (i - (breadVertices.length/2))]);
         }
 
 
         return{
-            verticies: breadVerticies,
-            indicies: breadIndicies
+            vertices: breadVertices,
+            indices: breadIndicies
         }
 
     },
@@ -163,50 +176,50 @@ var Shapes = {
                 [0.0, -7.0, 0.0]
             ],
 
-        topRight,
-        bottomRight,
-        frontVerticies,
-        backVerticies,
-        crustVerticies,
-        crustIndicies,
-        i;
+        topRight  = [],
+        bottomRight  = [],
+        frontVertices  = [],
+        backVertices = [],
+        crustVertices = [],
+        crustIndicies = [],
+        i = 0;
 
-        frontVerticies.concat(topLeft);
-        frontVerticies.concat(bottomLeft);
+        frontVertices = frontVertices.concat(topLeft);
+        frontVertices =frontVertices.concat(bottomLeft);
         for(i = 0; i < topLeft.length; i++){
             var topLeftVertice = topLeft[i],
                newTRVertice = [-topLeftVertice[0], topLeftVertice[0], 0.0];
             topRight.push(newTRVertice);
         }
-        frontVerticies.push(topRight);
+        frontVertices = frontVertices.concat(topRight);
         for(i = 0; i < bottomLeft.length; i++){
             var bottomLeftVertice = topLeft[i],
                newBRVertice = [-topLeftVertice[0], topLeftVertice[0], 0.0];
             bottomRight.push(newTRVertice);
         }
-        frontVerticies.concat(bottomRight);
-        crustVerticies.concat(frontVerticies);
-        for(i = 0; i < frontVerticies.length; i++){
-            var vertice = frontVerticies[i],
+        frontVertices = frontVertices.concat(bottomRight);
+        crustVertices = crustVertices.concat(frontVertices);
+        for(i = 0; i < frontVertices.length; i++){
+            var vertice = frontVertices[i],
                 newBackVerticie = [vertice[0], vertice[1], -1.0];
-            backVerticies.push(newBackVerticie);
+            backVertices.push(newBackVerticie);
         }
-        crustVerticies.concat(backVerticies);
+        crustVertices = crustVertices.concat(backVertices);
 
-        for(i = 0; i < crustVerticies.length; i+=4){
+        for(i = 0; i < crustVertices.length; i+=4){
             crustIndicies.push([i, (i + 1), (i + 2)]);            
             crustIndicies.push([i, (i + 2), (i + 3)]);
         }
 
-        for(i = (crustVerticies.length/2); i < crustVerticies.length; i+=4){
-            crustIndicies.push([i, (i + 1), (i - (crustVerticies.length/2) + 1)]);            
-            crustIndicies.push([i, (i - (crustVerticies.length/2) + 1), (i - (crustVerticies.length/2))]);
+        for(i = (crustVertices.length/2); i < crustVertices.length; i+=4){
+            crustIndicies.push([i, (i + 1), (i - (crustVertices.length/2) + 1)]);            
+            crustIndicies.push([i, (i - (crustVertices.length/2) + 1), (i - (crustVertices.length/2))]);
         }
 
 
         return{
-            verticies: crustVerticies,
-            indicies: crustIndicies
+            vertices: crustVertices,
+            indices: crustIndicies
         }
 
     },
@@ -408,50 +421,50 @@ var Shapes = {
                 [-3.5, -1.6, 1.0]
             ],
 
-        topRight,
-        bottomRight,
-        frontVerticies,
-        backVerticies,
-        jellyVerticies,
-        jellyIndicies,
-        i;
+        topRight  = [],
+        bottomRight = [],
+        frontVertices = [],
+        backVertices = [],
+        jellyVertices = [],
+        jellyIndicies = [],
+        i = 0;
 
-        frontVerticies.concat(topLeft);
-        frontVerticies.concat(bottomLeft);
+        frontVertices = frontVertices.concat(topLeft);
+        frontVertices = frontVertices.concat(bottomLeft);
         for(i = 0; i < topLeft.length; i++){
             var topLeftVertice = topLeft[i],
                newTRVertice = [-topLeftVertice[0], topLeftVertice[0], 0.0];
             topRight.push(newTRVertice);
         }
-        frontVerticies.push(topRight);
+        frontVertices = frontVertices.concat(topRight);
         for(i = 0; i < bottomLeft.length; i++){
             var bottomLeftVertice = topLeft[i],
                newBRVertice = [-topLeftVertice[0], topLeftVertice[0], 0.0];
             bottomRight.push(newTRVertice);
         }
-        frontVerticies.concat(bottomRight);
-        jellyVerticies.concat(frontVerticies);
-        for(i = 0; i < frontVerticies.length; i++){
-            var vertice = frontVerticies[i],
+        frontVertices = frontVertices.concat(bottomRight);
+        jellyVertices.concat(frontVertices);
+        for(i = 0; i < frontVertices.length; i++){
+            var vertice = frontVertices[i],
                 newBackVerticie = [vertice[0], vertice[1], 0.0];
-            backVerticies.push(newBackVerticie);
+            backVertices.push(newBackVerticie);
         }
-        jellyVerticies.concat(backVerticies);
+        jellyVertices = jellyVertices.concat(backVertices);
 
-        for(i = 0; i < jellyVerticies.length; i+=4){
+        for(i = 0; i < jellyVertices.length; i+=4){
             jellyIndicies.push([i, (i + 1), (i + 2)]);            
             jellyIndicies.push([i, (i + 2), (i + 3)]);
         }
 
-        for(i = (jellyVerticies.length/2); i < jellyVerticies.length; i+=4){
-            jellyIndicies.push([i, (i + 1), (i - (jellyVerticies.length/2) + 1)]);            
-            jellyIndicies.push([i, (i - (jellyVerticies.length/2) + 1), (i - (jellyVerticies.length/2))]);
+        for(i = (jellyVertices.length/2); i < jellyVertices.length; i+=4){
+            jellyIndicies.push([i, (i + 1), (i - (jellyVertices.length/2) + 1)]);            
+            jellyIndicies.push([i, (i - (jellyVertices.length/2) + 1), (i - (jellyVertices.length/2))]);
         }
 
 
         return{
-            verticies: jellyVerticies,
-            indicies: jellyIndicies
+            vertices: jellyVertices,
+            indices: jellyIndicies
         }
 
     },
@@ -470,31 +483,31 @@ var Shapes = {
            y,
            z;
 
-        //Creates Verticies
+        //Creates Vertices
         for(i = 0; i < latDiv; i++){
             y = radius - (i / latDiv);
             while(j < longDiv){ 
                 currentAngle = (j / longDiv) * 360;
                 x = radius * Math.cos(currentAngle);
                 z = radius * Math.sin(currentAngle);
-                verticies.push([x, y, z]);
+                vertices.push([x, y, z]);
                 j++;
             }
             j = 0;
         }
 
         //Creates faces
-        j = verticies.length;
-        indicies.push([verticies[0], verticies[(longDiv - 1)], verticies[((2 * longDiv) - 1)]]);
-        indicies.push([verticies[0], verticies[(2 * longDiv) -1], verticies[(2 * longDiv)]]);
+        j = vertices.length;
+        indicies.push([vertices[0], vertices[(longDiv - 1)], vertices[((2 * longDiv) - 1)]]);
+        indicies.push([vertices[0], vertices[(2 * longDiv) -1], vertices[(2 * longDiv)]]);
         
         for(i = 1; i < j; i++) {
-            indicies.push([verticies[i], verticies[(i - 1)], verticies[(i - 1) + longDiv]]);
-            indicies.push([verticies[i], verticies[(i - 1) + longDiv], verticies[i + longDiv]]);
+            indicies.push([vertices[i], vertices[(i - 1)], vertices[(i - 1) + longDiv]]);
+            indicies.push([vertices[i], vertices[(i - 1) + longDiv], vertices[i + longDiv]]);
         }
 
         { return {
-                verticies: verticies,
+                vertices: vertices,
                 indicies: indicies
         };
        }
