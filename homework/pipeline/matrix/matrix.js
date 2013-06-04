@@ -35,8 +35,19 @@ var Matrix4x4 = (function () {
             throw new Error("No.");
         }
     };
+    
+    matrix4x4.prototype.toString = function(){
+        var returnedMatrix = this.returnMatrix();
+            returnString = 
+        "[" + returnedMatrix[0] + ", " + returnedMatrix[1] + ", " + returnedMatrix[2] + ", " + returnedMatrix[3] + ",\n" 
+        + returnedMatrix[4] + ", " + returnedMatrix[5] + ", " + returnedMatrix[6] + ", " + returnedMatrix[7] + ",\n" 
+        + returnedMatrix[8] + ", " + returnedMatrix[9] + ", " + returnedMatrix[10] + ", " + returnedMatrix[11] + ",\n" 
+        + returnedMatrix[12] + ", " + returnedMatrix[13] + ", " + returnedMatrix[14] + ", " + returnedMatrix[15] + "]";        
+        
+        return returnString;
+    };
 
-
+         
    matrix4x4.prototype.toWebGLMatrix = function(){
        var result = new matrix4x4();
        result.elements = [
@@ -67,7 +78,7 @@ var Matrix4x4 = (function () {
     
     matrix4x4.prototype.multiply = function (m) {
         var result = new matrix4x4(),
-            m0 = this.returnMatrix(),
+            m0 = returnedMatrix,
             m1 = m.toWebGLMatrix().returnMatrix(),
             i = 0,
             j = 0;

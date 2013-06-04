@@ -43,7 +43,7 @@
         lightSpecular,
 
         // An individual "draw object" function.
-        getVerticies,
+        getVertices,
         drawObject,
 
         // The big "draw scene" function.
@@ -116,8 +116,9 @@
     // Build the objects to display.
     objectsToDraw = [
         {
+            name: "bread",
             color: { r: 0.5, g: 0.0, b: 0.0 },
-            vertices: Shapes.toRawTriangleArray(Shapes.sqPyramid()),
+            vertices: Shapes.toRawTriangleArray(Shapes.bread()),
             mode: gl.TRIANGLES
         }
         /*
@@ -131,14 +132,14 @@
                 {
                     name: "leftBread",
                     color: breadColor, 
-                    verticies: Shapes.toRawTriangleArray(Shapes.bread()),
+                    vertices: Shapes.toRawTriangleArray(Shapes.bread()),
                     mode:gl.TRIANGLES
                     normals: Shapes.toNormalArray(Shapes.bread()),
                 },
                 {
                     name: "leftJelly",
                     color: leftJellyColor, 
-                    verticies: Shapes.toRawTriangleArray(Shapes.jelly()),
+                    vertices: Shapes.toRawTriangleArray(Shapes.jelly()),
                     mode:gl.TRIANGLES
                     normals: Shapes.toNormalArray(Shapes.jelly()),
                     specularColors: { r: 1.0, g: 1.0, b: 1.0 },
@@ -157,14 +158,14 @@
                 {
                     name: "rightBread",
                     color: breadColor, 
-                    verticies: Shapes.toRawTriangleArray(Shapes.bread()),
+                    vertices: Shapes.toRawTriangleArray(Shapes.bread()),
                     mode:gl.TRIANGLES
                     normals: Shapes.toNormalArray(Shapes.bread()),
                 },
                 {
                     name: "rightJelly",
                     color: rightJellyColor, 
-                    verticies: Shapes.toRawTriangleArray(Shapes.jelly()),
+                    vertices: Shapes.toRawTriangleArray(Shapes.jelly()),
                     mode:gl.TRIANGLES
                     normals: Shapes.toNormalArray(Shapes.jelly()),
                     specularColors: { r: 1.0, g: 1.0, b: 1.0 },
@@ -184,13 +185,14 @@
 
 
 
-/*~*~*~*~*~*~**~*~*~*~*~*~*~*~* Retrieve Verticies ~*~*~*~*~*~**~*~*~*~*~*~*~*~**/
+/*~*~*~*~*~*~**~*~*~*~*~*~*~*~* Retrieve Vertices ~*~*~*~*~*~**~*~*~*~*~*~*~*~**/
 
     // Pass the vertices to WebGL.
-   getVerticies = function(objectArray){
+   getVertices = function(objectArray){
         for (i = 0, maxi = objectArray.length; i < maxi; i += 1) {
             objectsToDraw[i].buffer = GLSLUtilities.initVertexBuffer(gl,
                     objectArray[i].vertices);
+
 
             if (!objectArray[i].colors) {
                 objectsToDraw[i].colors = [];
@@ -229,7 +231,7 @@
        */
     }
   
-    getVerticies(objectsToDraw);
+    getVertices(objectsToDraw);
 
 
 
@@ -307,9 +309,14 @@
      */
     drawObject = function (object) {
         if(object.subshapes){
-            getVerticies(object.subshapes);
+            getVertices(object.subshapes);
+            console.log("Object \"" + object.name + "\" has subshapes");
+        } else {
+            console.log("Object \"" + object.name + "\" does not not have subshapes");
         }
-        objectsToDraw.concat(object.subshapes);
+        objectsToDraw = objectsToDraw.concat(object.subshapes);
+        
+        
         // Set the varying colors.
         gl.bindBuffer(gl.ARRAY_BUFFER, object.colorBuffer);
         gl.vertexAttribPointer(vertexColor, 3, gl.FLOAT, false, 0, 0);
@@ -325,6 +332,7 @@
         mi = ms.multiply(mt).multiply(mr).toWebGLMatrix().returnMatrix();
 
         gl.uniformMatrix4fv(modelViewMatrix, gl.FALSE, new Float32Array(mi));
+        
 
 
         // Set the varying vertex coordinates.
@@ -360,7 +368,7 @@
     //Set up projection matrix.
     var m = new Matrix4x4();
     gl.uniformMatrix4fv(projectionMatrix, gl.FALSE, new Float32Array( 
-        m.frustum(-20, 20, -20, 20, 5, 200).toWebGLMatrix().returnMatrix() ) );
+        m.frustum(-20, 20, -20, 20, 5, 200).toWebGLMatrix().returnMatrix()));
 
     // Draw the initial scene.
     drawScene();

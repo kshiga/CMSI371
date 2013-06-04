@@ -24,8 +24,15 @@ $(function () {
                    8, 9, 10, 11,
                    12, 13, 14, 15],
                  "Matrix4x4 created with integers 0-15");
-        
+
+        m = new Matrix4x4(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15).toString();
+        deepEqual(m, 
+                  "[0, 1, 2, 3, \n 4, 5, 6, 7, \n 8, 9, 10, 11, \n 12, 13, 14, 15]",
+                 "Matrix4x4 created with integers 0-15");
+                
     });
+    
+    
 
     test("Multiplication Tests", function () {
         var m0 = new Matrix4x4(),
