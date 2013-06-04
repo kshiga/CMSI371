@@ -82,6 +82,10 @@ var Shapes = {
             backVertices.push(newBackVerticie);
         }
         breadVertices = breadVertices.concat(backVertices);
+        
+        for(i = 0; i < breadVertices; i++){
+            breadVertices[i] = [breadVertices[i][0] * 0.1, breadVertices[i][1] * 0.1, breadVertices[i][2] * 0.1]
+        }
 
         for(i = 0; i < breadVertices.length; i+=4){
             breadIndicies.push([i, (i + 1), (i + 2)]);            
@@ -184,27 +188,27 @@ var Shapes = {
         crustIndicies = [],
         i = 0;
 
-        frontVertices = frontVertices.concat(topLeft);
-        frontVertices =frontVertices.concat(bottomLeft);
+        frontVertices.concat(topLeft);
+        frontVertices.concat(bottomLeft);
         for(i = 0; i < topLeft.length; i++){
             var topLeftVertice = topLeft[i],
                newTRVertice = [-topLeftVertice[0], topLeftVertice[0], 0.0];
             topRight.push(newTRVertice);
         }
-        frontVertices = frontVertices.concat(topRight);
+        frontVertices.push(topRight);
         for(i = 0; i < bottomLeft.length; i++){
             var bottomLeftVertice = topLeft[i],
                newBRVertice = [-topLeftVertice[0], topLeftVertice[0], 0.0];
             bottomRight.push(newTRVertice);
         }
-        frontVertices = frontVertices.concat(bottomRight);
-        crustVertices = crustVertices.concat(frontVertices);
+        frontVertices.concat(bottomRight);
+        crustVertices.concat(frontVertices);
         for(i = 0; i < frontVertices.length; i++){
             var vertice = frontVertices[i],
                 newBackVerticie = [vertice[0], vertice[1], -1.0];
             backVertices.push(newBackVerticie);
         }
-        crustVertices = crustVertices.concat(backVertices);
+        crustVertices.concat(backVertices);
 
         for(i = 0; i < crustVertices.length; i+=4){
             crustIndicies.push([i, (i + 1), (i + 2)]);            
@@ -429,27 +433,27 @@ var Shapes = {
         jellyIndicies = [],
         i = 0;
 
-        frontVertices = frontVertices.concat(topLeft);
-        frontVertices = frontVertices.concat(bottomLeft);
+        frontVertices.concat(topLeft);
+        frontVertices.concat(bottomLeft);
         for(i = 0; i < topLeft.length; i++){
             var topLeftVertice = topLeft[i],
                newTRVertice = [-topLeftVertice[0], topLeftVertice[0], 0.0];
             topRight.push(newTRVertice);
         }
-        frontVertices = frontVertices.concat(topRight);
+        frontVertices.push(topRight);
         for(i = 0; i < bottomLeft.length; i++){
             var bottomLeftVertice = topLeft[i],
                newBRVertice = [-topLeftVertice[0], topLeftVertice[0], 0.0];
             bottomRight.push(newTRVertice);
         }
-        frontVertices = frontVertices.concat(bottomRight);
+        frontVertices.concat(bottomRight);
         jellyVertices.concat(frontVertices);
         for(i = 0; i < frontVertices.length; i++){
             var vertice = frontVertices[i],
                 newBackVerticie = [vertice[0], vertice[1], 0.0];
             backVertices.push(newBackVerticie);
         }
-        jellyVertices = jellyVertices.concat(backVertices);
+        jellyVertices.concat(backVertices);
 
         for(i = 0; i < jellyVertices.length; i+=4){
             jellyIndicies.push([i, (i + 1), (i + 2)]);            
@@ -561,7 +565,7 @@ var Shapes = {
                         indexedVertices.indices[i][j]
                     ]
                 );
-                console.log("result: " + result);
+
             }
         }
 
