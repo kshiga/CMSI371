@@ -40,7 +40,7 @@
         normalVector,
         lightPosition,
         lightDiffuse,
-        lightSpecular,
+
 
         // An individual "draw object" function.
         getVertices,
@@ -60,6 +60,8 @@
         maxj,
         k,
         maxk,
+        
+        // Matrix variables 
         ms,
         mt,
         mr,
@@ -115,6 +117,9 @@
 
 
 /* ~*~*~*~*~*~**~*~*~*~*~*~*~*~* Objects Set-up ~*~*~*~*~*~**~*~*~*~*~*~*~*~*~ */
+
+    console.log(Shapes.bread());
+
     // Build the objects to display.
     objectsToDraw = [
         {
@@ -124,6 +129,7 @@
             translate: {x: 50, y: -2, z: 0.0},
             vertices: Shapes.toRawTriangleArray(Shapes.bread()),
             mode: gl.TRIANGLES,
+            normals: Shapes.toVertexNormalArray(Shapes.bread()),
             subshapes: [
                {
                     name: "bread subshape", 
@@ -131,18 +137,20 @@
                     scale: {x: 0.5, y: 0.2, z: 12},
                     translate:{x: 0.0, y: 0.0, z: -2.0},
                     vertices: Shapes.toRawTriangleArray(Shapes.bread()),
-                    mode: gl.TRIANGLES
+                    mode: gl.TRIANGLES,
+                    normals: Shapes.toVertexNormalArray(Shapes.bread())
                 }
             ]
         },        
         
-        {
+        /*{
             name: "bread2",
             color: { r: 1.0, g: 0.1, b: 0.0 },
             scale: {x: 5, y: 5, z: 1},
             translate: {x: 10.0, y: -50.0, z: 1.0},
             vertices: Shapes.toRawTriangleArray(Shapes.bread()),
             mode: gl.TRIANGLES,
+            normals: Shapes.toVertexNormalArray(Shapes.bread()),
             subshapes: [
                {
                     name: "bread2 subshape", 
@@ -150,11 +158,12 @@
                     scale: {x: 1, y: 2, z: 4},
                     translate: {x: 0.0, y: 0.0, z: -5.0},
                     vertices: Shapes.toRawTriangleArray(Shapes.bread()),
-                    mode: gl.TRIANGLES
+                    mode: gl.TRIANGLES,
+                    normals: Shapes.toVertexNormalArray(Shapes.bread())
                 }
             ]
-        }
-
+        } */
+    
         
         /*
         {
@@ -250,6 +259,9 @@
             objectArray[i].colorBuffer = GLSLUtilities.initVertexBuffer(gl,
                     objectArray[i].colors);
                     
+            objectArray[i].normalBuffer = GLSLUtilities.initVertexBuffer(gl,
+                objectArray[i].normals);
+                    
             if(objectArray[i].subshapes){
                 for(k = 0, maxk = objectArray[i].subshapes.length; k < maxk; k+=1){
                     getVertices(objectArray[i].subshapes);
@@ -259,26 +271,6 @@
         }
         
         
-       /* if (!objectArray[i].specularColors) {
-            // Future refactor: helper function to convert a single value or
-            // array into an array of copies of itself.
-            objectsToDraw[i].specularColors = [];
-            for (j = 0, maxj = objectArray[i].vertices.length / 3;
-                    j < maxj; j += 1) {
-                objectsToDraw[i].specularColors = objectsToDraw[i].specularColors.concat(
-                    objectArray[i].specularColor.r,
-                    objectArray[i].specularColor.g,
-                    objectArray[i].specularColor.b
-                );
-            }
-        }
-        objectsToDraw[i].specularBuffer = GLSLUtilities.initVertexBuffer(gl,
-                objectArray[i].specularColors);
-
-        // One more buffer: normals.
-        objectsToDraw[i].normalBuffer = GLSLUtilities.initVertexBuffer(gl,
-                objectArray[i].normals);
-       */
         
     }
     
@@ -319,6 +311,8 @@
         alert("Fatal errors encountered; we cannot continue.");
         return;
     }
+    
+    
 
 
 
@@ -331,22 +325,25 @@
 
     // All done --- tell WebGL to use the shader program from now on.
     gl.useProgram(shaderProgram);
+ 
 
     // Hold on to the important variables within the shaders.
     vertexPosition = gl.getAttribLocation(shaderProgram, "vertexPosition");
     gl.enableVertexAttribArray(vertexPosition);
     vertexColor = gl.getAttribLocation(shaderProgram, "vertexColor");
     gl.enableVertexAttribArray(vertexColor);
+    normalVector = gl.getAttribLocation(shaderProgram, "normalVector");
+    gl.enableVertexAttribArray(normalVector);
+    
     rotationMatrix = gl.getUniformLocation(shaderProgram, "rotationMatrix");
 
     modelViewMatrix = gl.getUniformLocation(shaderProgram, "modelViewMatrix");
     projectionMatrix = gl.getUniformLocation(shaderProgram, "projectionMatrix");
     lookAtMatrix = gl.getUniformLocation(shaderProgram, "lookAtMatrix");
 
+
     lightPosition = gl.getUniformLocation(shaderProgram, "lightPosition");
     lightDiffuse = gl.getUniformLocation(shaderProgram, "lightDiffuse");
-    lightSpecular = gl.getUniformLocation(shaderProgram, "lightSpecular");
-    shininess = gl.getUniformLocation(shaderProgram, "shininess");
 
 
 
@@ -411,6 +408,13 @@
            gl.uniformMatrix4fv(modelViewMatrix, gl.FALSE, new Float32Array(currentInstanceMatrix.toWebGLMatrix().returnMatrix()));
        }
        
+       
+       // Set the varying normal vectors.
+        gl.bindBuffer(gl.ARRAY_BUFFER, object.normalBuffer);
+        gl.vertexAttribPointer(normalVector, 3, gl.FLOAT, false, 0, 0);
+
+        
+       
         // Set the varying vertex coordinates.
         gl.bindBuffer(gl.ARRAY_BUFFER, object.buffer);
         gl.vertexAttribPointer(vertexPosition, 3, gl.FLOAT, false, 0, 0);
@@ -469,9 +473,10 @@
     //gl.uniformMatrix4fv(lookAtMatrix, gl.FALSE, new Float32Array( 
       //  mc.toWebGLMatrix().returnMatrix()));    
 
+     // Set up our one light source and color.  Note the uniform3fv function.
+    gl.uniform3fv(lightPosition, [1.0, 1.0, 1.0]);
+    gl.uniform3fv(lightDiffuse, [1.0, 1.0, 1.0]);
 
-
-    //console.log("Projection Matrix: \n" + m.toString());
     
         
     // Draw the initial scene.

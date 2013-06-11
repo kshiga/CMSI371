@@ -49,7 +49,8 @@ var Shapes = {
         frontVertices = [],
         backVertices = [],
         breadVertices =[],
-        breadIndicies = [],
+        breadIndices = [],
+        indicator = [],
         k = 0,
         i = 0;
 
@@ -86,24 +87,52 @@ var Shapes = {
         k = breadVertices.length;
 
         for(i = 0; i < k; i += 4){
-            breadIndicies.push([i, (i + 1), (i + 2)]);            
-            breadIndicies.push([i, (i + 2), (i + 3)]);
+            indicator.push("face");
+            indicator.push("face");
+            breadIndices.push([i, (i + 1), (i + 2)]);            
+            breadIndices.push([i, (i + 2), (i + 3)]);
         }
 
        for (i = 0; i < k/2; i++){
            if(breadVertices[i][0] === breadVertices[i+1][0]){
-               breadIndicies.push([(i + k/2), i, (i + 2)]);
-               breadIndicies.push([(i + k/2), (i + 2), (i + k/2 + 2)]);
-           }else if(breadVertices[i][1] === breadVertices[i+1][1]){
-               breadIndicies.push([(i + k/2), (i + k/2 + 1), (i + 1)]);
-               breadIndicies.push([(i + k/2), (i + 1), i]);
+               indicator.push("vertical");
+               indicator.push("vertical");
+               breadIndices.push([(i + k/2), i, (i + 2)]);
+               if((i + k/2 + 2) > 95) {
+                   breadIndices.push([(i + k/2), (i + 2), 1]);
+               } else {
+                   breadIndices.push([(i + k/2), (i + 2), (i + k/2 + 2)]);
+               }
+               
+               
+               
+           } else if(breadVertices[i][1] === breadVertices[i+1][1]){
+               indicator.push("horizonal");
+               indicator.push("horizonal");
+               breadIndices.push([(i + k/2), (i + k/2 + 1), (i + 1)]);
+               breadIndices.push([(i + k/2), (i + 1), i]);
            }
        }
+       
+       
 
+       for(i = 0; i < breadIndices.length; i++){
+           if(breadIndices[i][0] > k || breadIndices[i][0] < 0){
+               console.log("Index " + i + " at 0 failed: " + breadIndices[i][0]);
+               console.log("Failure at a " + indicator[i]+ " line.");
+           } else if (breadIndices[i][1] > k || breadIndices[i][1] < 0){
+               console.log("Index " + i + " at 1 failed: " + breadIndices[i][1]);
+               console.log("Failure at a " + indicator[i]+ " line.");
+           } else if (breadIndices[i][2] > k || breadIndices[i][2] < 0){
+               console.log("Index " + i + " at 2 failed: " + breadIndices[i][2]);
+               console.log("Failure at a " + indicator[i]+ " line.");
+           }
+       }
+       
 
         return {
             vertices: breadVertices,
-            indices: breadIndicies
+            indices: breadIndices
         };
 
     },
@@ -188,7 +217,7 @@ var Shapes = {
         frontVertices  = [],
         backVertices = [],
         crustVertices = [],
-        crustIndicies = [],
+        crustIndices = [],
         i = 0;
 
         frontVertices.concat(topLeft);
@@ -669,16 +698,7 @@ var Shapes = {
 
         return result;
     },
-    
-    verticesToString: function (indexedVertices){
-        var returnedString = "",
-            i,
-            maxi;
-            
-         for (i = 0, maxi = indexedVertices.indices.length; i < maxi; i += 1) {
-             returnedString = returnedString +  
-             "[" +indexedVertices.vertices[i][0] + ", " + indexedVertices.vertices[i][1] + ", "+ indexedVertices.vertices[i][2] + "] \n";
-         }
-         return returnedString;           
-    }
+
+        
+
 };
