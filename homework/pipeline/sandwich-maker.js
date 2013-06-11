@@ -58,6 +58,8 @@
         maxi,
         j,
         maxj,
+        k,
+        maxk,
         ms,
         mt,
         mr,
@@ -118,7 +120,7 @@
         {
             name: "bread",
             color: { r: 0.5, g: 1.0, b: 0.0 },
-            scale: {x: 5, y: 5, z: 1},
+            scale: {x: 5, y: 7, z: 1},
             translate: {x: 50, y: -2, z: 0.0},
             vertices: Shapes.toRawTriangleArray(Shapes.bread()),
             mode: gl.TRIANGLES,
@@ -126,7 +128,7 @@
                {
                     name: "bread subshape", 
                     color: { r: 0.0, g: 1.0, b: 1.0 },
-                    scale: {x: 0.5, y: 0.2, z: 4},
+                    scale: {x: 0.5, y: 0.2, z: 12},
                     translate:{x: 0.0, y: 0.0, z: -2.0},
                     vertices: Shapes.toRawTriangleArray(Shapes.bread()),
                     mode: gl.TRIANGLES
@@ -136,33 +138,23 @@
         
         {
             name: "bread2",
-            color: { r: 1.0, g: 0.0, b: 0.0 },
-            scale: {x: -5, y: 5, z: 1},
-            translate: {x: 10.0, y: -50.0, z: 0.0},
+            color: { r: 1.0, g: 0.1, b: 0.0 },
+            scale: {x: 5, y: 5, z: 1},
+            translate: {x: 10.0, y: -50.0, z: 1.0},
             vertices: Shapes.toRawTriangleArray(Shapes.bread()),
             mode: gl.TRIANGLES,
             subshapes: [
                {
                     name: "bread2 subshape", 
-                    color: { r: 0.8, g: 0.0, b: 0.0 },
-                    scale: {x: 0.5, y: 0.2, z: 4},
+                    color: { r: 0.9, g: 0.2, b: 0.5 },
+                    scale: {x: 1, y: 2, z: 4},
+                    translate: {x: 0.0, y: 0.0, z: -5.0},
                     vertices: Shapes.toRawTriangleArray(Shapes.bread()),
                     mode: gl.TRIANGLES
                 }
             ]
         }
 
-        
-        /*
-        {
-                            name: "bread2",
-                            color: { r: 0.0, g: 1.0, b: 1.0 },
-                            translate:{x: 0.0, y: 0.0, z: 0.0},
-                            vertices: Shapes.toRawTriangleArray(Shapes.bread()),
-                            mode: gl.TRIANGLES
-                        }*/
-        
-        
         
         /*
         {
@@ -233,15 +225,16 @@
     // Pass the vertices to WebGL.
    getVertices = function(objectArray){
         var i,
-            j;
+            maxi,
+            j,
+            maxj,
+            k,
+            maxk;
             
         for (i = 0, maxi = objectArray.length; i < maxi; i += 1) {
-            //console.log("getting vertices of " + objectArray[i].name + ": " + objectArray[i]);
-       
             objectArray[i].buffer = GLSLUtilities.initVertexBuffer(gl,
                     objectArray[i].vertices);
             
-            //set default values         
             if (!objectArray[i].colors) {
                 objectArray[i].colors = [];
                 for (j = 0, maxj = objectArray[i].vertices.length / 3;
@@ -253,16 +246,15 @@
                     );
                 }
             }
+            
             objectArray[i].colorBuffer = GLSLUtilities.initVertexBuffer(gl,
                     objectArray[i].colors);
                     
             if(objectArray[i].subshapes){
-                //console.log(objectArray[i].subshapes);
-                getVertices(objectArray[i].subshapes);
-                //console.log("Object \"" + objectArray[i].name + "\" has subshapes");
-            } else {
-                //console.log("Object \"" + objectArray[i].name + "\" does not not have subshapes");
-            }
+                for(k = 0, maxk = objectArray[i].subshapes.length; k < maxk; k+=1){
+                    getVertices(objectArray[i].subshapes);
+                }
+            } 
              
         }
         
@@ -290,9 +282,10 @@
         
     }
     
-  
+    //get all the vertices before anything else  
     getVertices(objectsToDraw);
-    
+  
+
 
 
 
@@ -404,21 +397,20 @@
  
         console.log(object);
         
+       
         // Set the varying colors.
         gl.bindBuffer(gl.ARRAY_BUFFER, object.colorBuffer);
         gl.vertexAttribPointer(vertexColor, 3, gl.FLOAT, false, 0, 0);
-        
+       
+       
        currentInstanceMatrix = getInstanceTransform(object);
        
        if(parentmi){
            currentInstanceMatrix = currentInstanceMatrix.multiply(parentmi);
            console.log("Subshape NEW Instance Matrix:\n" + currentInstanceMatrix.toString());
            gl.uniformMatrix4fv(modelViewMatrix, gl.FALSE, new Float32Array(currentInstanceMatrix.toWebGLMatrix().returnMatrix()));
-       } 
+       }
        
-            
-
-
         // Set the varying vertex coordinates.
         gl.bindBuffer(gl.ARRAY_BUFFER, object.buffer);
         gl.vertexAttribPointer(vertexPosition, 3, gl.FLOAT, false, 0, 0);
@@ -439,7 +431,7 @@
         // Clear the display.
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         
-         gl.uniformMatrix4fv(rotationMatrix, gl.FALSE, new Float32Array(m.rotate(currentRotation, 1, 0, 0).toWebGLMatrix().returnMatrix()));
+         gl.uniformMatrix4fv(rotationMatrix, gl.FALSE, new Float32Array(m.rotate(currentRotation, 0, 1, 0).toWebGLMatrix().returnMatrix()));
 
 
         // Display the objects.
@@ -479,7 +471,7 @@
 
 
 
-    console.log("Projection Matrix: \n" + m.toString());
+    //console.log("Projection Matrix: \n" + m.toString());
     
         
     // Draw the initial scene.
@@ -498,6 +490,8 @@
                 }
             }, 30);
         }
+        
+       
     });
 
     
