@@ -78,7 +78,7 @@ var Matrix4x4 = (function () {
     
     matrix4x4.prototype.multiply = function (m) {
         var result = new matrix4x4(),
-            m0 = returnedMatrix,
+            m0 = this.returnMatrix(),
             m1 = m.toWebGLMatrix().returnMatrix(),
             i = 0,
             j = 0;
@@ -242,6 +242,24 @@ var Matrix4x4 = (function () {
         return result;  
     }
     
+    matrix4x4.prototype.lookAt = function (px, py, pz, qx, qy, qz, ux, uy, uz){
+        var pVector = new Vector(px, py, pz),
+            qVector = new Vector(qx, qy, qz),
+            upVector = new Vector(ux, uy, uz),
+            z = pVector.subtract(qVector).normalize(),
+            y = (upVector.subtract(upVector.projection(z))).normalize(),
+            x = y.cross(z),
+            returnMatrix = new Matrix4x4();
+            
+        returnMatrix.elements = [ x.x(), y.x(), z.x(), -(pVector.dot(x)), 
+                                  x.y(), y.y(), z.y(), -(pVector.dot(y)),
+                                  x.z(), y.z(), z.z(), -(pVector.dot(z)),
+                                      0,     0,     0,            1 ]; 
+        return returnMatrix;           
+    }
+    
+    
+
 
  
 

@@ -44,9 +44,15 @@
 
         <!-- Shapes is a library that generates "canned" shapes. -->
         <script src="shapes.js"></script>
+        
+        <!-- Vector is a library of vectors that provide vector manipulations. -->
+        <script src="vector/vector.js"></script>
 
-        <!-- Matrix is a library of matricies that provide transforms. -->
+        <!-- Matrix is a library of matrices that provide transforms. -->
         <script src="matrix/matrix.js"></script>
+        
+        
+
 
 
         <script src='spectrum.js'></script>
@@ -73,9 +79,11 @@
             varying vec4 finalVertexColor;
             uniform mat4 projectionMatrix;
             uniform mat4 modelViewMatrix;
-
+            uniform mat4 lookAtMatrix;
+            uniform mat4 rotationMatrix;
+            
             void main(void) {
-                gl_Position = projectionMatrix * modelViewMatrix * vec4(vertexPosition, 1.0);
+                gl_Position = projectionMatrix * /* lookAtMatrix * */rotationMatrix * modelViewMatrix * vec4(vertexPosition, 1.0);
                 finalVertexColor = vec4(vertexColor, 1.0);
             }
 

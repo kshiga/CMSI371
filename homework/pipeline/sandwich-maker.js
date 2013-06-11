@@ -9,7 +9,6 @@
 
 
 
-
 (function (canvas) {
 
 
@@ -31,6 +30,7 @@
 
         modelViewMatrix,
         projectionMatrix,
+        rotationMatrix,
         vertexPosition,
         vertexColor,
         vertexDiffuseColor,
@@ -117,10 +117,53 @@
     objectsToDraw = [
         {
             name: "bread",
-            color: { r: 0.5, g: 0.0, b: 0.0 },
+            color: { r: 0.5, g: 1.0, b: 0.0 },
+            scale: {x: 5, y: 5, z: 1},
+            translate: {x: 50, y: -2, z: 0.0},
             vertices: Shapes.toRawTriangleArray(Shapes.bread()),
-            mode: gl.TRIANGLES
+            mode: gl.TRIANGLES,
+            subshapes: [
+               {
+                    name: "bread subshape", 
+                    color: { r: 0.0, g: 1.0, b: 1.0 },
+                    scale: {x: 0.5, y: 0.2, z: 4},
+                    translate:{x: 0.0, y: 0.0, z: -2.0},
+                    vertices: Shapes.toRawTriangleArray(Shapes.bread()),
+                    mode: gl.TRIANGLES
+                }
+            ]
+        },        
+        
+        {
+            name: "bread2",
+            color: { r: 1.0, g: 0.0, b: 0.0 },
+            scale: {x: -5, y: 5, z: 1},
+            translate: {x: 10.0, y: -50.0, z: 0.0},
+            vertices: Shapes.toRawTriangleArray(Shapes.bread()),
+            mode: gl.TRIANGLES,
+            subshapes: [
+               {
+                    name: "bread2 subshape", 
+                    color: { r: 0.8, g: 0.0, b: 0.0 },
+                    scale: {x: 0.5, y: 0.2, z: 4},
+                    vertices: Shapes.toRawTriangleArray(Shapes.bread()),
+                    mode: gl.TRIANGLES
+                }
+            ]
         }
+
+        
+        /*
+        {
+                            name: "bread2",
+                            color: { r: 0.0, g: 1.0, b: 1.0 },
+                            translate:{x: 0.0, y: 0.0, z: 0.0},
+                            vertices: Shapes.toRawTriangleArray(Shapes.bread()),
+                            mode: gl.TRIANGLES
+                        }*/
+        
+        
+        
         /*
         {
             name: "leftSlice",
@@ -189,16 +232,21 @@
 
     // Pass the vertices to WebGL.
    getVertices = function(objectArray){
+        var i,
+            j;
+            
         for (i = 0, maxi = objectArray.length; i < maxi; i += 1) {
-            objectsToDraw[i].buffer = GLSLUtilities.initVertexBuffer(gl,
+            //console.log("getting vertices of " + objectArray[i].name + ": " + objectArray[i]);
+       
+            objectArray[i].buffer = GLSLUtilities.initVertexBuffer(gl,
                     objectArray[i].vertices);
-
-
+            
+            //set default values         
             if (!objectArray[i].colors) {
-                objectsToDraw[i].colors = [];
+                objectArray[i].colors = [];
                 for (j = 0, maxj = objectArray[i].vertices.length / 3;
                         j < maxj; j += 1) {
-                    objectsToDraw[i].colors = objectArray[i].colors.concat(
+                    objectArray[i].colors = objectArray[i].colors.concat(
                         objectArray[i].color.r,
                         objectArray[i].color.g,
                         objectArray[i].color.b
@@ -207,7 +255,17 @@
             }
             objectArray[i].colorBuffer = GLSLUtilities.initVertexBuffer(gl,
                     objectArray[i].colors);
+                    
+            if(objectArray[i].subshapes){
+                //console.log(objectArray[i].subshapes);
+                getVertices(objectArray[i].subshapes);
+                //console.log("Object \"" + objectArray[i].name + "\" has subshapes");
+            } else {
+                //console.log("Object \"" + objectArray[i].name + "\" does not not have subshapes");
+            }
+             
         }
+        
         
        /* if (!objectArray[i].specularColors) {
             // Future refactor: helper function to convert a single value or
@@ -229,9 +287,12 @@
         objectsToDraw[i].normalBuffer = GLSLUtilities.initVertexBuffer(gl,
                 objectArray[i].normals);
        */
+        
     }
+    
   
     getVertices(objectsToDraw);
+    
 
 
 
@@ -287,6 +348,7 @@
 
     modelViewMatrix = gl.getUniformLocation(shaderProgram, "modelViewMatrix");
     projectionMatrix = gl.getUniformLocation(shaderProgram, "projectionMatrix");
+    lookAtMatrix = gl.getUniformLocation(shaderProgram, "lookAtMatrix");
 
     lightPosition = gl.getUniformLocation(shaderProgram, "lightPosition");
     lightDiffuse = gl.getUniformLocation(shaderProgram, "lightDiffuse");
@@ -295,7 +357,7 @@
 
 
 
-
+   
 
 
 
@@ -304,58 +366,97 @@
 
 
 /* ~*~*~*~*~*~**~*~*~*~*~*~*~*~* Drawing Functions ~*~*~*~*~*~**~*~*~*~*~*~*~*~*~ */
+
+    /*
+     * Helper function that returns an object's instance transform matrix.
+     */
+    
+    getInstanceTransform = function(object){
+        var ms = new Matrix4x4();
+            mt = new Matrix4x4();
+            mr = new Matrix4x4();
+            mi = new Matrix4x4();
+        
+        
+        ms = object.scale ?  ms.scale(object.scale.x, object.scale.y, object.scale.z): ms.scale(1, 1, 1);
+        console.log("\""+ object.name +"\" " + "Scale Matrix: \n" + ms.toString());
+        mt = object.translate ? mt.translate(object.translate.x, object.translate.y, object.translate.z) : mt.translate(0, 0, 0);
+        console.log("\""+ object.name +"\" " + "Translate Matrix: \n" + mt.toString());
+        mr = object.rotate ? mr.rotate(currentRotation, object.rotate.x, object.rotate.y, object.rotate.z): mr;
+        console.log("\""+ object.name +"\" " + "Rotate Matrix: \n" + mr.toString());
+        mi = mt.multiply(mr).multiply(ms);
+        console.log("\""+ object.name +"\" " + "Instance Matrix: \n" + mi.toString());
+
+        gl.uniformMatrix4fv(modelViewMatrix, gl.FALSE, new Float32Array(mi.toWebGLMatrix().returnMatrix()));
+        
+        return mi;
+        
+    }
+
+
+
     /*
      * Displays an individual object and extracts its subshapes to be drawn.
      */
-    drawObject = function (object) {
-        if(object.subshapes){
-            getVertices(object.subshapes);
-            console.log("Object \"" + object.name + "\" has subshapes");
-        } else {
-            console.log("Object \"" + object.name + "\" does not not have subshapes");
-        }
-        objectsToDraw = objectsToDraw.concat(object.subshapes);
-        
+    drawObject = function (object, parentmi) {
+        var i,
+            currentInstanceMatrix;       
+ 
+        console.log(object);
         
         // Set the varying colors.
         gl.bindBuffer(gl.ARRAY_BUFFER, object.colorBuffer);
         gl.vertexAttribPointer(vertexColor, 3, gl.FLOAT, false, 0, 0);
         
-        ms = new Matrix4x4();
-        mt = new Matrix4x4();
-        mr = new Matrix4x4();
-        
-        
-        ms = object.scale ?  ms.scale(object.scale.x, object.scale.y, object.scale.z): ms.scale(1, 1, 1);
-        mt = object.translate ? mt.translate(object.translate.x, object.translate.y, object.translate.z) : mt.translate(0, 0, 0);
-        mr = object.axis ? mr.rotate(currentRotation, object.axis.x, object.axis.y, object.axis.z): mr;
-        mi = ms.multiply(mt).multiply(mr).toWebGLMatrix().returnMatrix();
-
-        gl.uniformMatrix4fv(modelViewMatrix, gl.FALSE, new Float32Array(mi));
-        
+       currentInstanceMatrix = getInstanceTransform(object);
+       
+       if(parentmi){
+           currentInstanceMatrix = currentInstanceMatrix.multiply(parentmi);
+           console.log("Subshape NEW Instance Matrix:\n" + currentInstanceMatrix.toString());
+           gl.uniformMatrix4fv(modelViewMatrix, gl.FALSE, new Float32Array(currentInstanceMatrix.toWebGLMatrix().returnMatrix()));
+       } 
+       
+            
 
 
         // Set the varying vertex coordinates.
         gl.bindBuffer(gl.ARRAY_BUFFER, object.buffer);
         gl.vertexAttribPointer(vertexPosition, 3, gl.FLOAT, false, 0, 0);
         gl.drawArrays(object.mode, 0, object.vertices.length / 3);
+        
+        if(object.subshapes){            
+            for(i = 0; i < object.subshapes.length; i++){
+                drawObject(object.subshapes[i], currentInstanceMatrix);
+            }            
+        }
     };
 
     /*
      * Displays the scene.
      */
     drawScene = function () {
+        var m = new Matrix4x4
         // Clear the display.
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        
+         gl.uniformMatrix4fv(rotationMatrix, gl.FALSE, new Float32Array(m.rotate(currentRotation, 1, 0, 0).toWebGLMatrix().returnMatrix()));
 
 
         // Display the objects.
         for (i = 0, maxi = objectsToDraw.length; i < maxi; i += 1) {
+            console.log("\n *~*~*~*~*~*~*~*~*~*~*~* Drawing \"" + objectsToDraw[i].name + "\" *~*~*~*~*~*~*~*~*~*~*~*~*~*~\n");
             drawObject(objectsToDraw[i]);
+            console.log("\n *~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~\n");
+
         }
+        
+         
+        
 
         // All done.
         gl.flush();
+        
+        console.log("Scene has been drawn.");
     };
 
 
@@ -367,13 +468,39 @@
 /* ~*~*~*~*~*~**~*~*~*~*~*~*~*~* Scene Creation  ~*~*~*~*~*~**~*~*~*~*~*~*~*~*~ */
     //Set up projection matrix.
     var m = new Matrix4x4();
+        mc = new Matrix4x4(); 
+    
+    m = m.ortho(-100, 100, -100, 100, -100, 100);
+    //mc = mc.lookAt(1, 0, 0, 0, 0, 0, 0, 1, 0);
     gl.uniformMatrix4fv(projectionMatrix, gl.FALSE, new Float32Array( 
-        m.frustum(-20, 20, -20, 20, 5, 200).toWebGLMatrix().returnMatrix()));
+        m.toWebGLMatrix().returnMatrix()));
+    //gl.uniformMatrix4fv(lookAtMatrix, gl.FALSE, new Float32Array( 
+      //  mc.toWebGLMatrix().returnMatrix()));    
 
+
+
+    console.log("Projection Matrix: \n" + m.toString());
+    
+        
     // Draw the initial scene.
     drawScene();
 
+    $(canvas).click(function () {
+        if (currentInterval) {
+            clearInterval(currentInterval);
+            currentInterval = null;
+        } else {
+            currentInterval = setInterval(function () {
+                currentRotation += 1.0;
+                drawScene();
+                if (currentRotation >= 360.0) {
+                    currentRotation -= 360.0;
+                }
+            }, 30);
+        }
+    });
 
+    
 
 
 
