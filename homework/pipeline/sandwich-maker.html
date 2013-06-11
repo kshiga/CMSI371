@@ -112,7 +112,8 @@
                 // OK, finally assign things.  Note the scale cheat  :-P
                 gl_Position = projectionMatrix * RotationMatrix *
                         modelViewMatrix * vec4(2.0 * vertexPosition, 1.0);
-                finalVertexColor = vec4(finalDiffuse.rgb, 1.0);
+                //finalVertexColor = vec4(finalDiffuse.rgb, 1.0);
+                finalVertexColor = vec4(0.0, 1.0, 0.0, 1.0);
             }
         </script>
 

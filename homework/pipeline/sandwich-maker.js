@@ -117,9 +117,6 @@
 
 
 /* ~*~*~*~*~*~**~*~*~*~*~*~*~*~* Objects Set-up ~*~*~*~*~*~**~*~*~*~*~*~*~*~*~ */
-
-    console.log(Shapes.bread());
-
     // Build the objects to display.
     objectsToDraw = [
         {
@@ -474,7 +471,7 @@
       //  mc.toWebGLMatrix().returnMatrix()));    
 
      // Set up our one light source and color.  Note the uniform3fv function.
-    gl.uniform3fv(lightPosition, [1.0, 1.0, 1.0]);
+    gl.uniform3fv(lightPosition, [10.0, 10.0, 10.0]);
     gl.uniform3fv(lightDiffuse, [1.0, 1.0, 1.0]);
 
     

@@ -98,6 +98,7 @@ var Shapes = {
                indicator.push("vertical");
                indicator.push("vertical");
                breadIndices.push([(i + k/2), i, (i + 2)]);
+               
                if((i + k/2 + 2) > 95) {
                    breadIndices.push([(i + k/2), (i + 2), 1]);
                } else {
@@ -128,6 +129,11 @@ var Shapes = {
                console.log("Failure at a " + indicator[i]+ " line.");
            }
        }
+       
+       console.log ({
+            vertices: breadVertices,
+            indices: breadIndices
+        });
        
 
         return {
@@ -697,7 +703,7 @@ var Shapes = {
         }
 
         return result;
-    },
+    }
 
         
 
