@@ -250,21 +250,23 @@ var Shapes = {
         crustVertices = crustVertices.concat(backVertices);
         
         k = crustVertices.length;
+       
 
         for(i = 0; i < k; i += 4){
             crustIndices.push([i, (i + 1), (i + 2)]);            
             crustIndices.push([i, (i + 2), (i + 3)]);
         }
 
-       for (i = 0; i < k/2; i++){
+       for (i = 0; i < (k/2); i++){
            if(crustVertices[i][0] === crustVertices[i+1][0]){
                
-               if( ! (i === 63 || i === 31 )) {
+               if( ! (i === 63 || i === 31  )) {
                   crustIndices.push([(i + k/2), i, (i + 2)]);  
                   crustIndices.push([(i + k/2), (i + 2), (i + k/2 + 2)]);
                }  else {
-                   crustIndices.push([(i + k/2), (i + 2), 63]);
-                   console.log([(i + k/2), (i + 2), i]); 
+                   crustIndices.push([(i + k/2 - 3), (i - 3), i]);
+                   crustIndices.push([(i + k/2 - 3), (i + k/2), i]);
+                   console.log("YO, end at " + i); 
                }
                
            } else if(crustVertices[i][1] === crustVertices[i+1][1]){
