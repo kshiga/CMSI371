@@ -94,7 +94,7 @@ var Shapes = {
            if(breadVertices[i][0] === breadVertices[i+1][0]){
                breadIndices.push([(i + k/2), i, (i + 2)]);
                
-               if((i + k/2 + 2) > 95) {
+               if((i + k/2 + 2) > k) {
                    breadIndices.push([(i + k/2), (i + 2), 1]);
                } else {
                    breadIndices.push([(i + k/2), (i + 2), (i + k/2 + 2)]);
@@ -266,7 +266,6 @@ var Shapes = {
                }  else {
                    crustIndices.push([(i + k/2 - 3), (i - 3), i]);
                    crustIndices.push([(i + k/2 - 3), (i + k/2), i]);
-                   console.log("YO, end at " + i); 
                }
                
            } else if(crustVertices[i][1] === crustVertices[i+1][1]){
@@ -300,7 +299,6 @@ var Shapes = {
         };
 
     },
-
 
     cylinder: function () {
         var h = 0.5,
@@ -445,45 +443,35 @@ var Shapes = {
 
     jelly: function () {
         var topLeft = [
-                [0.0, 4.0, 1.0],
-                [-1.5, 4.0, 1.0],
-                [-1.5, 0.0, 1.0],
-                [0.0, 0.0, 1.0],
-
-                [-1.5, 3.5, 1.0],
-                [-2.25, 3.5, 1.0],
-                [-2.25, 0.0, 1.0],
-                [-1.5, 0.0, 1.0],
-
-                [-2.25, 3.0, 1.0],
-                [-2.5, 3.0, 1.0],
-                [-2.5, 0.0, 1.0],
-                [-2.25, 0.0, 1.0],
-                
-                [-2.5, 2.5, 1.0],
-                [-3.0, 2.5, 1.0],
-                [-3.0, 0.0, 1.0],
-                [-2.5, 0.0, 1.0],
-
-                [-3.0, 1.8, 1.0],
-                [-3.3, 1.8, 1.0],
-                [-3.3, 0.0, 1.0],
-                [-3.0, 0.0, 1.0],
-
-                [-3.3, 1.0, 1.0],
-                [-4.0, 1.0, 1.0],
-                [-4.0, 0.0, 1.0],
-                [-3.3, 0.0, 1.0]
-            ],
-
-           bottomLeft = [
                 [0.0, 0.0, 1.0],
                 [-1.8, 0.0, 1.0],
-                [-1.8, -3.5, 1.0],
-                [0.0, -3.5, 1.0],
+                [-1.8, 3.5, 1.0],
+                [0.0, 3.5, 1.0],
 
                 [-1.8, 0.0, 1.0],
                 [-3.15, 0.0, 1.0],
+                [-3.15, 3.2, 1.0],
+                [-1.8, 3.2, 1.0],
+
+                [-3.15, 0.0, 1.0],
+                [-3.5, 0.0, 1.0],
+                [-3.5, 2.9, 1.0],
+                [-3.15, 2.9, 1.0],
+
+                [-3.5, 0.0, 1.0],
+                [-4.0, 0.0, 1.0],
+                [-4.0, 1.6, 1.0],
+                [-3.5, 1.6, 1.0]
+            ],
+
+           bottomLeft = [
+                [0.0, 1.0, 1.0],
+                [-1.8, 1.0, 1.0],
+                [-1.8, -4.5, 1.0],
+                [0.0, -4.5, 1.0],
+
+                [-1.8, 1.0, 1.0],
+                [-3.15, 1.0, 1.0],
                 [-3.15, -3.2, 1.0],
                 [-1.8, -3.2, 1.0],
 
@@ -503,47 +491,87 @@ var Shapes = {
         frontVertices = [],
         backVertices = [],
         jellyVertices = [],
-        jellyIndicies = [],
+        jellyIndices= [],
+        k = 0,
         i = 0;
 
-        frontVertices.concat(topLeft);
-        frontVertices.concat(bottomLeft);
+        frontVertices = frontVertices.concat(topLeft);
+
+        
+        frontVertices = frontVertices.concat(bottomLeft);
+
+        
         for(i = 0; i < topLeft.length; i++){
             var topLeftVertice = topLeft[i],
-               newTRVertice = [-topLeftVertice[0], topLeftVertice[0], 0.0];
+               newTRVertice = [-topLeftVertice[0], topLeftVertice[1], 0.0];
             topRight.push(newTRVertice);
         }
-        frontVertices.push(topRight);
+     
+        frontVertices = frontVertices.concat(topRight);
+
+        
         for(i = 0; i < bottomLeft.length; i++){
             var bottomLeftVertice = bottomLeft[i],
                newBRVertice = [-bottomLeftVertice[0], bottomLeftVertice[1], 0.0];
             bottomRight.push(newBRVertice);
         }
-        frontVertices.concat(bottomRight);
-        jellyVertices.concat(frontVertices);
+        frontVertices = frontVertices.concat(bottomRight);
+        
+        jellyVertices = jellyVertices.concat(frontVertices);
         for(i = 0; i < frontVertices.length; i++){
             var vertice = frontVertices[i],
-                newBackVerticie = [vertice[0], vertice[1], 0.0];
+                newBackVerticie = [vertice[0], vertice[1], -1.0];
             backVertices.push(newBackVerticie);
         }
-        jellyVertices.concat(backVertices);
+        jellyVertices = jellyVertices.concat(backVertices);
+        
+        k = jellyVertices.length;
 
-        for(i = 0; i < jellyVertices.length; i+=4){
-            jellyIndicies.push([i, (i + 1), (i + 2)]);            
-            jellyIndicies.push([i, (i + 2), (i + 3)]);
+        for(i = 0; i < k; i += 4){
+            jellyIndices.push([i, (i + 1), (i + 2)]);            
+            jellyIndices.push([i, (i + 2), (i + 3)]);
         }
 
-        for(i = (jellyVertices.length/2); i < jellyVertices.length; i+=4){
-            jellyIndicies.push([i, (i + 1), (i - (jellyVertices.length/2) + 1)]);            
-            jellyIndicies.push([i, (i - (jellyVertices.length/2) + 1), (i - (jellyVertices.length/2))]);
-        }
+       for (i = 0; i < k/2; i++){
+           if(jellyVertices[i][0] === jellyVertices[i+1][0]){
+               jellyIndices.push([(i + k/2), i, (i + 2)]);
+               
+               if((i + k/2 + 2) > k) {
+                   jellyIndices.push([(i + k/2), (i + 2), 1]);
+               } else {
+                   jellyIndices.push([(i + k/2), (i + 2), (i + k/2 + 2)]);
+               }
+               
+               
+               
+           } else if(jellyVertices[i][1] === jellyVertices[i+1][1]){
+               jellyIndices.push([(i + k/2), (i + k/2 + 1), (i + 1)]);
+               jellyIndices.push([(i + k/2), (i + 1), i]);
+           }
+       }
+       
+       
 
-
-        return{
+       for(i = 0; i < jellyIndices.length; i++){
+           if(jellyIndices[i][0] > k || jellyIndices[i][0] < 0){
+               console.log("Index " + i + " at 0 failed: " + jellyIndices[i][0]);
+           } else if (jellyIndices[i][1] > k || jellyIndices[i][1] < 0){
+               console.log("Index " + i + " at 1 failed: " + jellyIndices[i][1]);
+           } else if (jellyIndices[i][2] > k || jellyIndices[i][2] < 0){
+               console.log("Index " + i + " at 2 failed: " + jellyIndices[i][2]);
+           }
+       }
+       
+       console.log ({
             vertices: jellyVertices,
-            indices: jellyIndicies
-        }
+            indices: jellyIndices
+        });
+       
 
+        return {
+            vertices: jellyVertices,
+            indices: jellyIndices
+        };
     },
 
 

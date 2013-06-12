@@ -122,22 +122,28 @@
         {
             name: "bread",
             color: { r: 0.5, g: 1.0, b: 0.0 },
-            scale: {x: 5, y: 5, z: 5},
-            translate: {x: 50, y: -2, z: 0.0},
-            vertices: Shapes.toRawTriangleArray(Shapes.crust()),
+            scale: {x: 2, y: 2, z: 2},
+            translate: {x: 0.0, y: 0.0, z: 0.0},
+            vertices: Shapes.toRawTriangleArray(Shapes.bread()),
             mode: gl.TRIANGLES,
-            normals: Shapes.toVertexNormalArray(Shapes.crust()),
-            /*subshapes: [
+            normals: Shapes.toVertexNormalArray(Shapes.bread()),
+            subshapes: [
                {
-                    name: "bread subshape", 
+                    name: "crust subshape", 
                     color: { r: 0.0, g: 1.0, b: 1.0 },
-                    scale: {x: 0.5, y: 0.2, z: 12},
-                    translate:{x: 0.0, y: 0.0, z: -2.0},
                     vertices: Shapes.toRawTriangleArray(Shapes.crust()),
                     mode: gl.TRIANGLES,
                     normals: Shapes.toVertexNormalArray(Shapes.crust())
+                },
+                {
+                    name: "jelly subshape", 
+                    color: { r: 1.0, g: 0.0, b: 0.8 },
+                    translate: {x: 4.0, y: 0.0, z: -5.0},
+                    vertices: Shapes.toRawTriangleArray(Shapes.jelly()),
+                    mode: gl.TRIANGLES,
+                    normals: Shapes.toVertexNormalArray(Shapes.jelly())
                 }
-            ]*/
+            ]
         },        
         
        /* {
@@ -471,7 +477,7 @@
       //  mc.toWebGLMatrix().returnMatrix()));    
 
      // Set up our one light source and color.  Note the uniform3fv function.
-    gl.uniform3fv(lightPosition, [70.0, 150.0, 30.0]);
+    gl.uniform3fv(lightPosition, [0.0, 10.0, -100.0]);
     gl.uniform3fv(lightDiffuse, [1.0, 1.0, 1.0]);
 
     
