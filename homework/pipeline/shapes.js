@@ -50,7 +50,6 @@ var Shapes = {
         backVertices = [],
         breadVertices =[],
         breadIndices = [],
-        indicator = [],
         k = 0,
         i = 0;
 
@@ -87,16 +86,12 @@ var Shapes = {
         k = breadVertices.length;
 
         for(i = 0; i < k; i += 4){
-            indicator.push("face");
-            indicator.push("face");
             breadIndices.push([i, (i + 1), (i + 2)]);            
             breadIndices.push([i, (i + 2), (i + 3)]);
         }
 
        for (i = 0; i < k/2; i++){
            if(breadVertices[i][0] === breadVertices[i+1][0]){
-               indicator.push("vertical");
-               indicator.push("vertical");
                breadIndices.push([(i + k/2), i, (i + 2)]);
                
                if((i + k/2 + 2) > 95) {
@@ -108,8 +103,6 @@ var Shapes = {
                
                
            } else if(breadVertices[i][1] === breadVertices[i+1][1]){
-               indicator.push("horizonal");
-               indicator.push("horizonal");
                breadIndices.push([(i + k/2), (i + k/2 + 1), (i + 1)]);
                breadIndices.push([(i + k/2), (i + 1), i]);
            }
@@ -120,13 +113,10 @@ var Shapes = {
        for(i = 0; i < breadIndices.length; i++){
            if(breadIndices[i][0] > k || breadIndices[i][0] < 0){
                console.log("Index " + i + " at 0 failed: " + breadIndices[i][0]);
-               console.log("Failure at a " + indicator[i]+ " line.");
            } else if (breadIndices[i][1] > k || breadIndices[i][1] < 0){
                console.log("Index " + i + " at 1 failed: " + breadIndices[i][1]);
-               console.log("Failure at a " + indicator[i]+ " line.");
            } else if (breadIndices[i][2] > k || breadIndices[i][2] < 0){
                console.log("Index " + i + " at 2 failed: " + breadIndices[i][2]);
-               console.log("Failure at a " + indicator[i]+ " line.");
            }
        }
        
@@ -224,44 +214,88 @@ var Shapes = {
         backVertices = [],
         crustVertices = [],
         crustIndices = [],
+        k = 0,
         i = 0;
 
-        frontVertices.concat(topLeft);
-        frontVertices.concat(bottomLeft);
+        frontVertices = frontVertices.concat(topLeft);
+
+        
+        frontVertices = frontVertices.concat(bottomLeft);
+
+        
         for(i = 0; i < topLeft.length; i++){
             var topLeftVertice = topLeft[i],
-               newTRVertice = [-topLeftVertice[0], topLeftVertice[0], 0.0];
+               newTRVertice = [-topLeftVertice[0], topLeftVertice[1], 0.0];
             topRight.push(newTRVertice);
         }
-        frontVertices.push(topRight);
+     
+        frontVertices = frontVertices.concat(topRight);
+
+        
         for(i = 0; i < bottomLeft.length; i++){
             var bottomLeftVertice = bottomLeft[i],
                newBRVertice = [-bottomLeftVertice[0], bottomLeftVertice[1], 0.0];
             bottomRight.push(newBRVertice);
         }
-        frontVertices.concat(bottomRight);
-        crustVertices.concat(frontVertices);
+        frontVertices = frontVertices.concat(bottomRight);
+        
+        crustVertices = crustVertices.concat(frontVertices);
+        
         for(i = 0; i < frontVertices.length; i++){
             var vertice = frontVertices[i],
                 newBackVerticie = [vertice[0], vertice[1], -1.0];
             backVertices.push(newBackVerticie);
         }
-        crustVertices.concat(backVertices);
+        
+        crustVertices = crustVertices.concat(backVertices);
+        
+        k = crustVertices.length;
 
-        for(i = 0; i < crustVertices.length; i+=4){
-            crustIndicies.push([i, (i + 1), (i + 2)]);            
-            crustIndicies.push([i, (i + 2), (i + 3)]);
+        for(i = 0; i < k; i += 4){
+            crustIndices.push([i, (i + 1), (i + 2)]);            
+            crustIndices.push([i, (i + 2), (i + 3)]);
         }
 
-        for(i = (crustVertices.length/2); i < crustVertices.length; i+=4){
-            crustIndicies.push([i, (i + 1), (i - (crustVertices.length/2) + 1)]);            
-            crustIndicies.push([i, (i - (crustVertices.length/2) + 1), (i - (crustVertices.length/2))]);
-        }
+       for (i = 0; i < k/2; i++){
+           if(crustVertices[i][0] === crustVertices[i+1][0]){
+               
+               if( ! (i === 63 || i === 31 )) {
+                  crustIndices.push([(i + k/2), i, (i + 2)]);  
+                  crustIndices.push([(i + k/2), (i + 2), (i + k/2 + 2)]);
+               }  else {
+                   crustIndices.push([(i + k/2), (i + 2), 63]);
+                   console.log([(i + k/2), (i + 2), i]); 
+               }
+               
+           } else if(crustVertices[i][1] === crustVertices[i+1][1]){
+               crustIndices.push([(i + k/2), (i + k/2 + 1), (i + 1)]);
+               crustIndices.push([(i + k/2), (i + 1), i]);
+           }
+           
+       }
+       
+       
 
-        return{
+       for(i = 0; i < crustIndices.length; i++){
+           if(crustIndices[i][0] > k || crustIndices[i][0] < 0){
+               console.log("Index " + i + " at 0 failed: " + crustIndices[i][0]);
+           } else if (crustIndices[i][1] > k || crustIndices[i][1] < 0){
+               console.log("Index " + i + " at 1 failed: " + crustIndices[i][1]);
+           } else if (crustIndices[i][2] > k || crustIndices[i][2] < 0){
+               console.log("Index " + i + " at 2 failed: " + crustIndices[i][2]);
+           }
+       }
+       
+       console.log ({
             vertices: crustVertices,
-            indices: crustIndicies
-        }
+            indices: crustIndices
+        });
+       
+
+        return {
+            vertices: crustVertices,
+            indices: crustIndices
+        };
 
     },
 
