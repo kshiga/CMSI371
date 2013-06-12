@@ -81,7 +81,7 @@
             // The should-now-be-familiar matrices.
             uniform mat4 projectionMatrix;
             uniform mat4 modelViewMatrix;
-            uniform mat4 RotationMatrix;
+            uniform mat4 rotationMatrix;
             
 
             // We still output color...
@@ -110,10 +110,9 @@
                 vec3 finalDiffuse = kd * diffuseProduct;
 
                 // OK, finally assign things.  Note the scale cheat  :-P
-                gl_Position = projectionMatrix * RotationMatrix *
+                gl_Position = projectionMatrix * rotationMatrix *
                         modelViewMatrix * vec4(2.0 * vertexPosition, 1.0);
-                //finalVertexColor = vec4(finalDiffuse.rgb, 1.0);
-                finalVertexColor = vec4(0.0, 1.0, 0.0, 1.0);
+                finalVertexColor = vec4(finalDiffuse.rgb, 1.0);
             }
         </script>
 
