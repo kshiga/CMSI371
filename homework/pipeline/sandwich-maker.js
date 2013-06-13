@@ -264,7 +264,7 @@
             objectArray[i].buffer = GLSLUtilities.initVertexBuffer(gl,
                     objectArray[i].vertices);
             
-            if (!objectArray[i].colors || (!(objectArray[i].colors[0] === objectArray[i].color))) {
+            if (!objectArray[i].colors ) {
                 objectArray[i].colors = [];
                 for (j = 0, maxj = objectArray[i].vertices.length / 3;
                         j < maxj; j += 1) {
@@ -274,6 +274,20 @@
                         objectArray[i].color.b
                     );
                 }
+            } else if (!(objectArray[i].colors[0] === objectArray[i].color)){
+                objectArray[i].colors = [];
+                console.log("color for " +  objectArray[i].name); console.log( objectArray[i].color);
+                for (j = 0, maxj = objectArray[i].vertices.length / 3;
+                        j < maxj; j += 1) {
+                    objectArray[i].colors = objectArray[i].colors.concat(
+                        objectArray[i].color.r,
+                        objectArray[i].color.g,
+                        objectArray[i].color.b
+                    );
+                }
+                
+                
+                
             }
             
             objectArray[i].colorBuffer = GLSLUtilities.initVertexBuffer(gl,
@@ -307,14 +321,13 @@
              
         }
         
-        
-        
+
     }
     
     //get all the vertices before anything else  
     getVertices(objectsToDraw);
   
-  console.log(leftJellyColorGL);
+  
 
 
 
@@ -494,6 +507,8 @@
         
         // All done.
         gl.flush();
+        
+        console.log("Scene has been drawn \n \n \n \n \n ")
         
     };
 
