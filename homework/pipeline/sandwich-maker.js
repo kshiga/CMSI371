@@ -40,6 +40,7 @@
         normalVector,
         lightPosition,
         lightDiffuse,
+        lightSpecular,
 
 
         // An individual "draw object" function.
@@ -127,12 +128,16 @@
             vertices: Shapes.toRawTriangleArray(Shapes.bread()),
             mode: gl.TRIANGLES,
             normals: Shapes.toVertexNormalArray(Shapes.bread()),
+            specularColor: { r: 1.0, g: 1.0, b: 1.0 },
+            shininess: 16,
             subshapes: [
                {
                     name: "crust subshape", 
                     color: { r: 0.0, g: 1.0, b: 1.0 },
                     vertices: Shapes.toRawTriangleArray(Shapes.crust()),
                     mode: gl.TRIANGLES,
+                    specularColor: { r: 1.0, g: 0.0, b: 1.0 },
+                    shininess: 16,
                     normals: Shapes.toVertexNormalArray(Shapes.crust())
                 },
                 {
@@ -141,6 +146,8 @@
                     translate: {x: 4.0, y: 0.0, z: -5.0},
                     vertices: Shapes.toRawTriangleArray(Shapes.jelly()),
                     mode: gl.TRIANGLES,
+                    specularColor: { r: 1.0, g: 1.0, b: 0.0 },
+                    shininess: 16,
                     normals: Shapes.toVertexNormalArray(Shapes.jelly())
                 }
             ]
@@ -262,6 +269,23 @@
             objectArray[i].colorBuffer = GLSLUtilities.initVertexBuffer(gl,
                     objectArray[i].colors);
                     
+            // Same trick with specular colors.
+            if (!objectArray[i].specularColors) {
+                // Future refactor: helper function to convert a single value or
+                // array into an array of copies of itself.
+                objectArray[i].specularColors = [];
+                for (j = 0, maxj = objectArray[i].vertices.length / 3;
+                        j < maxj; j += 1) {
+                    objectArray[i].specularColors = objectArray[i].specularColors.concat(
+                        objectArray[i].specularColor.r,
+                        objectArray[i].specularColor.g,
+                        objectArray[i].specularColor.b
+                    );
+                }
+            }
+            objectArray[i].specularBuffer = GLSLUtilities.initVertexBuffer(gl,
+                    objectArray[i].specularColors);
+                    
             objectArray[i].normalBuffer = GLSLUtilities.initVertexBuffer(gl,
                 objectArray[i].normals);
                     
@@ -333,8 +357,10 @@
     // Hold on to the important variables within the shaders.
     vertexPosition = gl.getAttribLocation(shaderProgram, "vertexPosition");
     gl.enableVertexAttribArray(vertexPosition);
-    vertexColor = gl.getAttribLocation(shaderProgram, "vertexColor");
-    gl.enableVertexAttribArray(vertexColor);
+    vertexDiffuseColor = gl.getAttribLocation(shaderProgram, "vertexDiffuseColor");
+    gl.enableVertexAttribArray(vertexDiffuseColor);
+    vertexSpecularColor = gl.getAttribLocation(shaderProgram, "vertexSpecularColor");
+    gl.enableVertexAttribArray(vertexSpecularColor);
     normalVector = gl.getAttribLocation(shaderProgram, "normalVector");
     gl.enableVertexAttribArray(normalVector);
     
@@ -345,8 +371,11 @@
     lookAtMatrix = gl.getUniformLocation(shaderProgram, "lookAtMatrix");
 
 
+    // Note the additional variables.
     lightPosition = gl.getUniformLocation(shaderProgram, "lightPosition");
     lightDiffuse = gl.getUniformLocation(shaderProgram, "lightDiffuse");
+    lightSpecular = gl.getUniformLocation(shaderProgram, "lightSpecular");
+    shininess = gl.getUniformLocation(shaderProgram, "shininess");;
 
 
 
@@ -397,27 +426,30 @@
  
         console.log(object);
         
-       
         // Set the varying colors.
         gl.bindBuffer(gl.ARRAY_BUFFER, object.colorBuffer);
-        gl.vertexAttribPointer(vertexColor, 3, gl.FLOAT, false, 0, 0);
-       
-       
-       currentInstanceMatrix = getInstanceTransform(object);
-       
-       if(parentmi){
-           currentInstanceMatrix = currentInstanceMatrix.multiply(parentmi);
-           console.log("Subshape NEW Instance Matrix:\n" + currentInstanceMatrix.toString());
-           gl.uniformMatrix4fv(modelViewMatrix, gl.FALSE, new Float32Array(currentInstanceMatrix.toWebGLMatrix().returnMatrix()));
-       }
+        gl.vertexAttribPointer(vertexDiffuseColor, 3, gl.FLOAT, false, 0, 0);
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, object.specularBuffer);
+        gl.vertexAttribPointer(vertexSpecularColor, 3, gl.FLOAT, false, 0, 0);
+
+        // Set the shininess.
+        gl.uniform1f(shininess, object.shininess);
+
+
+        currentInstanceMatrix = getInstanceTransform(object);
+        
+        if(parentmi){
+            currentInstanceMatrix = currentInstanceMatrix.multiply(parentmi);
+            console.log("Subshape NEW Instance Matrix:\n" + currentInstanceMatrix.toString());
+            gl.uniformMatrix4fv(modelViewMatrix, gl.FALSE, new Float32Array(currentInstanceMatrix.toWebGLMatrix().returnMatrix()));
+        }
        
        
        // Set the varying normal vectors.
         gl.bindBuffer(gl.ARRAY_BUFFER, object.normalBuffer);
         gl.vertexAttribPointer(normalVector, 3, gl.FLOAT, false, 0, 0);
 
-        
-       
         // Set the varying vertex coordinates.
         gl.bindBuffer(gl.ARRAY_BUFFER, object.buffer);
         gl.vertexAttribPointer(vertexPosition, 3, gl.FLOAT, false, 0, 0);
@@ -469,16 +501,17 @@
     var m = new Matrix4x4();
         mc = new Matrix4x4(); 
     
-    m = m.ortho(-100, 100, -100, 100, -100, 100);
+    m = m.ortho(-50, 50, -50, 50, -50, 50);
     //mc = mc.lookAt(1, 0, 0, 0, 0, 0, 0, 1, 0);
     gl.uniformMatrix4fv(projectionMatrix, gl.FALSE, new Float32Array( 
         m.toWebGLMatrix().returnMatrix()));
     //gl.uniformMatrix4fv(lookAtMatrix, gl.FALSE, new Float32Array( 
       //  mc.toWebGLMatrix().returnMatrix()));    
 
-     // Set up our one light source and color.  Note the uniform3fv function.
-    gl.uniform3fv(lightPosition, [0.0, 10.0, -100.0]);
+    // Set up our one light source and its colors.
+    gl.uniform4fv(lightPosition, [-20.0, -100.0, 0.0, 1.0]);
     gl.uniform3fv(lightDiffuse, [1.0, 1.0, 1.0]);
+    gl.uniform3fv(lightSpecular, [1.0, 1.0, 1.0]);
 
     
         
