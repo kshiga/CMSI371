@@ -10,6 +10,7 @@ var confirmBread = function (){
 
 
 
+/*
 $("#left-color-picker").spectrum({
     color: "#fff",
     showInput: true,
@@ -18,6 +19,8 @@ $("#left-color-picker").spectrum({
         console.log( jellyLeftColor.toRgbString());
     }
 });
+*/
+/*
           
 
 $("#right-color-picker").spectrum({
@@ -81,7 +84,8 @@ $(document).keypress(function(e) {
         } else {
             $("#dynamic-instructions").text("Both slices must be confirmed to mix the jelly!")
         }
-    }
-});
+    }*/
+
+//});
 
 

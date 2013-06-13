@@ -1,12 +1,3 @@
-// Interactive Variables
-        var leftJellyColor,
-            rightJellyColor,
-            confirmL = false,
-            confirmR = false,
-            oneClickL = 0,
-            oneClickR = 0;
-        
-
 
 
 (function (canvas) {
@@ -49,6 +40,8 @@
 
         // The big "draw scene" function.
         drawScene,
+        
+        
 
 
 
@@ -67,6 +60,23 @@
         mt,
         mr,
         mi,
+        
+        leftJellyColor,
+        leftJellyColorGL = { r: 1.0, g: 0.0, b: 0.8 },
+        lR,
+        lG,
+        lB,
+        rightJellyColor,
+        rightJellyColorGL,
+        rR,
+        rG,
+        rB,
+        confirmL = false,
+        confirmR = false,
+        oneClickL = 0,
+        oneClickR = 0;
+        
+        
         // Grab the WebGL rendering context.
         gl = GLSLUtilities.getGL(canvas);
 
@@ -142,7 +152,7 @@
                 },
                 {
                     name: "jelly subshape", 
-                    color: { r: 1.0, g: 0.0, b: 0.8 },
+                    color: leftJellyColorGL,
                     translate: {x: 4.0, y: 0.0, z: -5.0},
                     vertices: Shapes.toRawTriangleArray(Shapes.jelly()),
                     mode: gl.TRIANGLES,
@@ -254,7 +264,7 @@
             objectArray[i].buffer = GLSLUtilities.initVertexBuffer(gl,
                     objectArray[i].vertices);
             
-            if (!objectArray[i].colors) {
+            if (!objectArray[i].colors || (!(objectArray[i].colors[0] === objectArray[i].color))) {
                 objectArray[i].colors = [];
                 for (j = 0, maxj = objectArray[i].vertices.length / 3;
                         j < maxj; j += 1) {
@@ -304,6 +314,7 @@
     //get all the vertices before anything else  
     getVertices(objectsToDraw);
   
+  console.log(leftJellyColorGL);
 
 
 
@@ -481,13 +492,9 @@
 
         }
         
-         
-        
-
         // All done.
         gl.flush();
         
-        console.log("Scene has been drawn.");
     };
 
 
@@ -518,6 +525,21 @@
     // Draw the initial scene.
     drawScene();
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ~*~*~*~*~*~**~*~*~*~*~*~*~*~* Interactive Functions  ~*~*~*~*~*~**~*~*~*~*~*~*~*~*~ */
     $(canvas).click(function () {
         if (currentInterval) {
             clearInterval(currentInterval);
@@ -534,8 +556,94 @@
         
        
     });
+    
+    $("#left-color-picker").spectrum({
+        color: "#fff",
+        showInput: true,
+        change: function(color){
+            if(!confirmL){
+                leftJellyColor = color;
+                leftJellyColor = leftJellyColor.toRgb();   
+                lR = leftJellyColor.r/200;
+                lG = leftJellyColor.g/200;
+                lB = leftJellyColor.b/200;
+                leftJellyColorGL = {r:lR, g:lG, b:lB};
+                console.log(leftJellyColorGL);
+                getVertices(objectsToDraw);
+                drawScene();
+            } else {
+                console.log("Sorry, you have already confirmed your leftcolor choice.")
+            }
+        }
+    });
+    
+    
+    $("#right-color-picker").spectrum({
+        color: "#fff",
+        showInput: true,
+        change: function(color){
+            if(!confirmR){
+                jellyRightColor = color;   
+                console.log(jellyRightColor.toRgbString());
+            } else {
+                console.log("Sorry, you have already confirmed your right color choice")
+            }
+            
+            
+        }
+    });
+    
+    $("#right-slice-confirm").click(function (){
+         confirmR = true;
+         oneClickR++;
+        if( oneClickR === 1){
+            console.log("RIGHT CONFIRMED");
+            $("#right-color-picker").spectrum("disable");
+            $("#dynamic-instructions").text("Right Slice confirmed");
+            //confirmBread(rightSlice);
+        }
+    });
+    
+    
+    $("#left-slice-confirm").click(function (){
+         confirmL = true;
+         oneClickL++;
+        if( oneClickL === 1){
+            console.log("LEFT CONFIRMED");
+            $("#left-color-picker").spectrum("disable");
+            $("#dynamic-instructions").text("Left Slice confirmed");
+            //confirmBread(leftSlice);
+        }
+    });
+              
+    
+    $("#left-slice-cancel").click(function (){
+         confirmL = false;
+         oneClickL = 0;
+        if(!confirmL){
+            console.log("LEFT cancelled");
+            $("#left-color-picker").spectrum("enable");
+            //cancelBread(leftSlice);
+        } else {
+            alert("AHHH ERROR WTF");
+        }
+    });
+    
+    $("#right-slice-cancel").click(function (){
+         confirmR = false;
+         oneClickR = 0;
+        if(!confirmR){
+            console.log("RIGHT cancelled");
+            $("#right-color-picker").spectrum("enable");
+        } else {
+            alert("AHHH ERROR WTF");
+        }
+    });
+
 
     
+
+
 
 
 
