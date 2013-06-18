@@ -1,5 +1,4 @@
 
-
 (function (canvas) {
 
 
@@ -30,6 +29,7 @@
         
         normalVector,
         lightPosition,
+        lightPosition2,
         lightDiffuse,
         lightSpecular,
 
@@ -41,12 +41,7 @@
         // The big "draw scene" function.
         drawScene,
         
-        
-
-
-
-        
-           
+                   
         // Reusable loop variables.
         i,
         maxi,
@@ -61,13 +56,13 @@
         mr,
         mi,
         
-        leftJellyColor,
-        leftJellyColorGL = { r: 1.0, g: 0.0, b: 0.8 },
+        
+        // Interaction Variables
+        defaultJellyColor = { r: 1.0, g: 1.0, b: 1.0 },
+        finalJellyColor = {},
         lR,
         lG,
         lB,
-        rightJellyColor,
-        rightJellyColorGL,
         rR,
         rG,
         rB,
@@ -128,129 +123,89 @@
 
 
 /* ~*~*~*~*~*~**~*~*~*~*~*~*~*~* Objects Set-up ~*~*~*~*~*~**~*~*~*~*~*~*~*~*~ */
-    // Build the objects to display.
-    objectsToDraw = [
-        {
-            name: "bread",
-            color: { r: 0.5, g: 1.0, b: 0.0 },
-            scale: {x: 2, y: 2, z: 2},
-            translate: {x: 0.0, y: 0.0, z: 0.0},
-            vertices: Shapes.toRawTriangleArray(Shapes.bread()),
-            mode: gl.TRIANGLES,
-            normals: Shapes.toVertexNormalArray(Shapes.bread()),
-            specularColor: { r: 1.0, g: 1.0, b: 1.0 },
-            shininess: 16,
-            subshapes: [
-               {
-                    name: "crust subshape", 
-                    color: { r: 0.0, g: 1.0, b: 1.0 },
-                    vertices: Shapes.toRawTriangleArray(Shapes.crust()),
-                    mode: gl.TRIANGLES,
-                    specularColor: { r: 1.0, g: 0.0, b: 1.0 },
-                    shininess: 16,
-                    normals: Shapes.toVertexNormalArray(Shapes.crust())
-                },
-                {
-                    name: "jelly subshape", 
-                    color: leftJellyColorGL,
-                    translate: {x: 4.0, y: 0.0, z: -5.0},
-                    vertices: Shapes.toRawTriangleArray(Shapes.jelly()),
-                    mode: gl.TRIANGLES,
-                    specularColor: { r: 1.0, g: 1.0, b: 0.0 },
-                    shininess: 16,
-                    normals: Shapes.toVertexNormalArray(Shapes.jelly())
-                }
-            ]
-        },        
-        
-       /* {
-            name: "bread2",
-            color: { r: 1.0, g: 0.1, b: 0.0 },
-            scale: {x: 5, y: 5, z: 1},
-            translate: {x: 10.0, y: -50.0, z: 1.0},
-            vertices: Shapes.toRawTriangleArray(Shapes.bread()),
-            mode: gl.TRIANGLES,
-            normals: Shapes.toVertexNormalArray(Shapes.bread()),
-            subshapes: [
-               {
-                    name: "bread2 subshape", 
-                    color: { r: 0.9, g: 0.2, b: 0.5 },
-                    scale: {x: 1, y: 2, z: 4},
-                    translate: {x: 0.0, y: 0.0, z: -5.0},
-                    vertices: Shapes.toRawTriangleArray(Shapes.bread()),
-                    mode: gl.TRIANGLES,
-                    normals: Shapes.toVertexNormalArray(Shapes.bread())
-                }
-            ]
-        }*/
     
-        
-        /*
-        {
-            name: "leftSlice",
-            color: crustColor,
-            vertices: Shapes.toRawTriangleArray(Shapes.crust()),
-            mode: gl.TRIANGLES,
-            normals: Shapes.toNormalArray(Shapes.crust()),
-            subshapes: [
-                {
-                    name: "leftBread",
-                    color: breadColor, 
-                    vertices: Shapes.toRawTriangleArray(Shapes.bread()),
-                    mode:gl.TRIANGLES
-                    normals: Shapes.toNormalArray(Shapes.bread()),
-                },
-                {
-                    name: "leftJelly",
-                    color: leftJellyColor, 
-                    vertices: Shapes.toRawTriangleArray(Shapes.jelly()),
-                    mode:gl.TRIANGLES
-                    normals: Shapes.toNormalArray(Shapes.jelly()),
-                    specularColors: { r: 1.0, g: 1.0, b: 1.0 },
-                    shininess: 16,
-                }
-            ]
+    leftJelly = {
+        name: "Left Jelly", 
+        color: defaultJellyColor,
+        translate: {x: 0.0, y: 0.0, z: -6.0},
+        scale: {x: 1, y: 1, z: 0.25},
+        vertices: Shapes.toRawTriangleArray(Shapes.jelly()),
+        mode: gl.TRIANGLES,
+        specularColor: { r: 1.0, g: 1.0, b: 0.0 },
+        shininess: 16,
+        normals: Shapes.toVertexNormalArray(Shapes.jelly())
+    },
+
+    
+     rightJelly = {
+        name: "Right Jelly", 
+        color: defaultJellyColor,
+        translate: {x: 0.0, y: 0.0, z: -4.0},
+        scale: {x: 1, y: 1, z: 0.25},
+        vertices: Shapes.toRawTriangleArray(Shapes.jelly()),
+        mode: gl.TRIANGLES,
+        specularColor: { r: 1.0, g: 1.0, b: 0.0 },
+        shininess: 16,
+        normals: Shapes.toVertexNormalArray(Shapes.jelly())
+     }, 
             
-        },        
-        {
-            name: "rightSlice",
-            color: crustColor,
-            vertices: Shapes.toRawTriangleArray(Shapes.crust()),
-            mode: gl.TRIANGLES,
-            normals: Shapes.toNormalArray(Shapes.crust()),
-            subshapes: [
-                {
-                    name: "rightBread",
-                    color: breadColor, 
-                    vertices: Shapes.toRawTriangleArray(Shapes.bread()),
-                    mode:gl.TRIANGLES
-                    normals: Shapes.toNormalArray(Shapes.bread()),
-                },
-                {
-                    name: "rightJelly",
-                    color: rightJellyColor, 
-                    vertices: Shapes.toRawTriangleArray(Shapes.jelly()),
-                    mode:gl.TRIANGLES
-                    normals: Shapes.toNormalArray(Shapes.jelly()),
-                    specularColors: { r: 1.0, g: 1.0, b: 1.0 },
-                    shininess: 16,
-                }
-            ]
-            
-        },
-        {
-            name: "background",
-            color: { r: 0.5, g: 0.0, b: 0.0 },
-            vertices: Shapes.toRawTriangleArray(Shapes.background()),
-            mode: gl.TRIANGLES
-        },
-        */
-    ];
+     leftCrust = {
+        name: "Left Crust", 
+        color: { r: 0.825, g: 0.52, b: 0.22 },
+        vertices: Shapes.toRawTriangleArray(Shapes.crust()),
+        mode: gl.TRIANGLES,
+        specularColor: { r: 1.0, g: 0.0, b: 1.0 },
+        shininess: 3,
+        normals: Shapes.toVertexNormalArray(Shapes.crust())
+     },
+    
+     rightCrust = {
+        name: "Right Crust", 
+        color: { r: 0.825, g: 0.52, b: 0.22 },
+        vertices: Shapes.toRawTriangleArray(Shapes.crust()),
+        mode: gl.TRIANGLES,
+        specularColor: { r: 1.0, g: 0.0, b: 1.0 },
+        shininess: 3,
+        normals: Shapes.toVertexNormalArray(Shapes.crust())
+     },
+     
+     leftBread = {
+        name: "Left Bread",
+        color: { r: 0.99, g: 0.92, b: 0.57 },
+        scale: {x: 1, y: 1, z: 1},
+        translate: {x: -30.0, y: 0.0, z: 0.0},
+        vertices: Shapes.toRawTriangleArray(Shapes.bread()),
+        mode: gl.TRIANGLES,
+        normals: Shapes.toVertexNormalArray(Shapes.bread()),
+        specularColor: { r: 1.0, g: 1.0, b: 1.0 },
+        shininess: 2,
+        subshapes: [leftCrust, leftJelly]
+     },
+     
+     rightBread = {
+        name: "Right Bread",
+        color: { r: 0.99, g: 0.92, b: 0.57 },
+        scale: {x: 1, y: 1, z: 1},
+        translate: {x: 30.0, y: 0.0, z: 0.0},
+        vertices: Shapes.toRawTriangleArray(Shapes.bread()),
+        mode: gl.TRIANGLES,
+        normals: Shapes.toVertexNormalArray(Shapes.bread()),
+        specularColor: { r: 1.0, g: 1.0, b: 1.0 },
+        shininess: 2,
+        subshapes: [rightCrust, rightJelly]
+     },
+     
+     
+     
+    
+    
+    // Build the objects to display.
+    objectsToDraw = [leftBread, rightBread];
 
 
 
-/*~*~*~*~*~*~**~*~*~*~*~*~*~*~* Retrieve Vertices ~*~*~*~*~*~**~*~*~*~*~*~*~*~**/
-
+/*~*~*~*~*~*~**~*~*~*~*~*~*~*~* Retrieve Shape Information ~*~*~*~*~*~**~*~*~*~*~*~*~*~**/
+   
     // Pass the vertices to WebGL.
    getVertices = function(objectArray){
         var i,
@@ -276,7 +231,7 @@
                 }
             } else if (!(objectArray[i].colors[0] === objectArray[i].color)){
                 objectArray[i].colors = [];
-                console.log("color for " +  objectArray[i].name); console.log( objectArray[i].color);
+
                 for (j = 0, maxj = objectArray[i].vertices.length / 3;
                         j < maxj; j += 1) {
                     objectArray[i].colors = objectArray[i].colors.concat(
@@ -397,6 +352,7 @@
 
     // Note the additional variables.
     lightPosition = gl.getUniformLocation(shaderProgram, "lightPosition");
+    lightPosition2 = gl.getUniformLocation(shaderProgram, "lightPosition2");
     lightDiffuse = gl.getUniformLocation(shaderProgram, "lightDiffuse");
     lightSpecular = gl.getUniformLocation(shaderProgram, "lightSpecular");
     shininess = gl.getUniformLocation(shaderProgram, "shininess");;
@@ -425,13 +381,9 @@
         
         
         ms = object.scale ?  ms.scale(object.scale.x, object.scale.y, object.scale.z): ms.scale(1, 1, 1);
-        console.log("\""+ object.name +"\" " + "Scale Matrix: \n" + ms.toString());
         mt = object.translate ? mt.translate(object.translate.x, object.translate.y, object.translate.z) : mt.translate(0, 0, 0);
-        console.log("\""+ object.name +"\" " + "Translate Matrix: \n" + mt.toString());
-        mr = object.rotate ? mr.rotate(currentRotation, object.rotate.x, object.rotate.y, object.rotate.z): mr;
-        console.log("\""+ object.name +"\" " + "Rotate Matrix: \n" + mr.toString());
+        mr = object.rotate ? mr.rotate(object.rotate.angle, object.rotate.x, object.rotate.y, object.rotate.z): mr;
         mi = mt.multiply(mr).multiply(ms);
-        console.log("\""+ object.name +"\" " + "Instance Matrix: \n" + mi.toString());
 
         gl.uniformMatrix4fv(modelViewMatrix, gl.FALSE, new Float32Array(mi.toWebGLMatrix().returnMatrix()));
         
@@ -447,8 +399,7 @@
     drawObject = function (object, parentmi) {
         var i,
             currentInstanceMatrix;       
- 
-        console.log(object);
+
         
         // Set the varying colors.
         gl.bindBuffer(gl.ARRAY_BUFFER, object.colorBuffer);
@@ -465,7 +416,6 @@
         
         if(parentmi){
             currentInstanceMatrix = currentInstanceMatrix.multiply(parentmi);
-            console.log("Subshape NEW Instance Matrix:\n" + currentInstanceMatrix.toString());
             gl.uniformMatrix4fv(modelViewMatrix, gl.FALSE, new Float32Array(currentInstanceMatrix.toWebGLMatrix().returnMatrix()));
         }
        
@@ -499,16 +449,11 @@
 
         // Display the objects.
         for (i = 0, maxi = objectsToDraw.length; i < maxi; i += 1) {
-            console.log("\n *~*~*~*~*~*~*~*~*~*~*~* Drawing \"" + objectsToDraw[i].name + "\" *~*~*~*~*~*~*~*~*~*~*~*~*~*~\n");
             drawObject(objectsToDraw[i]);
-            console.log("\n *~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~\n");
-
         }
         
         // All done.
         gl.flush();
-        
-        console.log("Scene has been drawn \n \n \n \n \n ")
         
     };
 
@@ -523,17 +468,16 @@
     var m = new Matrix4x4();
         mc = new Matrix4x4(); 
     
-    m = m.ortho(-50, 50, -50, 50, -50, 50);
-    //mc = mc.lookAt(1, 0, 0, 0, 0, 0, 0, 1, 0);
+    m = m.ortho(-50, 50, -50, 50, -100, 100);
     gl.uniformMatrix4fv(projectionMatrix, gl.FALSE, new Float32Array( 
         m.toWebGLMatrix().returnMatrix()));
-    //gl.uniformMatrix4fv(lookAtMatrix, gl.FALSE, new Float32Array( 
-      //  mc.toWebGLMatrix().returnMatrix()));    
+
 
     // Set up our one light source and its colors.
-    gl.uniform4fv(lightPosition, [-20.0, -100.0, 0.0, 1.0]);
+    gl.uniform4fv(lightPosition, [0.0, 200.0, -100.0, 1.0]);
+    gl.uniform4fv(lightPosition2, [0.0, -200.0, 40.0, 1.0]);
     gl.uniform3fv(lightDiffuse, [1.0, 1.0, 1.0]);
-    gl.uniform3fv(lightSpecular, [1.0, 1.0, 1.0]);
+    gl.uniform3fv(lightSpecular, [1.0, 1.0, 0.0]);
 
     
         
@@ -555,39 +499,22 @@
 
 
 /* ~*~*~*~*~*~**~*~*~*~*~*~*~*~* Interactive Functions  ~*~*~*~*~*~**~*~*~*~*~*~*~*~*~ */
-    $(canvas).click(function () {
-        if (currentInterval) {
-            clearInterval(currentInterval);
-            currentInterval = null;
-        } else {
-            currentInterval = setInterval(function () {
-                currentRotation += 1.0;
-                drawScene();
-                if (currentRotation >= 360.0) {
-                    currentRotation -= 360.0;
-                }
-            }, 30);
-        }
-        
-       
-    });
     
     $("#left-color-picker").spectrum({
         color: "#fff",
         showInput: true,
         change: function(color){
             if(!confirmL){
-                leftJellyColor = color;
-                leftJellyColor = leftJellyColor.toRgb();   
-                lR = leftJellyColor.r/200;
-                lG = leftJellyColor.g/200;
-                lB = leftJellyColor.b/200;
-                leftJellyColorGL = {r:lR, g:lG, b:lB};
-                console.log(leftJellyColorGL);
+                leftJelly.color = color;
+                leftJelly.color = leftJelly.color.toRgb();   
+                lR = leftJelly.color.r/200;
+                lG = leftJelly.color.g/200;
+                lB = leftJelly.color.b/200;
+                leftJelly.color = {r:lR, g:lG, b:lB};
                 getVertices(objectsToDraw);
                 drawScene();
             } else {
-                console.log("Sorry, you have already confirmed your leftcolor choice.")
+                $("#dynamic-instructions")("Sorry, you have already confirmed your left color choice.")
             }
         }
     });
@@ -598,13 +525,32 @@
         showInput: true,
         change: function(color){
             if(!confirmR){
-                jellyRightColor = color;   
-                console.log(jellyRightColor.toRgbString());
+                rightJelly.color = color;
+                rightJelly.color = rightJelly.color.toRgb();   
+                rR = rightJelly.color.r/200;
+                rG = rightJelly.color.g/200;
+                rB = rightJelly.color.b/200;
+                rightJelly.color = {r:rR, g:rG, b:rB};
+                getVertices(objectsToDraw);
+                drawScene();
             } else {
-                console.log("Sorry, you have already confirmed your right color choice")
+                $("#dynamic-instructions").text("Sorry, you have already confirmed your right color choice")
             }
             
             
+        }
+    });
+    
+    $("#left-slice-confirm").click(function (){
+         confirmL = true;
+         oneClickL++;
+        if( oneClickL === 1){
+            $("#left-color-picker").spectrum("disable");
+            $("#dynamic-instructions").text("Left Slice confirmed");
+            leftBread.translate = {x: -3.0, y: 0.0, z: 0.0},
+            leftBread.rotate = {angle: 280, x: 0, y: 1, z:0};
+            drawScene();
+            checkState();
         }
     });
     
@@ -612,33 +558,29 @@
          confirmR = true;
          oneClickR++;
         if( oneClickR === 1){
-            console.log("RIGHT CONFIRMED");
+
             $("#right-color-picker").spectrum("disable");
             $("#dynamic-instructions").text("Right Slice confirmed");
-            //confirmBread(rightSlice);
+            rightBread.translate = {x: 3.0, y: 0.0, z: 0.0},
+            rightBread.rotate = {angle: 80, x: 0, y: 1, z:0};
+            drawScene();
+            checkState();
         }
     });
     
     
-    $("#left-slice-confirm").click(function (){
-         confirmL = true;
-         oneClickL++;
-        if( oneClickL === 1){
-            console.log("LEFT CONFIRMED");
-            $("#left-color-picker").spectrum("disable");
-            $("#dynamic-instructions").text("Left Slice confirmed");
-            //confirmBread(leftSlice);
-        }
-    });
+
               
     
     $("#left-slice-cancel").click(function (){
          confirmL = false;
          oneClickL = 0;
         if(!confirmL){
-            console.log("LEFT cancelled");
             $("#left-color-picker").spectrum("enable");
-            //cancelBread(leftSlice);
+            leftBread.translate = {x: -30.0, y: 0.0, z: 0.0},
+            leftBread.rotate = {angle: 0, x: 0, y: 1, z:0};
+            checkState();
+            drawScene();
         } else {
             alert("AHHH ERROR WTF");
         }
@@ -648,13 +590,101 @@
          confirmR = false;
          oneClickR = 0;
         if(!confirmR){
-            console.log("RIGHT cancelled");
+
             $("#right-color-picker").spectrum("enable");
+            rightBread.translate = {x: 30.0, y: 0.0, z: 0.0},
+            rightBread.rotate = {angle: 0.0, x: 0, y: 1, z:0};
+            checkState();
+            drawScene();
         } else {
             alert("AHHH ERROR WTF");
         }
     });
-
+    
+    
+   checkState = function (){
+       if(confirmL && confirmR){
+            $("#make-button").append('<button id ="make-btn">make!</button>');
+            assignMake();
+       } else{
+           $("#make-btn").remove();
+       }
+       
+   }
+   
+   assignMake = function(){
+       
+       $("#make-button").click(function(){
+           var fR = (leftJelly.color.r + rightJelly.color.r) /2
+               fG = (leftJelly.color.g + rightJelly.color.g) /2
+               fB = (leftJelly.color.b + rightJelly.color.b) /2
+           finalJellyColor = {r: fR, g:fG, b:fB};
+           
+           $("#left").remove();
+           $("#right").remove();
+           
+           finalBread = {
+                name: "Final Bread",
+                color: { r: 0.99, g: 0.92, b: 0.57 },
+                scale: {x: 2, y: 2, z: 2},
+                translate: {x: 0.0, y: 0.0, z: 0.0},
+                vertices: Shapes.toRawTriangleArray(Shapes.bread()),
+                mode: gl.TRIANGLES,
+                normals: Shapes.toVertexNormalArray(Shapes.bread()),
+                specularColor: { r: 1.0, g: 1.0, b: 1.0 },
+                shininess: 2,
+                subshapes: [{
+                    name: "Final Crust", 
+                    color: { r: 0.825, g: 0.52, b: 0.22 },
+                    vertices: Shapes.toRawTriangleArray(Shapes.crust()),
+                    mode: gl.TRIANGLES,
+                    specularColor: { r: 1.0, g: 0.0, b: 1.0 },
+                    shininess: 3,
+                    normals: Shapes.toVertexNormalArray(Shapes.crust())
+               }]
+           },
+           
+           objectsToDraw = [finalBread];
+           getVertices(objectsToDraw);
+           drawScene();
+           
+           
+           $(canvas).click(function(){
+           var jellyDrip = {
+                color: finalJellyColor,
+                scale: {x: 1.0, y: 1.0, z: 1.0},
+                translate: {x: randomSigned(50), y:randomSigned(50), z:randomSigned(50)},
+                vertices: Shapes.toRawTriangleArray(Shapes.jelly()),
+                mode: gl.TRIANGLES,
+                normals: Shapes.toVertexNormalArray(Shapes.jelly()),
+                specularColor: { r: 1.0, g: 1.0, b: 1.0 },
+                shininess: 15,
+              }
+            
+           
+           objectsToDraw.push(jellyDrip); 
+           
+           getVertices(objectsToDraw);
+           drawScene();
+           
+           
+           
+           
+       });
+                      
+       });
+       
+       
+   }
+   
+   
+   randomSigned = function(limit){
+       var sign = Math.floor((Math.random() * 10) + 1);
+           number = Math.floor((Math.random() * limit) + 1);
+           result = sign % 2 === 0 ? number : (-1 * number);
+       
+       return result;
+   }
 
     
 

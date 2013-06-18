@@ -9,13 +9,13 @@ canvas {
 #left {
     position: absolute;
     top: 20%;
-    right: 74%;
+    right: 85%;
 }
 
 #right {
     position: absolute;
     top: 20%;
-    right:20%;
+    right:10%;
 }
 
 
