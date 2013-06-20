@@ -9,20 +9,6 @@
     var canvas = document.getElementById("canvas"),
         frameTotal = 10000,
 
-        // JD: These functions from the sample are no longer used
-        //     ---delete them wit confidence.
-        square = function (renderingContext) {
-            renderingContext.fillStyle = "blue";
-            renderingContext.fillRect(-20, -20, 40, 40);
-        },
-     
-        circle = function (renderingContext) {
-            renderingContext.strokeStyle = "red";
-            renderingContext.beginPath();
-            renderingContext.arc(0, 0, 50, 0, Math.PI * 2);
-            renderingContext.stroke();
-        },
-
         run1 = DrawSprites.run1,
         run2 = DrawSprites.run2,
         stop1 = DrawSprites.stop1, 
@@ -41,7 +27,7 @@
 
        
 
-        background = Background.drawBgnd; // JD: Here's another var-breaking semicolon.
+        background = Background.drawBgnd,
 
 
 

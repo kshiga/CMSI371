@@ -561,9 +561,20 @@
 
             $("#right-color-picker").spectrum("disable");
             $("#dynamic-instructions").text("Right Slice confirmed");
+            /*
+            rightBread.keyframe.activeAnim = true;
+                        while(rightBread.keyframe.currentTweenFrame != rightBread.keyframe.end){
+                            KeyframeTweener.applyTween(objectsToDraw);
+                            getVertices(objectsToDraw);
+                            
+                        }*/
+            
+            
             rightBread.translate = {x: 3.0, y: 0.0, z: 0.0},
             rightBread.rotate = {angle: 80, x: 0, y: 1, z:0};
+            
             drawScene();
+            
             checkState();
         }
     });
@@ -650,17 +661,19 @@
            
            
            $(canvas).click(function(){
+               console.log("clicked");
            var jellyDrip = {
                 color: finalJellyColor,
-                scale: {x: 1.0, y: 1.0, z: 1.0},
-                translate: {x: randomSigned(50), y:randomSigned(50), z:randomSigned(50)},
-                vertices: Shapes.toRawTriangleArray(Shapes.jelly()),
+                scale: {x: 0.25, y: 0.5, z: 0.5},
+                translate: {x: randomSigned(-10, 10), y:randomSigned(-40, -25), z:randomSigned(-5, -4)},
+                vertices: Shapes.toRawTriangleArray(Shapes.drip()),
                 mode: gl.TRIANGLES,
-                normals: Shapes.toVertexNormalArray(Shapes.jelly()),
+                normals: Shapes.toVertexNormalArray(Shapes.drip()),
                 specularColor: { r: 1.0, g: 1.0, b: 1.0 },
                 shininess: 15,
               }
             
+            console.log(jellyDrip.translate);
            
            objectsToDraw.push(jellyDrip); 
            
@@ -678,11 +691,9 @@
    }
    
    
-   randomSigned = function(limit){
-       var sign = Math.floor((Math.random() * 10) + 1);
-           number = Math.floor((Math.random() * limit) + 1);
-           result = sign % 2 === 0 ? number : (-1 * number);
-       
+   randomSigned = function(llimit, ulimit){
+       var diff = ulimit - llimit;
+           result = Math.floor((Math.random() * (diff + 1) + llimit));       
        return result;
    }
 

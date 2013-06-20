@@ -28,8 +28,8 @@
 
             pHeight = ((roomCorner.bottomLeft.y - roomCorner.topLeft.y) / 3),
             pWidth = ((roomCorner.bottomRight.x - roomCorner.bottomLeft .x) / 10),
-            bevelH = pHeight + 2; // JD: Watch out!!!  This semicolon ends the
-            bevelW = pWidth + 2;  //     var statement.  This means that all
+            bevelH = pHeight + 2, // JD: Watch out!!!  This semicolon ends the
+            bevelW = pWidth + 2,  //     var statement.  This means that all
             j = 80;               //     other declarations are no longer local!
 
             blueGradient =  renderingContext.createRadialGradient(650, 10, 50, 660, 30, 120);

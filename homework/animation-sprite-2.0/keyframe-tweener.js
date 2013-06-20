@@ -94,7 +94,7 @@ var KeyframeTweener = {
             width = settings.width,
             height = settings.height,
             sprites = settings.sprites,
-            background = settings.background; // JD: Badly placed semicolon strike three!
+            background = settings.background,
             frameTotal = settings.frameTotal
 
         setInterval(function () {
