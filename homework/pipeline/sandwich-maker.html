@@ -8,21 +8,33 @@
     <body>
     <br>
     
-
-        <div id = "left">
+        <div id = "banner" align="center"> <img src="images/SANDWICH.png" width="600" height="100"></div><br>
+        <div id = "left" align="right">
             <p><input type='text' id="left-color-picker" /></p>
-            <p><button id = "left-slice-confirm"> confirm!</button><br>
-            <button id = "left-slice-cancel"> cancel </button></p>
+            <p><img id = "left-slice-confirm" 
+                src="images/CONFIRM-A.png" 
+                onmouseover="this.src='images/CONFIRM-B.png'"
+                onmouseout="this.src='images/CONFIRM-A.png'"/> <br>
+            <img id = "left-slice-cancel"
+                src="images/CANCEL-A.png" 
+                onmouseover="this.src='images/CANCEL-B.png'"
+                onmouseout="this.src='images/CANCEL-A.png'"/></p>
         </div>
-        <canvas id="sandwich" width="800" height="512">
+        <canvas id="sandwich" width="800" height="460">
             Sorry, your web browser does not appear to support
             the <code>canvas</code> element, either.
         </canvas>
 
         <div id = "right">
             <p><input type='text' id="right-color-picker" /></p>
-            <p><button id = "right-slice-confirm"> confirm!</button><br>
-            <button id = "right-slice-cancel"> cancel </button></p>
+            <p><img id = "right-slice-confirm"
+                src="images/CONFIRM-A.png" 
+                onmouseover="this.src='images/CONFIRM-B.png'"
+                onmouseout="this.src='images/CONFIRM-A.png'"/><br>
+            <img id = "right-slice-cancel"
+                src="images/CANCEL-A.png" 
+                onmouseover="this.src='images/CANCEL-B.png'"
+                onmouseout="this.src='images/CANCEL-A.png'"/></p>
         </div>
         <center>
         <div>

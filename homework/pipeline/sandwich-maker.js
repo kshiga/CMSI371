@@ -155,7 +155,7 @@
         vertices: Shapes.toRawTriangleArray(Shapes.crust()),
         mode: gl.TRIANGLES,
         specularColor: { r: 1.0, g: 0.0, b: 1.0 },
-        shininess: 3,
+        shininess: 1,
         normals: Shapes.toVertexNormalArray(Shapes.crust())
      },
     
@@ -165,7 +165,7 @@
         vertices: Shapes.toRawTriangleArray(Shapes.crust()),
         mode: gl.TRIANGLES,
         specularColor: { r: 1.0, g: 0.0, b: 1.0 },
-        shininess: 3,
+        shininess: 1,
         normals: Shapes.toVertexNormalArray(Shapes.crust())
      },
      
@@ -178,7 +178,7 @@
         mode: gl.TRIANGLES,
         normals: Shapes.toVertexNormalArray(Shapes.bread()),
         specularColor: { r: 1.0, g: 1.0, b: 1.0 },
-        shininess: 2,
+        shininess: 1,
         subshapes: [leftCrust, leftJelly]
      },
      
@@ -191,7 +191,7 @@
         mode: gl.TRIANGLES,
         normals: Shapes.toVertexNormalArray(Shapes.bread()),
         specularColor: { r: 1.0, g: 1.0, b: 1.0 },
-        shininess: 2,
+        shininess: 1,
         subshapes: [rightCrust, rightJelly]
      },
      
@@ -474,8 +474,8 @@
 
 
     // Set up our one light source and its colors.
-    gl.uniform4fv(lightPosition, [0.0, 200.0, -100.0, 1.0]);
-    gl.uniform4fv(lightPosition2, [0.0, -200.0, 40.0, 1.0]);
+    gl.uniform4fv(lightPosition, [20.0, 100.0, -100.0, 1.0]);
+    gl.uniform4fv(lightPosition2, [-20.0, -400.0, 40.0, 1.0]);
     gl.uniform3fv(lightDiffuse, [1.0, 1.0, 1.0]);
     gl.uniform3fv(lightSpecular, [1.0, 1.0, 0.0]);
 
@@ -615,7 +615,11 @@
     
    checkState = function (){
        if(confirmL && confirmR){
-            $("#make-button").append('<button id ="make-btn">make!</button>');
+            $("#make-button").append('<img id ="make-btn" src ="images/MAKE-A.png" />');
+            $("#make-btn").hover(function () {
+                console.log("hovering");
+                 
+             });
             assignMake();
        } else{
            $("#make-btn").remove();
