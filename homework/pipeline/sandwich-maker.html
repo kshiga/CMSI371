@@ -38,7 +38,10 @@
         </div>
         <center>
         <div>
-            <p id = "make-button" ></p>
+            <p> <img id ="make-btn" 
+                     src ="images/MAKE-A.png" 
+                     onmouseover="this.src = 'images/MAKE-B.png'"
+                     onmouseout="this.src = 'images/MAKE-A.png'"/></p>
            
         </div>
         <p>You’ll need a WebGL-capable web browser to see anything here;
@@ -95,7 +98,7 @@
             // The should-now-be-familiar matrices.
             uniform mat4 projectionMatrix;
             uniform mat4 modelViewMatrix;
-            uniform mat4 rotationMatrix;
+            
             
 
             // We don't calculate color in the vertex shader anymore.  Instead,
@@ -139,8 +142,7 @@
                 // We now defer all color calculations to the fragment shader.
                 fragmentDiffuseColor = vertexDiffuseColor;
                 fragmentSpecularColor = vertexSpecularColor;
-                gl_Position = projectionMatrix *  rotationMatrix *
-                        modelViewMatrix * vec4(2.0 * vertexPosition, 1.0);
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(2.0 * vertexPosition, 1.0);
             }
 
 

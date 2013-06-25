@@ -5,6 +5,7 @@ var KeyframeTweener = {
 
     linear: function (currentTime, start, distance, duration) {
         var percentComplete = currentTime / duration;
+        
         return distance * percentComplete + start;
     },
 
@@ -57,9 +58,9 @@ var KeyframeTweener = {
                 j,
                 maxi,
                 maxj,
+                start,
+                end,
                 ease,
-                startKeyframe,
-                endKeyframe,
                 txStart,
                 txDistance,
                 tyStart,
@@ -87,61 +88,87 @@ var KeyframeTweener = {
             
             for(i = 0, maxi = objectArray.length; i < maxi; i++){
                 object = objectArray[i];
-                
-                if(object.keyframes && object.activeAnim){
+                                
+                if(object.keyframe && object.activeAnim){                  
+                                     
+                    start = object.keyframe.start;
+                    end = object.keyframe.end; 
                                         
                     ease = object.keyframe.ease || KeyframeTweener.linear;
-                    txStart = object.translate.x || 0;
-                    txDistance = object.keyframe.tx || 0;
-                    tyStart = object.translate.y || 0;
-                    tyDistance = object.keyframe.ty || 0;
-                    tzStart = object.translate.z || 0;
-                    tzDistance = object.keyframe.tz || 0;
-                    sxStart = object.scale.x || 0; 
-                    sxDistance = object.keyframe.sx || 1;
-                    syStart = object.scale.y || 0; 
-                    syDistance = object.keyframe.sy || 1;
-                    szStart = object.scale.z || 0; 
-                    szDistance = object.keyframe.sz || 1;
-                    rxStart = object.rotate.x || 0;
-                    rxDistance = object.keyframe.rx || 0;
-                    ryStart = object.rotate.y || 0;
-                    ryDistance = object.keyframe.ry || 0;
-                    rzStart = object.rotate.z || 0;
-                    rzDistance = object.keyframe.rz || 0;
-                    raStart = object.rotate.currentAngle || 0;
-                    raDistance = object.keyframe.rA || 0;
-                    duration = object.keyframe.end - object.keyframe.start +1;
-                    currentTweenFrame = object.currentTweenFrame;
-                    duration = endKeyframe.frame - startKeyframe.frame + 1;
+
+                    txStart = start.translate.x || 0;
+                    txDistance = (end.translate.x || 0)  - txStart;
+                    tyStart = start.translate.y || 0;
+                    tyDistance = (end.translate.y || 0) - tyStart;
+                    tzStart = start.translate.z || 0;
+                    tzDistance = (end.translate.z || 0) - tzStart;
+                    
+                    sxStart = start.scale.x || 0; 
+                    sxDistance = (end.scale.x || 1) - sxStart;
+                    syStart = start.scale.y || 0; 
+                    syDistance = (end.scale.y || 1) - syStart;
+                    szStart = start.scale.z || 0; 
+                    szDistance = (end.scale.z || 1) - szStart;
+                    
+                    raStart = start.rotate.angle || 0;
+                    raDistance = (end.rotate.angle || 0) - raStart;
+                    rxStart = start.rotate.x || 0;
+                    rxDistance = (end.rotate.x || 0) - rxStart;
+                    ryStart = start.rotate.y || 0;
+                    ryDistance = (end.rotate.y || 0) - ryStart;
+                    rzStart = start.rotate.z || 0;
+                    rzDistance = (end.rotate.z || 0) - rzStart;
+                    
+                    duration = end.frame - start.frame + 1;
+                    
+                    currentTweenFrame = object.keyframe.currentTweenFrame;
+                    
+                    if((start.translate.x != end.translate.x) || (start.translate.y != end.translate.y) || (start.translate.z != end.translate.z)){
+                        object.translate = {
+                            x: ease(currentTweenFrame, txStart, txDistance, duration),
+                            y: ease(currentTweenFrame, tyStart, tyDistance, duration),
+                            z: ease(currentTweenFrame, tzStart, tzDistance, duration)
+                        };
+                    }
+                    
+                    if((start.scale.x != end.scale.x) || (start.scale.y != end.scale.y) || (start.scale.z != end.scale.z)){
+                        object.scale = {
+                            x: ease(currentTweenFrame, sxStart, sxDistance, duration),
+                            y: ease(currentTweenFrame, syStart, syDistance, duration),
+                            z: ease(currentTweenFrame, szStart, szDistance, duration)
+                        };
+                    }
                     
                     
-                    object.translate = {
-                        x: ease(currentTweenFrame, txStart, txDistance, duration),
-                        y: ease(currentTweenFrame, tyStart, tyDistance, duration),
-                        z: ease(currentTweenFrame, tzStart, tzDistance, duration)
-                    };
+                   if((start.rotate.angle != end.rotate.angle) || (start.rotate.x != end.rotate.x) || (start.rotate.y != end.rotate.y) || (start.rotate.z != end.rotate.z)){ 
+                       object.rotate = {
+                           angle: ease(currentTweenFrame, raStart, raDistance, duration),
+                           x: ease(currentTweenFrame, rxStart, rxDistance, duration),
+                           y: ease(currentTweenFrame, ryStart, ryDistance, duration),
+                           z: ease(currentTweenFrame, rzStart, rzDistance, duration)
+                       };
+                   }
                     
-                    object.scale = {
-                        x: ease(currentTweenFrame, sxStart, sxDistance, duration),
-                        y: ease(currentTweenFrame, syStart, syDistance, duration),
-                        z: ease(currentTweenFrame, szStart, szDistance, duration)
-                    };
                     
-                    object.rotate = {
-                        currentAngle: ease(currentTweenFrame, raStart, raDistance, duration),
-                        x: ease(currentTweenFrame, rxStart, rxDistance, duration),
-                        y: ease(currentTweenFrame, ryStart, ryDistance, duration),
-                        z: ease(currentTweenFrame, rzStart, rzDistance, duration)
-                    };
-                    
-                    object.currentTweenFrame++;
+                    object.keyframe.currentTweenFrame++;
+                }   else {
+                 console.log(object.name + " is not being animated");
                 }
 
-                // wrap in while stmt, while currentTF != to keyframe.end, keep calling this function.
-                
             }
 
-};
+            if(currentTweenFrame === (end.frame + 1)){
+                return true;
+            } else {
+                console.log( object.name + "'s current tween frame: " + currentTweenFrame + "\nend frame: " + end.frame);
+                return false;
+            }
+            
+            
+    }
+    
+
+
+}
     
 

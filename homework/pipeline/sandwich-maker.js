@@ -20,7 +20,6 @@
 
         modelViewMatrix,
         projectionMatrix,
-        rotationMatrix,
         vertexPosition,
         vertexColor,
         vertexDiffuseColor,
@@ -35,6 +34,7 @@
 
 
         // An individual "draw object" function.
+        setTransformDefaults,
         getVertices,
         drawObject,
 
@@ -68,8 +68,6 @@
         rB,
         confirmL = false,
         confirmR = false,
-        oneClickL = 0,
-        oneClickR = 0;
         
         
         // Grab the WebGL rendering context.
@@ -140,7 +138,7 @@
      rightJelly = {
         name: "Right Jelly", 
         color: defaultJellyColor,
-        translate: {x: 0.0, y: 0.0, z: -4.0},
+        translate: {x: 0.0, y: 0.0, z: -6.0},
         scale: {x: 1, y: 1, z: 0.25},
         vertices: Shapes.toRawTriangleArray(Shapes.jelly()),
         mode: gl.TRIANGLES,
@@ -196,6 +194,9 @@
      },
      
      
+    
+     
+     
      
     
     
@@ -206,6 +207,17 @@
 
 /*~*~*~*~*~*~**~*~*~*~*~*~*~*~* Retrieve Shape Information ~*~*~*~*~*~**~*~*~*~*~*~*~*~**/
    
+    setTransformDefaults = function(object) {
+       object.translate = object.translate || {x: 0.0, y: 0.0, z: 0.0};
+       object.scale = object.scale || {x: 1.0, y: 1.0, z: 1.0};
+       object.rotate = object.rotate || {angle: 0.0, x: 0.0, y: 1.0, z: 0.0 };
+       object.color =  object.color || {r: 1.0, g: 1.0, b:1.0};
+       object.specularColor = object.specularColor || {r: 1.0, g: 1.0, b: 1.0}; 
+       object.shininess = object.shininess || 1;
+       object.activeAnim = object.activeAnim || false;
+       
+    },
+    
     // Pass the vertices to WebGL.
    getVertices = function(objectArray){
         var i,
@@ -216,6 +228,8 @@
             maxk;
             
         for (i = 0, maxi = objectArray.length; i < maxi; i += 1) {
+            setTransformDefaults(objectArray[i]);
+            
             objectArray[i].buffer = GLSLUtilities.initVertexBuffer(gl,
                     objectArray[i].vertices);
             
@@ -343,7 +357,6 @@
     normalVector = gl.getAttribLocation(shaderProgram, "normalVector");
     gl.enableVertexAttribArray(normalVector);
     
-    rotationMatrix = gl.getUniformLocation(shaderProgram, "rotationMatrix");
 
     modelViewMatrix = gl.getUniformLocation(shaderProgram, "modelViewMatrix");
     projectionMatrix = gl.getUniformLocation(shaderProgram, "projectionMatrix");
@@ -380,9 +393,9 @@
             mi = new Matrix4x4();
         
         
-        ms = object.scale ?  ms.scale(object.scale.x, object.scale.y, object.scale.z): ms.scale(1, 1, 1);
-        mt = object.translate ? mt.translate(object.translate.x, object.translate.y, object.translate.z) : mt.translate(0, 0, 0);
-        mr = object.rotate ? mr.rotate(object.rotate.angle, object.rotate.x, object.rotate.y, object.rotate.z): mr;
+        ms = ms.scale(object.scale.x, object.scale.y, object.scale.z);
+        mt = mt.translate(object.translate.x, object.translate.y, object.translate.z);
+        mr = mr.rotate(object.rotate.angle, object.rotate.x, object.rotate.y, object.rotate.z);
         mi = mt.multiply(mr).multiply(ms);
 
         gl.uniformMatrix4fv(modelViewMatrix, gl.FALSE, new Float32Array(mi.toWebGLMatrix().returnMatrix()));
@@ -444,9 +457,6 @@
         // Clear the display.
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         
-         gl.uniformMatrix4fv(rotationMatrix, gl.FALSE, new Float32Array(m.rotate(currentRotation, 0, 1, 0).toWebGLMatrix().returnMatrix()));
-
-
         // Display the objects.
         for (i = 0, maxi = objectsToDraw.length; i < maxi; i += 1) {
             drawObject(objectsToDraw[i]);
@@ -500,6 +510,14 @@
 
 /* ~*~*~*~*~*~**~*~*~*~*~*~*~*~* Interactive Functions  ~*~*~*~*~*~**~*~*~*~*~*~*~*~*~ */
     
+    // Hide cancel & make buttons originally
+    $("#left-slice-cancel").hide();
+    $("#right-slice-cancel").hide();
+    $("#make-btn").hide();
+    
+    
+    
+    // Color picking for jelly
     $("#left-color-picker").spectrum({
         color: "#fff",
         showInput: true,
@@ -514,7 +532,7 @@
                 getVertices(objectsToDraw);
                 drawScene();
             } else {
-                $("#dynamic-instructions")("Sorry, you have already confirmed your left color choice.")
+                alert("Sorry, you have already confirmed your left color choice.");
             }
         }
     });
@@ -534,184 +552,347 @@
                 getVertices(objectsToDraw);
                 drawScene();
             } else {
-                $("#dynamic-instructions").text("Sorry, you have already confirmed your right color choice")
+                alert("Sorry, you have already confirmed your right color choice");
             }
             
             
         }
     });
     
+    
+    
+    
+    
+    
+    
+    
+    
+    // Confirm jelly colors
     $("#left-slice-confirm").click(function (){
-         confirmL = true;
-         oneClickL++;
-        if( oneClickL === 1){
-            $("#left-color-picker").spectrum("disable");
-            leftBread.translate = {x: -3.0, y: 0.0, z: 0.0},
-            leftBread.rotate = {angle: 280, x: 0, y: 1, z:0};
-            drawScene();
-            checkState();
-        }
+        confirmL = true;
+        $("#left-slice-confirm").hide(200);
+        $("#left-slice-cancel").show(200);
+        $("#left-color-picker").spectrum("disable");
+        
+        leftBread.activeAnim = true;
+        leftBread.keyframe = { start: { translate: {x: leftBread.translate.x, y: leftBread.translate.y, z: leftBread.translate.z},
+                                          frame: 0
+                                        },
+                                 end: { translate: {x: -3.5, y: 0.0, z: 0.0},
+                                        rotate: {angle: -85.0, x: 0.0, y: 1.0, z: 0.0},
+                                        frame: 50
+                                  },
+                                 currentTweenFrame: 0,
+                                 
+                           };
+                               
+        setTransformDefaults(leftBread.keyframe.start);
+        setTransformDefaults(leftBread.keyframe.end);  
+        animate([leftBread]);
+        checkState();
     });
     
     $("#right-slice-confirm").click(function (){
-         confirmR = true;
-         oneClickR++;
-        if( oneClickR === 1){
+        confirmR = true;
+        $("#right-slice-confirm").hide(200);
+        $("#right-slice-cancel").show(200);
+        $("#right-color-picker").spectrum("disable");
+        
 
-            $("#right-color-picker").spectrum("disable");
-            /*
-            rightBread.keyframe.activeAnim = true;
-                        while(rightBread.keyframe.currentTweenFrame != rightBread.keyframe.end){
-                            KeyframeTweener.applyTween(objectsToDraw);
-                            getVertices(objectsToDraw);
-                            
-                        }*/
-            
-            
-            rightBread.translate = {x: 3.0, y: 0.0, z: 0.0},
-            rightBread.rotate = {angle: 80, x: 0, y: 1, z:0};
-            
-            drawScene();
-            
-            checkState();
-        }
+        rightBread.activeAnim = true;
+        rightBread.keyframe = { start: { translate: {x: rightBread.translate.x, y: rightBread.translate.y, z: rightBread.translate.z},
+                                          frame: 0
+                                        },
+                                 end: { translate: {x: 3.5, y: 0.0, z: 0.0},
+                                        rotate: {angle: 85.0, x: 0.0, y: 1.0, z: 0.0},
+                                        frame: 50
+                                  },
+                                 currentTweenFrame: 0,
+                                 ease: KeyframeTweener.quadEaseOut
+                           };
+                               
+         setTransformDefaults(rightBread.keyframe.start);
+         setTransformDefaults(rightBread.keyframe.end);                      
+         animate([rightBread]);
+        
+       
+
+        
+        checkState();
+        
     });
     
     
 
               
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    // Cancel jelly color 
     $("#left-slice-cancel").click(function (){
-         confirmL = false;
-         oneClickL = 0;
-        if(!confirmL){
-            $("#left-color-picker").spectrum("enable");
-            leftBread.translate = {x: -30.0, y: 0.0, z: 0.0},
-            leftBread.rotate = {angle: 0, x: 0, y: 1, z:0};
-            checkState();
-            drawScene();
-        } else {
-            alert("AHHH ERROR WTF");
-        }
+        confirmL = false;
+        $("#left-slice-confirm").show(200);
+        $("#left-slice-cancel").hide(200);
+        $("#left-color-picker").spectrum("enable");
+        
+        leftBread.activeAnim = true;
+        leftBread.keyframe = { start: { translate: {x: leftBread.translate.x, y: leftBread.translate.y, z: leftBread.translate.z},
+                                          frame: 0
+                                        },
+                                 end: { translate: {x: -30.0, y: 0.0, z: 0.0},
+                                        rotate: {angle: 0.0, x: 0.0, y: 1.0, z: 0.0},
+                                        frame: 50
+                                  },
+                                 currentTweenFrame: 0,
+                                 
+                           };
+                               
+        setTransformDefaults(leftBread.keyframe.start);
+        setTransformDefaults(leftBread.keyframe.end);  
+        animate([leftBread]);
+        
+        checkState();
+
     });
     
     $("#right-slice-cancel").click(function (){
-         confirmR = false;
-         oneClickR = 0;
-        if(!confirmR){
+        confirmR = false;
+        $("#right-slice-confirm").show(200);
+        $("#right-slice-cancel").hide(200);
+        $("#right-color-picker").spectrum("enable");
+        
+        rightBread.activeAnim = true;
+        rightBread.keyframe = { start: { translate: {x: rightBread.translate.x, y: rightBread.translate.y, z: rightBread.translate.z},
+                                          frame: 0
+                                        },
+                                 end: { translate: {x: 30.0, y: 0.0, z: 0.0},
+                                        rotate: {angle: 0.0, x: 0.0, y: 1.0, z: 0.0},
+                                        frame: 50
+                                  },
+                                 currentTweenFrame: 0,
+                                 ease: KeyframeTweener.quadEaseOut
+                                 
+                           };
+                               
+        setTransformDefaults(rightBread.keyframe.start);
+        setTransformDefaults(rightBread.keyframe.end);  
+        animate([rightBread]);
+       
+        checkState();
+       
 
-            $("#right-color-picker").spectrum("enable");
-            rightBread.translate = {x: 30.0, y: 0.0, z: 0.0},
-            rightBread.rotate = {angle: 0.0, x: 0, y: 1, z:0};
-            checkState();
-            drawScene();
-        } else {
-            alert("AHHH ERROR WTF");
-        }
     });
     
     
+    
+    
+    
+   // Places Make Button when both slices have been confirmed 
    checkState = function (){
        if(confirmL && confirmR){
-            $("#make-button").append('<img id ="make-btn" src ="images/MAKE-A.png" />');
-            $("#make-button").hover(function () {
-                    $("#make-btn").attr("src", "images/MAKE-B.png");
-                 }, function(){
-                    $("#make-btn").attr("src", "images/MAKE-A.png");
-                 });
-            
-            assignMake();
+            $("#make-btn").show();
        } else{
-           $("#make-btn").remove();
+           $("#make-btn").hide();
        }
        
    }
    
-   assignMake = function(){
+   
+   
+   
+   
+   // Make Button functionality
+   $("#make-btn").click(function(){
+       var fR = (leftJelly.color.r + rightJelly.color.r) /2
+           fG = (leftJelly.color.g + rightJelly.color.g) /2
+           fB = (leftJelly.color.b + rightJelly.color.b) /2
+       finalJellyColor = {r: fR, g:fG, b:fB};
        
-       $("#make-button").click(function(){
-           var fR = (leftJelly.color.r + rightJelly.color.r) /2
-               fG = (leftJelly.color.g + rightJelly.color.g) /2
-               fB = (leftJelly.color.b + rightJelly.color.b) /2
-           finalJellyColor = {r: fR, g:fG, b:fB};
-           
-           $("#left").remove();
-           $("#right").remove();
-           
-           finalBread = {
-                name: "Final Bread",
-                color: { r: 0.99, g: 0.92, b: 0.57 },
-                scale: {x: 2, y: 2, z: 2},
-                translate: {x: 0.0, y: 0.0, z: 0.0},
-                vertices: Shapes.toRawTriangleArray(Shapes.bread()),
+       $("#left").hide();
+       $("#right").hide();
+       $("#make-btn").hide(200);
+       
+       finalBreadA = {
+            name: "Final Bread A",
+            color: { r: 0.99, g: 0.92, b: 0.57 },
+            scale: {x: 1.0, y: 1.0, z: 1.0},
+            translate: {x: 0.0, y: 0.0, z: -20.0},
+            vertices: Shapes.toRawTriangleArray(Shapes.bread()),
+            mode: gl.TRIANGLES,
+            normals: Shapes.toVertexNormalArray(Shapes.bread()),
+            specularColor: { r: 1.0, g: 1.0, b: 1.0 },
+            shininess: 1,
+            subshapes: [{
+                name: "Final Crust", 
+                color: { r: 0.825, g: 0.52, b: 0.22 },
+                vertices: Shapes.toRawTriangleArray(Shapes.crust()),
                 mode: gl.TRIANGLES,
-                normals: Shapes.toVertexNormalArray(Shapes.bread()),
-                specularColor: { r: 1.0, g: 1.0, b: 1.0 },
-                shininess: 2,
-                subshapes: [{
-                    name: "Final Crust", 
-                    color: { r: 0.825, g: 0.52, b: 0.22 },
-                    vertices: Shapes.toRawTriangleArray(Shapes.crust()),
-                    mode: gl.TRIANGLES,
-                    specularColor: { r: 1.0, g: 0.0, b: 1.0 },
-                    shininess: 3,
-                    normals: Shapes.toVertexNormalArray(Shapes.crust())
-               }]
-           },
-           
-           objectsToDraw = [finalBread];
-           getVertices(objectsToDraw);
-           drawScene();
-           
-           
-           $(canvas).click(function(){
-               console.log("clicked");
+                specularColor: { r: 1.0, g: 0.0, b: 1.0 },
+                shininess: 3,
+                normals: Shapes.toVertexNormalArray(Shapes.crust())
+           }]
+       },
+       
+       finalBreadB = {name: "Final Bread B",
+            color: { r: 0.0, g: 0.9, b: 0.57 },
+            scale: {x: 1.0, y: 1.0, z: 1.0},
+            translate: {x: 0.0, y: 0.0, z: 20.0},
+            rotate: {angle: 180.0, x: 0.0, y: 1.0, z: 0.0},
+            vertices: Shapes.toRawTriangleArray(Shapes.bread()),
+            mode: gl.TRIANGLES,
+            normals: Shapes.toVertexNormalArray(Shapes.bread()),
+            specularColor: { r: 1.0, g: 1.0, b: 1.0 },
+            shininess: 1,
+            subshapes: [{
+                name: "Final Crust B", 
+                color: { r: 0.825, g: 0.52, b: 0.22 },
+                vertices: Shapes.toRawTriangleArray(Shapes.crust()),
+                mode: gl.TRIANGLES,
+                specularColor: { r: 1.0, g: 0.0, b: 1.0 },
+                shininess: 3,
+                normals: Shapes.toVertexNormalArray(Shapes.crust())
+           }]
+       },
+       
+       finalJelly = {
+               name: "jelly", 
+                color: finalJellyColor,
+                scale: {x: 1.0, y: 1.0, z: 1.0},
+                translate: {x: 0.0, y: 0.0, z: 20.0},
+                vertices: Shapes.toRawTriangleArray(Shapes.crust()),
+                mode: gl.TRIANGLES,
+                specularColor: { r: 1.0, g: 0.0, b: 1.0 },
+                shininess: 3,
+                normals: Shapes.toVertexNormalArray(Shapes.crust())
+           }
+      
+       
+       
+       
+
+       objectsToDraw = [finalBreadA, finalBreadB];
+       getVertices(objectsToDraw);
+       
+       finalBreadA.activeAnim = true;
+       finalBreadB.activeAnim = true;
+       finalJelly.activeAnim = true;
+       finalBreadA.keyframe = { start: { translate: {x: finalBreadA.translate.x, y: finalBreadA.translate.y, z: finalBreadA.translate.z},
+                                         frame: 0
+                                        },
+                                 end: { translate: {x: 0.0, y: 0.0, z: 0.0},
+                                        scale: {x: 2.0, y: 2.0, z: 2.0},
+                                        rotate: {angle: 360.0, x: 0.0, y: 1.0, z: 0.0},
+                                        frame: 50
+                                  },
+                                 currentTweenFrame: 0,
+                                 
+                           };
+        finalBreadB.keyframe = { start: { translate: {x: finalBreadB.translate.x, y: finalBreadB.translate.y, z: finalBreadB.translate.z},
+                                          rotate: {angle: finalBreadB.rotate.angle, x: finalBreadB.rotate.x, y: finalBreadB.rotate.y, z: finalBreadB.rotate.z},
+                                         frame: 0
+                                        },
+                                 end: { translate: {x: 0.0, y: 0.0, z: 0.0},
+                                        scale: {x: 2.0, y: 2.0, z: 2.0},
+                                        rotate: {angle: 360.0, x: 0.0, y: 1.0, z: 0.0},
+                                        frame: 50
+                                  },
+                                 currentTweenFrame: 0,
+                                 
+                           };
+        finalJelly.keyframe = { start: { translate: {x: finalJelly.translate.x, y: finalJelly.translate.y, z: finalJelly.translate.z},
+                                         frame: 0
+                                        },
+                                 end: { translate: {x: 0.0, y: 0.0, z: 0.0},
+                                        scale: {x: 2.0, y: 2.0, z: 2.0},
+                                        rotate: {angle: 360.0, x: 0.0, y: 1.0, z: 0.0},
+                                        frame: 50
+                                  },
+                                 currentTweenFrame: 0,
+                                 
+                           };
+                           
+        setTransformDefaults(finalBreadA.keyframe.start);
+        setTransformDefaults(finalBreadB.keyframe.start);
+        setTransformDefaults(finalJelly.keyframe.start);
+        setTransformDefaults(finalBreadA.keyframe.end);
+        setTransformDefaults(finalBreadB.keyframe.end);
+        setTransformDefaults(finalJelly.keyframe.end);  
+        animate([finalBreadA, finalBreadB]);
+        //animate([finalBreadB]);
+       
+       
+       enableJelly();
+              
+       
+                      
+    });
+   
+   
+   //enables canvas click function to create jelly drips
+   enableJelly = function(){
+       $(canvas).click(function(){
            var jellyDrip = {
                 color: finalJellyColor,
-                scale: {x: 0.25, y: 0.5, z: 0.5},
-                translate: {x: randomSigned(-10, 10), y:randomSigned(-40, -25), z:randomSigned(-5, -4)},
+                scale: {x: randomSigned(0.125, 0.15), y: randomSigned(0.25, 0.45), z: randomSigned(0.25, 0.45)},
+                translate: {x: randomSigned(-10, 10), y:randomSigned(-40, -25), z:randomSigned(0, 5)},
                 vertices: Shapes.toRawTriangleArray(Shapes.drip()),
                 mode: gl.TRIANGLES,
                 normals: Shapes.toVertexNormalArray(Shapes.drip()),
                 specularColor: { r: 1.0, g: 1.0, b: 1.0 },
                 shininess: 15,
-              }
+            }
             
-            console.log(jellyDrip.translate);
-           
+            
            objectsToDraw.push(jellyDrip); 
-           
            getVertices(objectsToDraw);
-           drawScene();
+           jellyDrip.activeAnim = true;
+           jellyDrip.keyframe = { start: { translate: {x: jellyDrip.translate.x, y: jellyDrip.translate.y, z: jellyDrip.translate.z},
+                                          frame: 0
+                                        },
+                                 end: { translate: {x: jellyDrip.translate.x, y: -75.0, z: jellyDrip.translate.z},
+                                        rotate: {angle: 360.0, x: 0.0, y: 1.0, z: 0.0},
+                                        frame: 50
+                                  },
+                                 currentTweenFrame: 0,
+                                 
+                           };
+           setTransformDefaults(jellyDrip.keyframe.start);
            
-           
+           setTransformDefaults(jellyDrip.keyframe.end);
+           animate([jellyDrip]);
            
            
        });
-                      
-       });
-       
-       
    }
    
    
+   
+   // Helper function to run keyframe animations.
+   animate = function (objectArray){
+       var interval = setInterval (function(){
+          var finished = KeyframeTweener.applyTween(objectArray);
+          if(finished){
+              clearInterval(interval);
+          } 
+          drawScene();
+       }, 30);
+   }
+   
+   
+   //Helper function to generate random signed numbers between two numbers.
    randomSigned = function(llimit, ulimit){
        var diff = ulimit - llimit;
-           result = Math.floor((Math.random() * (diff + 1) + llimit));       
+           k = (llimit / 10) > 0.1 ? 1: 0.1;
+           result = (Math.random() * (diff + k) + llimit);       
        return result;
    }
-
-    
-
-
-
-
-
-
-
-
-
-
 
 
 }(document.getElementById("sandwich")));

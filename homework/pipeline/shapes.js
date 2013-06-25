@@ -121,7 +121,7 @@ var Shapes = {
        }
        
 
-       
+       console.log(breadVertices)
 
         return {
             vertices: breadVertices,
