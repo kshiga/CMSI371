@@ -546,7 +546,6 @@
          oneClickL++;
         if( oneClickL === 1){
             $("#left-color-picker").spectrum("disable");
-            $("#dynamic-instructions").text("Left Slice confirmed");
             leftBread.translate = {x: -3.0, y: 0.0, z: 0.0},
             leftBread.rotate = {angle: 280, x: 0, y: 1, z:0};
             drawScene();
@@ -560,7 +559,6 @@
         if( oneClickR === 1){
 
             $("#right-color-picker").spectrum("disable");
-            $("#dynamic-instructions").text("Right Slice confirmed");
             /*
             rightBread.keyframe.activeAnim = true;
                         while(rightBread.keyframe.currentTweenFrame != rightBread.keyframe.end){
@@ -616,10 +614,12 @@
    checkState = function (){
        if(confirmL && confirmR){
             $("#make-button").append('<img id ="make-btn" src ="images/MAKE-A.png" />');
-            $("#make-btn").hover(function () {
-                console.log("hovering");
-                 
-             });
+            $("#make-button").hover(function () {
+                    $("#make-btn").attr("src", "images/MAKE-B.png");
+                 }, function(){
+                    $("#make-btn").attr("src", "images/MAKE-A.png");
+                 });
+            
             assignMake();
        } else{
            $("#make-btn").remove();
