@@ -788,6 +788,7 @@
                                         },
                                  end: { translate: {x: 0.0, y: 0.0, z: 0.0},
                                         scale: {x: 2.0, y: 2.0, z: 2.0},
+                        // JD: Final bread A starts at 0 degrees and ends at 360---a 360-degree distance.
                                         rotate: {angle: 360.0, x: 0.0, y: 1.0, z: 0.0},
                                         frame: 50
                                   },
@@ -800,6 +801,12 @@
                                         },
                                  end: { translate: {x: 0.0, y: 0.0, z: 0.0},
                                         scale: {x: 2.0, y: 2.0, z: 2.0},
+                        // JD: Final bread B starts at 180 degrees (line 747) and ends at
+                        //     360---a 180-degree distance.  Thus, the final bread A will travel
+                        //     "faster" than final bread B, because it turns 180 more degrees
+                        //     within the same number of frames.  Is that the bug you mentioned,
+                        //     or is it something else?  (i.e., try changing the angle below to
+                        //     540, and see if that produces your intended result)
                                         rotate: {angle: 360.0, x: 0.0, y: 1.0, z: 0.0},
                                         frame: 50
                                   },
