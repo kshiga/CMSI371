@@ -18,20 +18,24 @@
         currentRotation = 0.0,
         currentInterval,
 
+        // Transform matrices
         modelViewMatrix,
         projectionMatrix,
+        
+        // Color & Lighting
         vertexPosition,
         vertexColor,
         vertexDiffuseColor,
         vertexSpecularColor,
-        shininess,
-        
+        shininess,        
         normalVector,
         lightPosition,
         lightPosition2,
         lightDiffuse,
         lightSpecular,
-
+        
+        textureCoordAttribute,
+        samplerUniform,
 
         // An individual "draw object" function.
         setTransformDefaults,
@@ -56,7 +60,6 @@
         mr,
         mi,
         
-        
         // Interaction Variables
         defaultJellyColor = { r: 1.0, g: 1.0, b: 1.0 },
         finalJellyColor = {},
@@ -69,29 +72,22 @@
         confirmL = false,
         confirmR = false,
         
-        
+        backgroundTexture,
+        handleLoadedTexture,
+  
         // Grab the WebGL rendering context.
         gl = GLSLUtilities.getGL(canvas);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
 /* ~*~*~*~*~*~**~*~*~*~*~*~*~*~* Canvas Set-up ~*~*~*~*~*~**~*~*~*~*~*~*~*~*~ */
-
-
     if (!gl) {
         alert("No WebGL context found...sorry.");
 
@@ -104,24 +100,19 @@
     // to program.
     gl.enable(gl.DEPTH_TEST);
     gl.clearColor(0.0, 0.0, 0.0, 0.0);
-    gl.viewport(0, 0, canvas.width, canvas.height);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* ~*~*~*~*~*~**~*~*~*~*~*~*~*~* Objects Set-up ~*~*~*~*~*~**~*~*~*~*~*~*~*~*~ */
     
+    gl.viewport(0, 0, canvas.width, canvas.height);
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+/* ~*~*~*~*~*~**~*~*~*~*~*~*~*~* Objects Set-up ~*~*~*~*~*~**~*~*~*~*~*~*~*~*~ */
     leftJelly = {
         name: "Left Jelly", 
         color: defaultJellyColor,
@@ -134,8 +125,7 @@
         normals: Shapes.toVertexNormalArray(Shapes.jelly())
     },
 
-    
-     rightJelly = {
+    rightJelly = {
         name: "Right Jelly", 
         color: defaultJellyColor,
         translate: {x: 0.0, y: 0.0, z: -6.0},
@@ -145,9 +135,9 @@
         specularColor: { r: 1.0, g: 1.0, b: 0.0 },
         shininess: 16,
         normals: Shapes.toVertexNormalArray(Shapes.jelly())
-     }, 
+    }, 
             
-     leftCrust = {
+    leftCrust = {
         name: "Left Crust", 
         color: { r: 0.825, g: 0.52, b: 0.22 },
         vertices: Shapes.toRawTriangleArray(Shapes.crust()),
@@ -155,9 +145,9 @@
         specularColor: { r: 1.0, g: 0.0, b: 1.0 },
         shininess: 1,
         normals: Shapes.toVertexNormalArray(Shapes.crust())
-     },
+    },
     
-     rightCrust = {
+    rightCrust = {
         name: "Right Crust", 
         color: { r: 0.825, g: 0.52, b: 0.22 },
         vertices: Shapes.toRawTriangleArray(Shapes.crust()),
@@ -165,9 +155,9 @@
         specularColor: { r: 1.0, g: 0.0, b: 1.0 },
         shininess: 1,
         normals: Shapes.toVertexNormalArray(Shapes.crust())
-     },
+    },
      
-     leftBread = {
+    leftBread = {
         name: "Left Bread",
         color: { r: 0.99, g: 0.92, b: 0.57 },
         scale: {x: 1, y: 1, z: 1},
@@ -178,9 +168,9 @@
         specularColor: { r: 1.0, g: 1.0, b: 1.0 },
         shininess: 1,
         subshapes: [leftCrust, leftJelly]
-     },
+    },
      
-     rightBread = {
+    rightBread = {
         name: "Right Bread",
         color: { r: 0.99, g: 0.92, b: 0.57 },
         scale: {x: 1, y: 1, z: 1},
@@ -191,20 +181,113 @@
         specularColor: { r: 1.0, g: 1.0, b: 1.0 },
         shininess: 1,
         subshapes: [rightCrust, rightJelly]
-     },
+    },
      
-     
+    background = {
+        name: "background",
+        color: {r: 0.0, g: 1.0, b: 1.0},
+        translate: {x: 0.0, y: 0.0, z: 50.0},
+        scale: {x:10, y: 10, z: 10},
+        vertices: Shapes.toRawTriangleArray(Shapes.cube()),
+        mode: gl.TRIANGLES,
+        normals: Shapes.toNormalArray(Shapes.cube()),
+    },
     
-     
-     
-     
+        // Build the objects to display.
+    objectsToDraw = [background],
     
     
-    // Build the objects to display.
-    objectsToDraw = [leftBread, rightBread];
-
-
-
+    
+    
+    
+    
+    
+    
+    
+    
+ /* ~*~*~*~*~*~**~*~*~*~*~*~*~*~* Background Texture Set-up ~*~*~*~*~*~**~*~*~*~*~*~*~*~*~ */   
+    cubeTexture = gl.createTexture();
+    cubeTexture.image = new Image();
+    cubeTexture.image.onload = function() { handleLoadedTexture(cubeTexture); }
+    cubeTexture.image.src = "images/sandww.png";
+    
+    function handleLoadedTexture(texture) {
+        console.log("handling texture");
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, texture.image);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+        gl.bindTexture(gl.TEXTURE_2D, null);
+      }
+    
+    //cubeVerticesTextureCoordBuffer = gl.createBuffer();
+    
+    //gl.bindBuffer(gl.ARRAY_BUFFER, cubeVerticesTextureCoordBuffer);
+     textureCoords = [
+      0.0, 0.0,
+      1.0, 0.0,
+      1.0, 1.0,
+      
+      0.0, 0.0,
+      0.0, 1.0,
+      1.0, 1.0,
+     
+      0.0, 0.0,
+      1.0, 0.0,
+      1.0, 1.0,
+      
+      0.0, 0.0,
+      0.0, 1.0,
+      1.0, 1.0,
+      
+      0.0, 0.0,
+      1.0, 0.0,
+      1.0, 1.0,
+      
+      0.0, 0.0,
+      0.0, 1.0,
+      1.0, 1.0,
+      
+      0.0, 0.0,
+      1.0, 0.0,
+      1.0, 1.0,
+      
+      0.0, 0.0,
+      0.0, 1.0,
+      1.0, 1.0,
+      
+      0.0, 0.0,
+      1.0, 0.0,
+      1.0, 1.0,
+      
+      0.0, 0.0,
+      0.0, 1.0,
+      1.0, 1.0,
+      
+      0.0, 0.0,
+      1.0, 0.0,
+      1.0, 1.0,
+      
+      0.0, 0.0,
+      0.0, 1.0,
+      1.0, 1.0, 
+     ];
+     cubeVerticesTextureCoordBuffer = GLSLUtilities.initVertexBuffer(gl,
+                textureCoords);
+     //gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoords),
+       //         gl.STATIC_DRAW)
+     cubeVerticesTextureCoordBuffer.itemSize = 2;
+     cubeVerticesTextureCoordBuffer.numItems = 24;
+                
+                
+                
+                
+                
+                
+                
+                
+                                
 /*~*~*~*~*~*~**~*~*~*~*~*~*~*~* Retrieve Shape Information ~*~*~*~*~*~**~*~*~*~*~*~*~*~**/
    
     setTransformDefaults = function(object) {
@@ -304,7 +387,7 @@
 
 
 
-/* ~*~*~*~*~*~**~*~*~*~*~*~*~*~* Shader Set-up ~*~*~*~*~*~**~*~*~*~*~*~*~*~*~ */
+/* ~*~*~*~*~*~**~*~*~*~*~*~*~*~* Shader Program ~*~*~*~*~*~**~*~*~*~*~*~*~*~*~ */
 
     // Initialize the shaders.
     shaderProgram = GLSLUtilities.initSimpleShaderProgram(
@@ -326,23 +409,13 @@
         }
     );
 
+    
     // If the abort variable is true here, we can't continue.
     if (abort) {
         alert("Fatal errors encountered; we cannot continue.");
         return;
     }
     
-    
-
-
-
-
-
-
-
-
-/* ~*~*~*~*~*~**~*~*~*~*~*~*~*~* Shader Program Initialization ~*~*~*~*~*~**~*~*~*~*~*~*~*~*~ */
-
     // All done --- tell WebGL to use the shader program from now on.
     gl.useProgram(shaderProgram);
  
@@ -357,6 +430,15 @@
     normalVector = gl.getAttribLocation(shaderProgram, "normalVector");
     gl.enableVertexAttribArray(normalVector);
     
+    console.log(normalVector);
+    
+    textureCoordAttribute = gl.getAttribLocation(shaderProgram, "aTextureCoord");
+    
+    console.log(textureCoordAttribute);
+    gl.enableVertexAttribArray(textureCoordAttribute);
+
+    samplerUniform = gl.getUniformLocation(shaderProgram, "uSampler");     
+     
 
     modelViewMatrix = gl.getUniformLocation(shaderProgram, "modelViewMatrix");
     projectionMatrix = gl.getUniformLocation(shaderProgram, "projectionMatrix");
@@ -368,11 +450,12 @@
     lightPosition2 = gl.getUniformLocation(shaderProgram, "lightPosition2");
     lightDiffuse = gl.getUniformLocation(shaderProgram, "lightDiffuse");
     lightSpecular = gl.getUniformLocation(shaderProgram, "lightSpecular");
-    shininess = gl.getUniformLocation(shaderProgram, "shininess");;
+    shininess = gl.getUniformLocation(shaderProgram, "shininess");
+    
+    
 
 
 
-   
 
 
 
@@ -381,7 +464,6 @@
 
 
 /* ~*~*~*~*~*~**~*~*~*~*~*~*~*~* Drawing Functions ~*~*~*~*~*~**~*~*~*~*~*~*~*~*~ */
-
     /*
      * Helper function that returns an object's instance transform matrix.
      */
@@ -403,8 +485,7 @@
         return mi;
         
     }
-
-
+   
 
     /*
      * Displays an individual object and extracts its subshapes to be drawn.
@@ -423,6 +504,17 @@
 
         // Set the shininess.
         gl.uniform1f(shininess, object.shininess);
+        
+        gl.bindBuffer(gl.ARRAY_BUFFER, cubeVerticesTextureCoordBuffer);
+        gl.vertexAttribPointer(textureCoordAttribute, cubeVerticesTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+        
+        gl.activeTexture(gl.TEXTURE0);
+        console.log(cubeTexture);
+        gl.bindTexture(gl.TEXTURE_2D, cubeTexture);
+        gl.uniform1i(samplerUniform, 0);
+        
+        
 
 
         currentInstanceMatrix = getInstanceTransform(object);
@@ -457,6 +549,8 @@
         // Clear the display.
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         
+        
+        
         // Display the objects.
         for (i = 0, maxi = objectsToDraw.length; i < maxi; i += 1) {
             drawObject(objectsToDraw[i]);
@@ -466,13 +560,16 @@
         gl.flush();
         
     };
-
-
-
-
-
-
-
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 /* ~*~*~*~*~*~**~*~*~*~*~*~*~*~* Scene Creation  ~*~*~*~*~*~**~*~*~*~*~*~*~*~*~ */
     //Set up projection matrix.
     var m = new Matrix4x4();
@@ -492,22 +589,18 @@
     
         
     // Draw the initial scene.
-    drawScene();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    setTimeout(drawScene, 1000);
+    //drawScene();
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 /* ~*~*~*~*~*~**~*~*~*~*~*~*~*~* Interactive Functions  ~*~*~*~*~*~**~*~*~*~*~*~*~*~*~ */
     
     // Hide cancel & make buttons originally
@@ -559,14 +652,6 @@
         }
     });
     
-    
-    
-    
-    
-    
-    
-    
-    
     // Confirm jelly colors
     $("#left-slice-confirm").click(function (){
         confirmL = true;
@@ -614,27 +699,9 @@
          setTransformDefaults(rightBread.keyframe.start);
          setTransformDefaults(rightBread.keyframe.end);                      
          animate([rightBread]);
-        
-       
-
-        
-        checkState();
-        
+         checkState();       
     });
-    
-    
-
-              
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+        
     // Cancel jelly color 
     $("#left-slice-cancel").click(function (){
         confirmL = false;
@@ -657,9 +724,7 @@
         setTransformDefaults(leftBread.keyframe.start);
         setTransformDefaults(leftBread.keyframe.end);  
         animate([leftBread]);
-        
         checkState();
-
     });
     
     $("#right-slice-cancel").click(function (){
@@ -683,18 +748,11 @@
                                
         setTransformDefaults(rightBread.keyframe.start);
         setTransformDefaults(rightBread.keyframe.end);  
-        animate([rightBread]);
-       
+        animate([rightBread]);       
         checkState();
-       
-
     });
     
-    
-    
-    
-    
-   // Places Make Button when both slices have been confirmed 
+   // Places/Removes Make Button when both slices have been confirmed/canceled 
    checkState = function (){
        if(confirmL && confirmR){
             $("#make-btn").show();
@@ -703,10 +761,6 @@
        }
        
    }
-   
-   
-   
-   
    
    // Make Button functionality
    $("#make-btn").click(function(){
@@ -723,7 +777,7 @@
             name: "Final Bread A",
             color: { r: 0.99, g: 0.92, b: 0.57 },
             scale: {x: 1.0, y: 1.0, z: 1.0},
-            translate: {x: 0.0, y: 0.0, z: -20.0},
+            translate: {x: 0.0, y: 0.0, z: -3.0},
             vertices: Shapes.toRawTriangleArray(Shapes.bread()),
             mode: gl.TRIANGLES,
             normals: Shapes.toVertexNormalArray(Shapes.bread()),
@@ -741,9 +795,9 @@
        },
        
        finalBreadB = {name: "Final Bread B",
-            color: { r: 0.0, g: 0.9, b: 0.57 },
+            color: { r: 0.99, g: 0.92, b: 0.57 },
             scale: {x: 1.0, y: 1.0, z: 1.0},
-            translate: {x: 0.0, y: 0.0, z: 20.0},
+            translate: {x: 0.0, y: 0.0, z: -2.0},
             rotate: {angle: 180.0, x: 0.0, y: 1.0, z: 0.0},
             vertices: Shapes.toRawTriangleArray(Shapes.bread()),
             mode: gl.TRIANGLES,
@@ -760,29 +814,10 @@
                 normals: Shapes.toVertexNormalArray(Shapes.crust())
            }]
        },
-       
-       finalJelly = {
-               name: "jelly", 
-                color: finalJellyColor,
-                scale: {x: 1.0, y: 1.0, z: 1.0},
-                translate: {x: 0.0, y: 0.0, z: 20.0},
-                vertices: Shapes.toRawTriangleArray(Shapes.crust()),
-                mode: gl.TRIANGLES,
-                specularColor: { r: 1.0, g: 0.0, b: 1.0 },
-                shininess: 3,
-                normals: Shapes.toVertexNormalArray(Shapes.crust())
-           }
-      
-       
-       
-       
-
-       objectsToDraw = [finalBreadA, finalBreadB];
+       objectsToDraw = [finalBreadA, finalBreadB, background];
        getVertices(objectsToDraw);
-       
        finalBreadA.activeAnim = true;
        finalBreadB.activeAnim = true;
-       finalJelly.activeAnim = true;
        finalBreadA.keyframe = { start: { translate: {x: finalBreadA.translate.x, y: finalBreadA.translate.y, z: finalBreadA.translate.z},
                                          frame: 0
                                         },
@@ -800,39 +835,20 @@
                                         },
                                  end: { translate: {x: 0.0, y: 0.0, z: 0.0},
                                         scale: {x: 2.0, y: 2.0, z: 2.0},
-                                        rotate: {angle: 360.0, x: 0.0, y: 1.0, z: 0.0},
+                                        rotate: {angle: 540.0, x: 0.0, y: 1.0, z: 0.0},
                                         frame: 50
                                   },
                                  currentTweenFrame: 0,
                                  
                            };
-        finalJelly.keyframe = { start: { translate: {x: finalJelly.translate.x, y: finalJelly.translate.y, z: finalJelly.translate.z},
-                                         frame: 0
-                                        },
-                                 end: { translate: {x: 0.0, y: 0.0, z: 0.0},
-                                        scale: {x: 2.0, y: 2.0, z: 2.0},
-                                        rotate: {angle: 360.0, x: 0.0, y: 1.0, z: 0.0},
-                                        frame: 50
-                                  },
-                                 currentTweenFrame: 0,
-                                 
-                           };
-                           
+
         setTransformDefaults(finalBreadA.keyframe.start);
         setTransformDefaults(finalBreadB.keyframe.start);
-        setTransformDefaults(finalJelly.keyframe.start);
         setTransformDefaults(finalBreadA.keyframe.end);
         setTransformDefaults(finalBreadB.keyframe.end);
-        setTransformDefaults(finalJelly.keyframe.end);  
         animate([finalBreadA, finalBreadB]);
-        //animate([finalBreadB]);
-       
-       
-       enableJelly();
-              
-       
-                      
-    });
+        enableJelly();
+     });
    
    
    //enables canvas click function to create jelly drips
@@ -848,7 +864,6 @@
                 specularColor: { r: 1.0, g: 1.0, b: 1.0 },
                 shininess: 15,
             }
-            
             
            objectsToDraw.push(jellyDrip); 
            getVertices(objectsToDraw);
@@ -867,14 +882,25 @@
            
            setTransformDefaults(jellyDrip.keyframe.end);
            animate([jellyDrip]);
-           
-           
        });
    }
+
+
+
+
+
+
+
+
+
    
-   
-   
-   // Helper function to run keyframe animations.
+/* ~*~*~*~*~*~**~*~*~*~*~*~*~*~* Helper Functions  ~*~*~*~*~*~**~*~*~*~*~*~*~*~*~ */
+
+
+     /*
+      * Helper function that runs keyframe matrix calculations
+      */
+    
    animate = function (objectArray){
        var interval = setInterval (function(){
           var finished = KeyframeTweener.applyTween(objectArray);
@@ -886,7 +912,10 @@
    }
    
    
-   //Helper function to generate random signed numbers between two numbers.
+     /*
+      * Helper function that returns a number between the two given limits
+      */
+    
    randomSigned = function(llimit, ulimit){
        var diff = ulimit - llimit;
            k = (llimit / 10) > 0.1 ? 1: 0.1;

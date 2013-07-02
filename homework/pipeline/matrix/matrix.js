@@ -187,6 +187,8 @@ var Matrix4x4 = (function () {
 
         return result;
     }
+    
+    
 
     matrix4x4.prototype.frustum = function (left, right, bottom, top, Far, Near) {
         var result = new matrix4x4();
@@ -204,7 +206,7 @@ var Matrix4x4 = (function () {
 
                                              0.0,
                                              0.0,
-                    -(Far + Near) / (Far - Near),
+                    -((Far + Near) / (Far - Near)),
                 (-2 * Near * Far) / (Far - Near), 
              
                                              0.0,
