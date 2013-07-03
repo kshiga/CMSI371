@@ -74,6 +74,10 @@
         
         backgroundTexture,
         handleLoadedTexture,
+        makeTexture,
+        
+        cubeTexture,
+        cubeVerticesTextureCoordBuffer,
   
         // Grab the WebGL rendering context.
         gl = GLSLUtilities.getGL(canvas);
@@ -112,6 +116,8 @@
     
     
     
+    
+    
 /* ~*~*~*~*~*~**~*~*~*~*~*~*~*~* Objects Set-up ~*~*~*~*~*~**~*~*~*~*~*~*~*~*~ */
     leftJelly = {
         name: "Left Jelly", 
@@ -123,7 +129,7 @@
         specularColor: { r: 1.0, g: 1.0, b: 0.0 },
         shininess: 16,
         normals: Shapes.toVertexNormalArray(Shapes.jelly())
-    },
+    };
 
     rightJelly = {
         name: "Right Jelly", 
@@ -135,7 +141,7 @@
         specularColor: { r: 1.0, g: 1.0, b: 0.0 },
         shininess: 16,
         normals: Shapes.toVertexNormalArray(Shapes.jelly())
-    }, 
+    };
             
     leftCrust = {
         name: "Left Crust", 
@@ -145,7 +151,7 @@
         specularColor: { r: 1.0, g: 0.0, b: 1.0 },
         shininess: 1,
         normals: Shapes.toVertexNormalArray(Shapes.crust())
-    },
+    };
     
     rightCrust = {
         name: "Right Crust", 
@@ -168,7 +174,7 @@
         specularColor: { r: 1.0, g: 1.0, b: 1.0 },
         shininess: 1,
         subshapes: [leftCrust, leftJelly]
-    },
+    };
      
     rightBread = {
         name: "Right Bread",
@@ -181,111 +187,48 @@
         specularColor: { r: 1.0, g: 1.0, b: 1.0 },
         shininess: 1,
         subshapes: [rightCrust, rightJelly]
-    },
-     
+    };
+    
+    cubeTexture = gl.createTexture();
+    cubeVerticesTextureCoordBuffer = gl.createBuffer();
     background = {
         name: "background",
         color: {r: 0.0, g: 1.0, b: 1.0},
-        translate: {x: 0.0, y: 0.0, z: 50.0},
-        scale: {x:10, y: 10, z: 10},
+        translate: {x: 0.0, y: 0.0, z: -130.0},
+        scale: {x:70, y: 65, z: 100},
+        rotate: {angle:0, x: 0.2, y:0.8,z:0.0},
         vertices: Shapes.toRawTriangleArray(Shapes.cube()),
         mode: gl.TRIANGLES,
         normals: Shapes.toNormalArray(Shapes.cube()),
-    },
+        texture: cubeTexture,
+        textureSpec: { coords: Shapes.cube().textureCoords,
+                   imgsrc: "images/grid.png",
+                   buffer: cubeVerticesTextureCoordBuffer,
+                   itemSize: 2,
+                   numItems: 24
+                 }
+    };
     
-        // Build the objects to display.
-    objectsToDraw = [background],
+    background = {
+        name: "background",
+        color: {r: 0.0, g: 1.0, b: 1.0},
+        translate: {x: 0.0, y: 0.0, z: -130.0},
+        scale: {x:70, y: 65, z: 100},
+        rotate: {angle:0, x: 0.2, y:0.8,z:0.0},
+        vertices: Shapes.toRawTriangleArray(Shapes.cube()),
+        mode: gl.TRIANGLES,
+        normals: Shapes.toNormalArray(Shapes.cube()),
+        texture: cubeTexture,
+        textureSpec: { coords: Shapes.cube().textureCoords,
+                   imgsrc: "images/grid.png",
+                   buffer: cubeVerticesTextureCoordBuffer,
+                   itemSize: 2,
+                   numItems: 24
+                 }
+    };
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
- /* ~*~*~*~*~*~**~*~*~*~*~*~*~*~* Background Texture Set-up ~*~*~*~*~*~**~*~*~*~*~*~*~*~*~ */   
-    cubeTexture = gl.createTexture();
-    cubeTexture.image = new Image();
-    cubeTexture.image.onload = function() { handleLoadedTexture(cubeTexture); }
-    cubeTexture.image.src = "images/sandww.png";
-    
-    function handleLoadedTexture(texture) {
-        console.log("handling texture");
-        gl.bindTexture(gl.TEXTURE_2D, texture);
-        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, texture.image);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-        gl.bindTexture(gl.TEXTURE_2D, null);
-      }
-    
-    //cubeVerticesTextureCoordBuffer = gl.createBuffer();
-    
-    //gl.bindBuffer(gl.ARRAY_BUFFER, cubeVerticesTextureCoordBuffer);
-     textureCoords = [
-      0.0, 0.0,
-      1.0, 0.0,
-      1.0, 1.0,
-      
-      0.0, 0.0,
-      0.0, 1.0,
-      1.0, 1.0,
-     
-      0.0, 0.0,
-      1.0, 0.0,
-      1.0, 1.0,
-      
-      0.0, 0.0,
-      0.0, 1.0,
-      1.0, 1.0,
-      
-      0.0, 0.0,
-      1.0, 0.0,
-      1.0, 1.0,
-      
-      0.0, 0.0,
-      0.0, 1.0,
-      1.0, 1.0,
-      
-      0.0, 0.0,
-      1.0, 0.0,
-      1.0, 1.0,
-      
-      0.0, 0.0,
-      0.0, 1.0,
-      1.0, 1.0,
-      
-      0.0, 0.0,
-      1.0, 0.0,
-      1.0, 1.0,
-      
-      0.0, 0.0,
-      0.0, 1.0,
-      1.0, 1.0,
-      
-      0.0, 0.0,
-      1.0, 0.0,
-      1.0, 1.0,
-      
-      0.0, 0.0,
-      0.0, 1.0,
-      1.0, 1.0, 
-     ];
-     cubeVerticesTextureCoordBuffer = GLSLUtilities.initVertexBuffer(gl,
-                textureCoords);
-     //gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoords),
-       //         gl.STATIC_DRAW)
-     cubeVerticesTextureCoordBuffer.itemSize = 2;
-     cubeVerticesTextureCoordBuffer.numItems = 24;
-                
-                
-                
-                
-                
-                
-                
+   // Build the objects to display.
+    objectsToDraw = [rightBread, background];
                 
                                 
 /*~*~*~*~*~*~**~*~*~*~*~*~*~*~* Retrieve Shape Information ~*~*~*~*~*~**~*~*~*~*~*~*~*~**/
@@ -308,7 +251,8 @@
             j,
             maxj,
             k,
-            maxk;
+            maxk,
+            holdText = gl.createTexture();
             
         for (i = 0, maxi = objectArray.length; i < maxi; i += 1) {
             setTransformDefaults(objectArray[i]);
@@ -336,10 +280,7 @@
                         objectArray[i].color.g,
                         objectArray[i].color.b
                     );
-                }
-                
-                
-                
+                }              
             }
             
             objectArray[i].colorBuffer = GLSLUtilities.initVertexBuffer(gl,
@@ -359,6 +300,29 @@
                     );
                 }
             }
+            
+            if(objectArray[i].texture && objectArray[i].textureSpec){
+                holdText.image = new Image();
+                holdText.image.src = objectArray[i].textureSpec.imgsrc;
+                objectArray[i].texture = holdText;
+                objectArray[i].texture.image.onload = function(){gl.bindTexture(gl.TEXTURE_2D, holdText);
+                                                                gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+                                                                gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE,
+                                                                    holdText.image);
+                                                                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+                                                                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+                                                                gl.bindTexture(gl.TEXTURE_2D, null);
+                                                              };
+                                                              
+                objectArray[i].textureSpec.buffer = GLSLUtilities.initVertexBuffer(gl,objectArray[i].textureSpec.coords);
+                objectArray[i].textureSpec.buffer.itemSize = objectArray[i].textureSpec.itemSize;
+                objectArray[i].textureSpec.buffer.numItems = objectArray[i].textureSpec.numItems;
+                
+                objectArray[i].textureBuffer = objectArray[i].textureSpec.buffer;
+            }
+
+           
+            
             objectArray[i].specularBuffer = GLSLUtilities.initVertexBuffer(gl,
                     objectArray[i].specularColors);
                     
@@ -369,8 +333,7 @@
                 for(k = 0, maxk = objectArray[i].subshapes.length; k < maxk; k+=1){
                     getVertices(objectArray[i].subshapes);
                 }
-            } 
-             
+            }
         }
         
 
@@ -430,11 +393,8 @@
     normalVector = gl.getAttribLocation(shaderProgram, "normalVector");
     gl.enableVertexAttribArray(normalVector);
     
-    console.log(normalVector);
     
     textureCoordAttribute = gl.getAttribLocation(shaderProgram, "aTextureCoord");
-    
-    console.log(textureCoordAttribute);
     gl.enableVertexAttribArray(textureCoordAttribute);
 
     samplerUniform = gl.getUniformLocation(shaderProgram, "uSampler");     
@@ -465,63 +425,39 @@
 
 /* ~*~*~*~*~*~**~*~*~*~*~*~*~*~* Drawing Functions ~*~*~*~*~*~**~*~*~*~*~*~*~*~*~ */
     /*
-     * Helper function that returns an object's instance transform matrix.
+     * Displays an individual object and extracts its subshapes to be drawn.
      */
-    
-    getInstanceTransform = function(object){
-        var ms = new Matrix4x4();
-            mt = new Matrix4x4();
-            mr = new Matrix4x4();
-            mi = new Matrix4x4();
+    drawObject = function (object, parentmi) {
+        var i,
+            ms = new Matrix4x4(),
+            mt = new Matrix4x4(),
+            mr = new Matrix4x4(),
+            mi = new Matrix4x4();       
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, object.colorBuffer);
+        gl.vertexAttribPointer(vertexDiffuseColor, 3, gl.FLOAT, false, 0, 0);
+        gl.bindBuffer(gl.ARRAY_BUFFER, object.specularBuffer);
+        gl.vertexAttribPointer(vertexSpecularColor, 3, gl.FLOAT, false, 0, 0);
+        gl.uniform1f(shininess, object.shininess);
+        if(object.texture){
+            gl.bindBuffer(gl.ARRAY_BUFFER, object.textureBuffer);
+            gl.vertexAttribPointer(textureCoordAttribute, object.textureBuffer.itemSize, gl.FLOAT, false, 0, 0);
+            
+            gl.activeTexture(gl.TEXTURE0);
+            gl.bindTexture(gl.TEXTURE_2D, object.texture);
+            gl.uniform1i(samplerUniform, 0);
+        }
         
-        
-        ms = ms.scale(object.scale.x, object.scale.y, object.scale.z);
+         ms = ms.scale(object.scale.x, object.scale.y, object.scale.z);
         mt = mt.translate(object.translate.x, object.translate.y, object.translate.z);
         mr = mr.rotate(object.rotate.angle, object.rotate.x, object.rotate.y, object.rotate.z);
         mi = mt.multiply(mr).multiply(ms);
 
         gl.uniformMatrix4fv(modelViewMatrix, gl.FALSE, new Float32Array(mi.toWebGLMatrix().returnMatrix()));
         
-        return mi;
-        
-    }
-   
-
-    /*
-     * Displays an individual object and extracts its subshapes to be drawn.
-     */
-    drawObject = function (object, parentmi) {
-        var i,
-            currentInstanceMatrix;       
-
-        
-        // Set the varying colors.
-        gl.bindBuffer(gl.ARRAY_BUFFER, object.colorBuffer);
-        gl.vertexAttribPointer(vertexDiffuseColor, 3, gl.FLOAT, false, 0, 0);
-
-        gl.bindBuffer(gl.ARRAY_BUFFER, object.specularBuffer);
-        gl.vertexAttribPointer(vertexSpecularColor, 3, gl.FLOAT, false, 0, 0);
-
-        // Set the shininess.
-        gl.uniform1f(shininess, object.shininess);
-        
-        gl.bindBuffer(gl.ARRAY_BUFFER, cubeVerticesTextureCoordBuffer);
-        gl.vertexAttribPointer(textureCoordAttribute, cubeVerticesTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0);
-
-        
-        gl.activeTexture(gl.TEXTURE0);
-        console.log(cubeTexture);
-        gl.bindTexture(gl.TEXTURE_2D, cubeTexture);
-        gl.uniform1i(samplerUniform, 0);
-        
-        
-
-
-        currentInstanceMatrix = getInstanceTransform(object);
-        
         if(parentmi){
-            currentInstanceMatrix = currentInstanceMatrix.multiply(parentmi);
-            gl.uniformMatrix4fv(modelViewMatrix, gl.FALSE, new Float32Array(currentInstanceMatrix.toWebGLMatrix().returnMatrix()));
+            mi = mi.multiply(parentmi);
+            gl.uniformMatrix4fv(modelViewMatrix, gl.FALSE, new Float32Array(mi.toWebGLMatrix().returnMatrix()));
         }
        
        
@@ -536,7 +472,7 @@
         
         if(object.subshapes){            
             for(i = 0; i < object.subshapes.length; i++){
-                drawObject(object.subshapes[i], currentInstanceMatrix);
+                drawObject(object.subshapes[i], mi);
             }            
         }
     };
@@ -589,7 +525,7 @@
     
         
     // Draw the initial scene.
-    setTimeout(drawScene, 1000);
+    setTimeout(drawScene, 100);
     //drawScene();
     
     
@@ -885,16 +821,6 @@
        });
    }
 
-
-
-
-
-
-
-
-
-   
-/* ~*~*~*~*~*~**~*~*~*~*~*~*~*~* Helper Functions  ~*~*~*~*~*~**~*~*~*~*~*~*~*~*~ */
 
 
      /*
