@@ -1,9 +1,5 @@
-
 (function (canvas) {
-
-
-/* ~*~*~*~*~*~**~*~*~*~*~*~*~*~* Variables Set-up ~*~*~*~*~*~**~*~*~*~*~*~*~*~*~ */
-
+/* ~*~*~*~*~*~**~*~*~*~*~*~*~*~* Variables ~*~*~*~*~*~**~*~*~*~*~*~*~*~*~ */
     var gl, // The WebGL context.
 
         objectsToDraw,
@@ -34,6 +30,7 @@
         lightDiffuse,
         lightSpecular,
         
+        // Texture Variables        
         textureCoordAttribute,
         samplerUniform,
 
@@ -44,8 +41,7 @@
 
         // The big "draw scene" function.
         drawScene,
-        
-                   
+                          
         // Reusable loop variables.
         i,
         maxi,
@@ -61,7 +57,7 @@
         mi,
         
         // Interaction Variables
-        defaultJellyColor = { r: 1.0, g: 1.0, b: 1.0 },
+        defaultJellyColor = {r: 1.0, g: 1.0, b: 1.0},
         finalJellyColor = {},
         lR,
         lG,
@@ -70,22 +66,15 @@
         rG,
         rB,
         confirmL = false,
-        confirmR = false,
-        
+        confirmR = false,        
         backgroundTexture,
         handleLoadedTexture,
-        makeTexture,
-        
+        makeTexture,        
         cubeTexture,
         cubeVerticesTextureCoordBuffer,
   
-        // Grab the WebGL rendering context.
+        
         gl = GLSLUtilities.getGL(canvas);
-        
-        
-        
-        
-        
         
         
         
@@ -94,24 +83,14 @@
 /* ~*~*~*~*~*~**~*~*~*~*~*~*~*~* Canvas Set-up ~*~*~*~*~*~**~*~*~*~*~*~*~*~*~ */
     if (!gl) {
         alert("No WebGL context found...sorry.");
-
         // No WebGL, no use going on...
         return;
     }
 
-    // Set up settings that will not change.  This is not "canned" into a
-    // utility function because these settings really can vary from program
-    // to program.
     gl.enable(gl.DEPTH_TEST);
     gl.clearColor(0.0, 0.0, 0.0, 0.0);
     
     gl.viewport(0, 0, canvas.width, canvas.height);
-    
-    
-    
-    
-    
-    
     
     
     
@@ -123,10 +102,10 @@
         name: "Left Jelly", 
         color: defaultJellyColor,
         translate: {x: 0.0, y: 0.0, z: -6.0},
-        scale: {x: 1, y: 1, z: 0.25},
+        scale: {x: 1.0, y: 1.0, z: 0.25},
         vertices: Shapes.toRawTriangleArray(Shapes.jelly()),
         mode: gl.TRIANGLES,
-        specularColor: { r: 1.0, g: 1.0, b: 0.0 },
+        specularColor: {r: 1.0, g: 1.0, b: 0.0},
         shininess: 16,
         normals: Shapes.toVertexNormalArray(Shapes.jelly())
     };
@@ -135,61 +114,62 @@
         name: "Right Jelly", 
         color: defaultJellyColor,
         translate: {x: 0.0, y: 0.0, z: -6.0},
-        scale: {x: 1, y: 1, z: 0.25},
+        scale: {x: 1.0, y: 1.0, z: 0.25},
         vertices: Shapes.toRawTriangleArray(Shapes.jelly()),
         mode: gl.TRIANGLES,
-        specularColor: { r: 1.0, g: 1.0, b: 0.0 },
+        specularColor: {r: 1.0, g: 1.0, b: 0.0},
         shininess: 16,
         normals: Shapes.toVertexNormalArray(Shapes.jelly())
     };
             
     leftCrust = {
         name: "Left Crust", 
-        color: { r: 0.825, g: 0.52, b: 0.22 },
+        color: {r: 0.825, g: 0.52, b: 0.22},
         vertices: Shapes.toRawTriangleArray(Shapes.crust()),
         mode: gl.TRIANGLES,
-        specularColor: { r: 1.0, g: 0.0, b: 1.0 },
+        specularColor: {r: 1.0, g: 0.0, b: 1.0},
         shininess: 1,
         normals: Shapes.toVertexNormalArray(Shapes.crust())
     };
     
     rightCrust = {
         name: "Right Crust", 
-        color: { r: 0.825, g: 0.52, b: 0.22 },
+        color: {r: 0.825, g: 0.52, b: 0.22},
         vertices: Shapes.toRawTriangleArray(Shapes.crust()),
         mode: gl.TRIANGLES,
-        specularColor: { r: 1.0, g: 0.0, b: 1.0 },
+        specularColor: {r: 1.0, g: 0.0, b: 1.0},
         shininess: 1,
         normals: Shapes.toVertexNormalArray(Shapes.crust())
     },
      
     leftBread = {
         name: "Left Bread",
-        color: { r: 0.99, g: 0.92, b: 0.57 },
-        scale: {x: 1, y: 1, z: 1},
+        color: {r: 0.99, g: 0.92, b: 0.57},
+        scale: {x: 1.0, y: 1.0, z: 1.0},
         translate: {x: -30.0, y: 0.0, z: 0.0},
         vertices: Shapes.toRawTriangleArray(Shapes.bread()),
         mode: gl.TRIANGLES,
         normals: Shapes.toVertexNormalArray(Shapes.bread()),
-        specularColor: { r: 1.0, g: 1.0, b: 1.0 },
+        specularColor: {r: 1.0, g: 1.0, b: 1.0},
         shininess: 1,
         subshapes: [leftCrust, leftJelly]
     };
      
     rightBread = {
         name: "Right Bread",
-        color: { r: 0.99, g: 0.92, b: 0.57 },
-        scale: {x: 1, y: 1, z: 1},
+        color: {r: 0.99, g: 0.92, b: 0.57},
+        scale: {x: 1.0, y: 1.0, z: 1.0},
         translate: {x: 30.0, y: 0.0, z: 0.0},
         vertices: Shapes.toRawTriangleArray(Shapes.bread()),
         mode: gl.TRIANGLES,
         normals: Shapes.toVertexNormalArray(Shapes.bread()),
-        specularColor: { r: 1.0, g: 1.0, b: 1.0 },
+        specularColor: {r: 1.0, g: 1.0, b: 1.0},
         shininess: 1,
         subshapes: [rightCrust, rightJelly]
     };
     
     cubeTexture = gl.createTexture();
+    
     cubeVerticesTextureCoordBuffer = gl.createBuffer();
     background = {
         name: "background",
@@ -209,58 +189,43 @@
                  }
     };
     
-    background = {
-        name: "background",
-        color: {r: 0.0, g: 1.0, b: 1.0},
-        translate: {x: 0.0, y: 0.0, z: -130.0},
-        scale: {x:70, y: 65, z: 100},
-        rotate: {angle:0, x: 0.2, y:0.8,z:0.0},
-        vertices: Shapes.toRawTriangleArray(Shapes.cube()),
-        mode: gl.TRIANGLES,
-        normals: Shapes.toNormalArray(Shapes.cube()),
-        texture: cubeTexture,
-        textureSpec: { coords: Shapes.cube().textureCoords,
-                   imgsrc: "images/grid.png",
-                   buffer: cubeVerticesTextureCoordBuffer,
-                   itemSize: 2,
-                   numItems: 24
-                 }
-    };
-    
-   // Build the objects to display.
+    // Build the objects to display.
     objectsToDraw = [rightBread, background];
-                
+               
+    
+    
+    
                                 
 /*~*~*~*~*~*~**~*~*~*~*~*~*~*~* Retrieve Shape Information ~*~*~*~*~*~**~*~*~*~*~*~*~*~**/
-   
-    setTransformDefaults = function(object) {
+   /*
+    * Helper function to set default values
+    */
+   setTransformDefaults = function(object) {
        object.translate = object.translate || {x: 0.0, y: 0.0, z: 0.0};
        object.scale = object.scale || {x: 1.0, y: 1.0, z: 1.0};
-       object.rotate = object.rotate || {angle: 0.0, x: 0.0, y: 1.0, z: 0.0 };
+       object.rotate = object.rotate || {angle: 0.0, x: 0.0, y: 1.0, z: 0.0};
        object.color =  object.color || {r: 1.0, g: 1.0, b:1.0};
        object.specularColor = object.specularColor || {r: 1.0, g: 1.0, b: 1.0}; 
        object.shininess = object.shininess || 1;
        object.activeAnim = object.activeAnim || false;
-       
-    },
+   };
     
-    // Pass the vertices to WebGL.
+    
    getVertices = function(objectArray){
-        var i,
-            maxi,
-            j,
-            maxj,
-            k,
-            maxk,
-            holdText = gl.createTexture();
+       var i,
+           maxi,
+           j,
+           maxj,
+           k,
+           maxk,
+           holdText = gl.createTexture();
             
         for (i = 0, maxi = objectArray.length; i < maxi; i += 1) {
             setTransformDefaults(objectArray[i]);
-            
             objectArray[i].buffer = GLSLUtilities.initVertexBuffer(gl,
                     objectArray[i].vertices);
             
-            if (!objectArray[i].colors ) {
+            if (!objectArray[i].colors) {
                 objectArray[i].colors = [];
                 for (j = 0, maxj = objectArray[i].vertices.length / 3;
                         j < maxj; j += 1) {
@@ -286,10 +251,7 @@
             objectArray[i].colorBuffer = GLSLUtilities.initVertexBuffer(gl,
                     objectArray[i].colors);
                     
-            // Same trick with specular colors.
             if (!objectArray[i].specularColors) {
-                // Future refactor: helper function to convert a single value or
-                // array into an array of copies of itself.
                 objectArray[i].specularColors = [];
                 for (j = 0, maxj = objectArray[i].vertices.length / 3;
                         j < maxj; j += 1) {
@@ -305,24 +267,21 @@
                 holdText.image = new Image();
                 holdText.image.src = objectArray[i].textureSpec.imgsrc;
                 objectArray[i].texture = holdText;
-                objectArray[i].texture.image.onload = function(){gl.bindTexture(gl.TEXTURE_2D, holdText);
-                                                                gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-                                                                gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE,
+                objectArray[i].texture.image.onload = function(){ gl.bindTexture(gl.TEXTURE_2D, holdText);
+                                                                  gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+                                                                  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE,
                                                                     holdText.image);
-                                                                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-                                                                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-                                                                gl.bindTexture(gl.TEXTURE_2D, null);
-                                                              };
+                                                                  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+                                                                  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+                                                                  gl.bindTexture(gl.TEXTURE_2D, null);
+                                                                };
                                                               
                 objectArray[i].textureSpec.buffer = GLSLUtilities.initVertexBuffer(gl,objectArray[i].textureSpec.coords);
                 objectArray[i].textureSpec.buffer.itemSize = objectArray[i].textureSpec.itemSize;
                 objectArray[i].textureSpec.buffer.numItems = objectArray[i].textureSpec.numItems;
-                
                 objectArray[i].textureBuffer = objectArray[i].textureSpec.buffer;
             }
 
-           
-            
             objectArray[i].specularBuffer = GLSLUtilities.initVertexBuffer(gl,
                     objectArray[i].specularColors);
                     
@@ -335,55 +294,36 @@
                 }
             }
         }
-        
-
-    }
-    
-    //get all the vertices before anything else  
+    }   
     getVertices(objectsToDraw);
-  
-  
-
-
 
 
 
 
 
 /* ~*~*~*~*~*~**~*~*~*~*~*~*~*~* Shader Program ~*~*~*~*~*~**~*~*~*~*~*~*~*~*~ */
-
-    // Initialize the shaders.
     shaderProgram = GLSLUtilities.initSimpleShaderProgram(
         gl,
         $("#vertex-shader").text(),
         $("#fragment-shader").text(),
 
-        // Very cursory error-checking here...
         function (shader) {
             abort = true;
             alert("Shader problem: " + gl.getShaderInfoLog(shader));
         },
 
-        // Another simplistic error check: we don't even access the faulty
-        // shader program.
         function (shaderProgram) {
             abort = true;
             alert("Could not link shaders...sorry.");
         }
     );
 
-    
-    // If the abort variable is true here, we can't continue.
     if (abort) {
         alert("Fatal errors encountered; we cannot continue.");
         return;
     }
-    
-    // All done --- tell WebGL to use the shader program from now on.
     gl.useProgram(shaderProgram);
  
-
-    // Hold on to the important variables within the shaders.
     vertexPosition = gl.getAttribLocation(shaderProgram, "vertexPosition");
     gl.enableVertexAttribArray(vertexPosition);
     vertexDiffuseColor = gl.getAttribLocation(shaderProgram, "vertexDiffuseColor");
@@ -392,41 +332,27 @@
     gl.enableVertexAttribArray(vertexSpecularColor);
     normalVector = gl.getAttribLocation(shaderProgram, "normalVector");
     gl.enableVertexAttribArray(normalVector);
-    
-    
+      
     textureCoordAttribute = gl.getAttribLocation(shaderProgram, "aTextureCoord");
     gl.enableVertexAttribArray(textureCoordAttribute);
 
     samplerUniform = gl.getUniformLocation(shaderProgram, "uSampler");     
-     
 
     modelViewMatrix = gl.getUniformLocation(shaderProgram, "modelViewMatrix");
     projectionMatrix = gl.getUniformLocation(shaderProgram, "projectionMatrix");
     lookAtMatrix = gl.getUniformLocation(shaderProgram, "lookAtMatrix");
 
-
-    // Note the additional variables.
     lightPosition = gl.getUniformLocation(shaderProgram, "lightPosition");
     lightPosition2 = gl.getUniformLocation(shaderProgram, "lightPosition2");
     lightDiffuse = gl.getUniformLocation(shaderProgram, "lightDiffuse");
     lightSpecular = gl.getUniformLocation(shaderProgram, "lightSpecular");
     shininess = gl.getUniformLocation(shaderProgram, "shininess");
-    
-    
-
-
-
-
-
 
 
 
 
 
 /* ~*~*~*~*~*~**~*~*~*~*~*~*~*~* Drawing Functions ~*~*~*~*~*~**~*~*~*~*~*~*~*~*~ */
-    /*
-     * Displays an individual object and extracts its subshapes to be drawn.
-     */
     drawObject = function (object, parentmi) {
         var i,
             ms = new Matrix4x4(),
@@ -448,7 +374,7 @@
             gl.uniform1i(samplerUniform, 0);
         }
         
-         ms = ms.scale(object.scale.x, object.scale.y, object.scale.z);
+        ms = ms.scale(object.scale.x, object.scale.y, object.scale.z);
         mt = mt.translate(object.translate.x, object.translate.y, object.translate.z);
         mr = mr.rotate(object.rotate.angle, object.rotate.x, object.rotate.y, object.rotate.z);
         mi = mt.multiply(mr).multiply(ms);
@@ -460,12 +386,9 @@
             gl.uniformMatrix4fv(modelViewMatrix, gl.FALSE, new Float32Array(mi.toWebGLMatrix().returnMatrix()));
         }
        
-       
-       // Set the varying normal vectors.
         gl.bindBuffer(gl.ARRAY_BUFFER, object.normalBuffer);
         gl.vertexAttribPointer(normalVector, 3, gl.FLOAT, false, 0, 0);
 
-        // Set the varying vertex coordinates.
         gl.bindBuffer(gl.ARRAY_BUFFER, object.buffer);
         gl.vertexAttribPointer(vertexPosition, 3, gl.FLOAT, false, 0, 0);
         gl.drawArrays(object.mode, 0, object.vertices.length / 3);
@@ -477,22 +400,14 @@
         }
     };
 
-    /*
-     * Displays the scene.
-     */
     drawScene = function () {
         var m = new Matrix4x4
-        // Clear the display.
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-        
-        
-        
-        // Display the objects.
+
         for (i = 0, maxi = objectsToDraw.length; i < maxi; i += 1) {
             drawObject(objectsToDraw[i]);
         }
         
-        // All done.
         gl.flush();
         
     };
@@ -501,13 +416,7 @@
     
     
     
-    
-    
-    
-    
-    
-/* ~*~*~*~*~*~**~*~*~*~*~*~*~*~* Scene Creation  ~*~*~*~*~*~**~*~*~*~*~*~*~*~*~ */
-    //Set up projection matrix.
+/* ~*~*~*~*~*~**~*~*~*~*~*~*~*~* Scene Creation  ~*~*~*~*~*~**~*~*~*~*~*~*~*~*~ */    
     var m = new Matrix4x4();
         mc = new Matrix4x4(); 
     
@@ -515,38 +424,24 @@
     gl.uniformMatrix4fv(projectionMatrix, gl.FALSE, new Float32Array( 
         m.toWebGLMatrix().returnMatrix()));
 
-
-    // Set up our one light source and its colors.
     gl.uniform4fv(lightPosition, [20.0, 100.0, -100.0, 1.0]);
     gl.uniform4fv(lightPosition2, [-20.0, -400.0, 40.0, 1.0]);
     gl.uniform3fv(lightDiffuse, [1.0, 1.0, 1.0]);
     gl.uniform3fv(lightSpecular, [1.0, 1.0, 0.0]);
 
-    
-        
-    // Draw the initial scene.
     setTimeout(drawScene, 100);
-    //drawScene();
+
+
+
+
+
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-/* ~*~*~*~*~*~**~*~*~*~*~*~*~*~* Interactive Functions  ~*~*~*~*~*~**~*~*~*~*~*~*~*~*~ */
-    
-    // Hide cancel & make buttons originally
+/* ~*~*~*~*~*~**~*~*~*~*~*~*~*~* Interactive Functions  ~*~*~*~*~*~**~*~*~*~*~*~*~*~*~ */    
     $("#left-slice-cancel").hide();
     $("#right-slice-cancel").hide();
     $("#make-btn").hide();
-    
-    
-    
-    // Color picking for jelly
+
+
     $("#left-color-picker").spectrum({
         color: "#fff",
         showInput: true,
@@ -566,7 +461,6 @@
         }
     });
     
-    
     $("#right-color-picker").spectrum({
         color: "#fff",
         showInput: true,
@@ -583,12 +477,9 @@
             } else {
                 alert("Sorry, you have already confirmed your right color choice");
             }
-            
-            
         }
     });
     
-    // Confirm jelly colors
     $("#left-slice-confirm").click(function (){
         confirmL = true;
         $("#left-slice-confirm").hide(200);
@@ -597,15 +488,14 @@
         
         leftBread.activeAnim = true;
         leftBread.keyframe = { start: { translate: {x: leftBread.translate.x, y: leftBread.translate.y, z: leftBread.translate.z},
-                                          frame: 0
-                                        },
-                                 end: { translate: {x: -3.5, y: 0.0, z: 0.0},
-                                        rotate: {angle: -85.0, x: 0.0, y: 1.0, z: 0.0},
-                                        frame: 50
-                                  },
-                                 currentTweenFrame: 0,
-                                 
-                           };
+                                        frame: 0
+                                      },
+                               end: { translate: {x: -3.5, y: 0.0, z: 0.0},
+                                      rotate: {angle: -85.0, x: 0.0, y: 1.0, z: 0.0},
+                                      frame: 50
+                                    },
+                               currentTweenFrame: 0,
+                             };
                                
         setTransformDefaults(leftBread.keyframe.start);
         setTransformDefaults(leftBread.keyframe.end);  
@@ -619,18 +509,17 @@
         $("#right-slice-cancel").show(200);
         $("#right-color-picker").spectrum("disable");
         
-
         rightBread.activeAnim = true;
         rightBread.keyframe = { start: { translate: {x: rightBread.translate.x, y: rightBread.translate.y, z: rightBread.translate.z},
-                                          frame: 0
-                                        },
-                                 end: { translate: {x: 3.5, y: 0.0, z: 0.0},
-                                        rotate: {angle: 85.0, x: 0.0, y: 1.0, z: 0.0},
-                                        frame: 50
-                                  },
-                                 currentTweenFrame: 0,
-                                 ease: KeyframeTweener.quadEaseOut
-                           };
+                                         frame: 0
+                                       },
+                                end: { translate: {x: 3.5, y: 0.0, z: 0.0},
+                                       rotate: {angle: 85.0, x: 0.0, y: 1.0, z: 0.0},
+                                       frame: 50
+                                     },
+                                currentTweenFrame: 0,
+                                ease: KeyframeTweener.quadEaseOut
+                              };
                                
          setTransformDefaults(rightBread.keyframe.start);
          setTransformDefaults(rightBread.keyframe.end);                      
@@ -638,7 +527,6 @@
          checkState();       
     });
         
-    // Cancel jelly color 
     $("#left-slice-cancel").click(function (){
         confirmL = false;
         $("#left-slice-confirm").show(200);
@@ -647,14 +535,13 @@
         
         leftBread.activeAnim = true;
         leftBread.keyframe = { start: { translate: {x: leftBread.translate.x, y: leftBread.translate.y, z: leftBread.translate.z},
-                                          frame: 0
-                                        },
-                                 end: { translate: {x: -30.0, y: 0.0, z: 0.0},
-                                        rotate: {angle: 0.0, x: 0.0, y: 1.0, z: 0.0},
-                                        frame: 50
-                                  },
-                                 currentTweenFrame: 0,
-                                 
+                                        frame: 0
+                                      },
+                               end: { translate: {x: -30.0, y: 0.0, z: 0.0},
+                                      rotate: {angle: 0.0, x: 0.0, y: 1.0, z: 0.0},
+                                      frame: 50
+                                    },
+                               currentTweenFrame: 0,
                            };
                                
         setTransformDefaults(leftBread.keyframe.start);
@@ -671,14 +558,14 @@
         
         rightBread.activeAnim = true;
         rightBread.keyframe = { start: { translate: {x: rightBread.translate.x, y: rightBread.translate.y, z: rightBread.translate.z},
-                                          frame: 0
-                                        },
-                                 end: { translate: {x: 30.0, y: 0.0, z: 0.0},
-                                        rotate: {angle: 0.0, x: 0.0, y: 1.0, z: 0.0},
-                                        frame: 50
-                                  },
-                                 currentTweenFrame: 0,
-                                 ease: KeyframeTweener.quadEaseOut
+                                         frame: 0
+                                       },
+                                end: { translate: {x: 30.0, y: 0.0, z: 0.0},
+                                       rotate: {angle: 0.0, x: 0.0, y: 1.0, z: 0.0},
+                                       frame: 50
+                                     },
+                                currentTweenFrame: 0,
+                                ease: KeyframeTweener.quadEaseOut
                                  
                            };
                                
@@ -688,21 +575,11 @@
         checkState();
     });
     
-   // Places/Removes Make Button when both slices have been confirmed/canceled 
-   checkState = function (){
-       if(confirmL && confirmR){
-            $("#make-btn").show();
-       } else{
-           $("#make-btn").hide();
-       }
-       
-   }
-   
-   // Make Button functionality
    $("#make-btn").click(function(){
-       var fR = (leftJelly.color.r + rightJelly.color.r) /2
-           fG = (leftJelly.color.g + rightJelly.color.g) /2
-           fB = (leftJelly.color.b + rightJelly.color.b) /2
+       var fR = (leftJelly.color.r + rightJelly.color.r) / 2,
+           fG = (leftJelly.color.g + rightJelly.color.g) / 2,
+           fB = (leftJelly.color.b + rightJelly.color.b) / 2;
+       
        finalJellyColor = {r: fR, g:fG, b:fB};
        
        $("#left").hide();
@@ -711,72 +588,82 @@
        
        finalBreadA = {
             name: "Final Bread A",
-            color: { r: 0.99, g: 0.92, b: 0.57 },
+            color: {r: 0.99, g: 0.92, b: 0.57},
             scale: {x: 1.0, y: 1.0, z: 1.0},
             translate: {x: 0.0, y: 0.0, z: -3.0},
             vertices: Shapes.toRawTriangleArray(Shapes.bread()),
             mode: gl.TRIANGLES,
             normals: Shapes.toVertexNormalArray(Shapes.bread()),
-            specularColor: { r: 1.0, g: 1.0, b: 1.0 },
+            specularColor: {r: 1.0, g: 1.0, b: 1.0},
             shininess: 1,
             subshapes: [{
                 name: "Final Crust", 
-                color: { r: 0.825, g: 0.52, b: 0.22 },
+                color: {r: 0.825, g: 0.52, b: 0.22},
                 vertices: Shapes.toRawTriangleArray(Shapes.crust()),
                 mode: gl.TRIANGLES,
-                specularColor: { r: 1.0, g: 0.0, b: 1.0 },
+                specularColor: {r: 1.0, g: 0.0, b: 1.0},
                 shininess: 3,
                 normals: Shapes.toVertexNormalArray(Shapes.crust())
            }]
-       },
+       };
        
-       finalBreadB = {name: "Final Bread B",
-            color: { r: 0.99, g: 0.92, b: 0.57 },
+       finalBreadB = {
+            name: "Final Bread B",
+            color: {r: 0.99, g: 0.92, b: 0.57},
             scale: {x: 1.0, y: 1.0, z: 1.0},
             translate: {x: 0.0, y: 0.0, z: -2.0},
             rotate: {angle: 180.0, x: 0.0, y: 1.0, z: 0.0},
             vertices: Shapes.toRawTriangleArray(Shapes.bread()),
             mode: gl.TRIANGLES,
             normals: Shapes.toVertexNormalArray(Shapes.bread()),
-            specularColor: { r: 1.0, g: 1.0, b: 1.0 },
+            specularColor: {r: 1.0, g: 1.0, b: 1.0},
             shininess: 1,
             subshapes: [{
                 name: "Final Crust B", 
-                color: { r: 0.825, g: 0.52, b: 0.22 },
+                color: {r: 0.825, g: 0.52, b: 0.22},
                 vertices: Shapes.toRawTriangleArray(Shapes.crust()),
                 mode: gl.TRIANGLES,
-                specularColor: { r: 1.0, g: 0.0, b: 1.0 },
+                specularColor: {r: 1.0, g: 0.0, b: 1.0},
                 shininess: 3,
                 normals: Shapes.toVertexNormalArray(Shapes.crust())
            }]
-       },
+       };
+       
        objectsToDraw = [finalBreadA, finalBreadB, background];
        getVertices(objectsToDraw);
        finalBreadA.activeAnim = true;
        finalBreadB.activeAnim = true;
        finalBreadA.keyframe = { start: { translate: {x: finalBreadA.translate.x, y: finalBreadA.translate.y, z: finalBreadA.translate.z},
                                          frame: 0
-                                        },
-                                 end: { translate: {x: 0.0, y: 0.0, z: 0.0},
-                                        scale: {x: 2.0, y: 2.0, z: 2.0},
-                                        rotate: {angle: 360.0, x: 0.0, y: 1.0, z: 0.0},
-                                        frame: 50
-                                  },
-                                 currentTweenFrame: 0,
-                                 
-                           };
+                                       },
+                                end: { translate: {x: 0.0, y: 0.0, z: 0.0},
+                                       scale: {x: 2.0, y: 2.0, z: 2.0},
+                                       rotate: {angle: 360.0, x: 0.0, y: 1.0, z: 0.0},
+                                       frame: 50
+                                     },
+                                currentTweenFrame: 0,
+                              };
         finalBreadB.keyframe = { start: { translate: {x: finalBreadB.translate.x, y: finalBreadB.translate.y, z: finalBreadB.translate.z},
                                           rotate: {angle: finalBreadB.rotate.angle, x: finalBreadB.rotate.x, y: finalBreadB.rotate.y, z: finalBreadB.rotate.z},
-                                         frame: 0
+                                          frame: 0
                                         },
                                  end: { translate: {x: 0.0, y: 0.0, z: 0.0},
                                         scale: {x: 2.0, y: 2.0, z: 2.0},
                                         rotate: {angle: 540.0, x: 0.0, y: 1.0, z: 0.0},
                                         frame: 50
-                                  },
+                                      },
                                  currentTweenFrame: 0,
-                                 
-                           };
+                               };
+        finalJelly.keyframe = { start: { translate: {x: finalJelly.translate.x, y: finalJelly.translate.y, z: finalJelly.translate.z},
+                                         frame: 0
+                                       },
+                                end: { translate: {x: 0.0, y: 0.0, z: 0.0},
+                                       scale: {x: 2.0, y: 2.0, z: 2.0},
+                                       rotate: {angle: 360.0, x: 0.0, y: 1.0, z: 0.0},
+                                       frame: 50
+                                     },
+                                currentTweenFrame: 0,
+                              };
 
         setTransformDefaults(finalBreadA.keyframe.start);
         setTransformDefaults(finalBreadB.keyframe.start);
@@ -786,8 +673,6 @@
         enableJelly();
      });
    
-   
-   //enables canvas click function to create jelly drips
    enableJelly = function(){
        $(canvas).click(function(){
            var jellyDrip = {
@@ -797,35 +682,35 @@
                 vertices: Shapes.toRawTriangleArray(Shapes.drip()),
                 mode: gl.TRIANGLES,
                 normals: Shapes.toVertexNormalArray(Shapes.drip()),
-                specularColor: { r: 1.0, g: 1.0, b: 1.0 },
-                shininess: 15,
-            }
+                specularColor: {r: 1.0, g: 1.0, b: 1.0},
+                shininess: 15
+            };
             
            objectsToDraw.push(jellyDrip); 
            getVertices(objectsToDraw);
            jellyDrip.activeAnim = true;
            jellyDrip.keyframe = { start: { translate: {x: jellyDrip.translate.x, y: jellyDrip.translate.y, z: jellyDrip.translate.z},
-                                          frame: 0
-                                        },
-                                 end: { translate: {x: jellyDrip.translate.x, y: -75.0, z: jellyDrip.translate.z},
-                                        rotate: {angle: 360.0, x: 0.0, y: 1.0, z: 0.0},
-                                        frame: 50
-                                  },
-                                 currentTweenFrame: 0,
-                                 
-                           };
+                                           frame: 0
+                                         },
+                                  end: { translate: {x: jellyDrip.translate.x, y: -75.0, z: jellyDrip.translate.z},
+                                         rotate: {angle: 360.0, x: 0.0, y: 1.0, z: 0.0},
+                                         frame: 50
+                                       },
+                                 currentTweenFrame: 0,   
+                                };
            setTransformDefaults(jellyDrip.keyframe.start);
-           
            setTransformDefaults(jellyDrip.keyframe.end);
            animate([jellyDrip]);
        });
-   }
+   };
 
-
-
-     /*
-      * Helper function that runs keyframe matrix calculations
-      */
+   checkState = function (){
+       if(confirmL && confirmR){
+            $("#make-btn").show();
+       } else{
+           $("#make-btn").hide();
+       }
+   };
     
    animate = function (objectArray){
        var interval = setInterval (function(){
@@ -835,19 +720,12 @@
           } 
           drawScene();
        }, 30);
-   }
-   
-   
-     /*
-      * Helper function that returns a number between the two given limits
-      */
-    
+   };
+       
    randomSigned = function(llimit, ulimit){
        var diff = ulimit - llimit;
            k = (llimit / 10) > 0.1 ? 1: 0.1;
            result = (Math.random() * (diff + k) + llimit);       
        return result;
-   }
-
-
+   };
 }(document.getElementById("sandwich")));

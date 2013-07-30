@@ -48,7 +48,6 @@ var KeyframeTweener = {
     },
     
     
-    
     /* 
      * This function will not do the drawing of objects, it will simply manipulate the values within each
      * 3D object to reflect the calculations of the tweening functions applied. 
@@ -83,14 +82,13 @@ var KeyframeTweener = {
                 raDistance,
                 currentTweenFrame,
                 duration,
-                object
+                object;
                 
             
-            for(i = 0, maxi = objectArray.length; i < maxi; i++){
+            for(i = 0, maxi = objectArray.length; i < maxi; i += 1){
                 object = objectArray[i];
                                 
                 if(object.keyframe && object.activeAnim){                  
-                                     
                     start = object.keyframe.start;
                     end = object.keyframe.end; 
                                         
@@ -139,36 +137,27 @@ var KeyframeTweener = {
                         };
                     }
                     
-                    
-                   if((start.rotate.angle != end.rotate.angle) || (start.rotate.x != end.rotate.x) || (start.rotate.y != end.rotate.y) || (start.rotate.z != end.rotate.z)){ 
+                    if((start.rotate.angle != end.rotate.angle) || (start.rotate.x != end.rotate.x) || (start.rotate.y != end.rotate.y) || (start.rotate.z != end.rotate.z)){ 
                        object.rotate = {
                            angle: ease(currentTweenFrame, raStart, raDistance, duration),
                            x: ease(currentTweenFrame, rxStart, rxDistance, duration),
                            y: ease(currentTweenFrame, ryStart, ryDistance, duration),
                            z: ease(currentTweenFrame, rzStart, rzDistance, duration)
                        };
-                   }
-                    
+                    }
                     
                     object.keyframe.currentTweenFrame++;
-                }   else {
-                 console.log(object.name + " is not being animated");
+                } else {
+                    console.log(object.name + " is not being animated");
                 }
-
             }
 
             if(currentTweenFrame === (end.frame + 1)){
                 return true;
             } else {
-                console.log( object.name + "'s current tween frame: " + currentTweenFrame + "\nend frame: " + end.frame);
                 return false;
             }
-            
-            
     }
-    
-
-
 }
     
 

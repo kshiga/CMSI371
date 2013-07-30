@@ -4,11 +4,6 @@
  * converting these into "raw" coordinate arrays.
  */
 var Shapes = {
-
-
-    /*
-     * This creates a very angular piece of bread insides
-     */
     bread: function () {
         var topLeft = [
                 [0.0, 4.0, 0.0],
@@ -53,11 +48,8 @@ var Shapes = {
         k = 0,
         i = 0;
 
-        frontVertices = frontVertices.concat(topLeft);
-
-        
+        frontVertices = frontVertices.concat(topLeft);        
         frontVertices = frontVertices.concat(bottomLeft);
-
         
         for(i = 0; i < topLeft.length; i++){
             var topLeftVertice = topLeft[i],
@@ -66,7 +58,6 @@ var Shapes = {
         }
      
         frontVertices = frontVertices.concat(topRight);
-
         
         for(i = 0; i < bottomLeft.length; i++){
             var bottomLeftVertice = bottomLeft[i],
@@ -84,12 +75,10 @@ var Shapes = {
         breadVertices = breadVertices.concat(backVertices);
         
         k = breadVertices.length;
-
         for(i = 0; i < k; i += 4){
             breadIndices.push([i, (i + 1), (i + 2)]);            
             breadIndices.push([i, (i + 2), (i + 3)]);
         }
-
        for (i = 0; i < k/2; i++){
            if(breadVertices[i][0] === breadVertices[i+1][0]){
                breadIndices.push([(i + k/2), i, (i + 2)]);
@@ -98,18 +87,13 @@ var Shapes = {
                    breadIndices.push([(i + k/2), (i + 2), 1]);
                } else {
                    breadIndices.push([(i + k/2), (i + 2), (i + k/2 + 2)]);
-               }
-               
-               
-               
+               }         
            } else if(breadVertices[i][1] === breadVertices[i+1][1]){
                breadIndices.push([(i + k/2), (i + k/2 + 1), (i + 1)]);
                breadIndices.push([(i + k/2), (i + 1), i]);
            }
        }
        
-       
-
        for(i = 0; i < breadIndices.length; i++){
            if(breadIndices[i][0] > k || breadIndices[i][0] < 0){
                console.log("Index " + i + " at 0 failed: " + breadIndices[i][0]);
@@ -268,27 +252,21 @@ var Shapes = {
         i = 0;
 
         frontVertices = frontVertices.concat(topLeft);
-
-        
         frontVertices = frontVertices.concat(bottomLeft);
 
-        
         for(i = 0; i < topLeft.length; i++){
             var topLeftVertice = topLeft[i],
                newTRVertice = [-topLeftVertice[0], topLeftVertice[1], 0.0];
             topRight.push(newTRVertice);
-        }
-     
+        }   
         frontVertices = frontVertices.concat(topRight);
 
-        
         for(i = 0; i < bottomLeft.length; i++){
             var bottomLeftVertice = bottomLeft[i],
                newBRVertice = [-bottomLeftVertice[0], bottomLeftVertice[1], 0.0];
             bottomRight.push(newBRVertice);
         }
         frontVertices = frontVertices.concat(bottomRight);
-        
         crustVertices = crustVertices.concat(frontVertices);
         
         for(i = 0; i < frontVertices.length; i++){
@@ -300,16 +278,12 @@ var Shapes = {
         crustVertices = crustVertices.concat(backVertices);
         
         k = crustVertices.length;
-       
-
-        for(i = 0; i < k; i += 4){
+            for(i = 0; i < k; i += 4){
             crustIndices.push([i, (i + 1), (i + 2)]);            
             crustIndices.push([i, (i + 2), (i + 3)]);
         }
-
        for (i = 0; i < (k/2); i++){
            if(crustVertices[i][0] === crustVertices[i+1][0]){
-               
                if( ! (i === 63 || i === 31  )) {
                   crustIndices.push([(i + k/2), i, (i + 2)]);  
                   crustIndices.push([(i + k/2), (i + 2), (i + k/2 + 2)]);
@@ -317,15 +291,11 @@ var Shapes = {
                    crustIndices.push([(i + k/2 - 3), (i - 3), i]);
                    crustIndices.push([(i + k/2 - 3), (i + k/2), i]);
                }
-               
            } else if(crustVertices[i][1] === crustVertices[i+1][1]){
                crustIndices.push([(i + k/2), (i + k/2 + 1), (i + 1)]);
                crustIndices.push([(i + k/2), (i + 1), i]);
            }
-           
        }
-       
-       
 
        for(i = 0; i < crustIndices.length; i++){
            if(crustIndices[i][0] > k || crustIndices[i][0] < 0){
@@ -336,109 +306,10 @@ var Shapes = {
                console.log("Index " + i + " at 2 failed: " + crustIndices[i][2]);
            }
        }
-       
-
 
         return {
             vertices: crustVertices,
             indices: crustIndices
-        };
-
-    },
-
-    cylinder: function () {
-        var h = 0.5,
-            q = 0.25,
-            m = 0.433012702;
-
-        // JD: This is nicely done and nearly complete (I think you are missing
-        //     a face or two), but this is borderline better done computationally
-        //     (i.e., loop around the circle, calculate vertices and indices
-        //     based on that).
-        return {
-            vertices: [
-              [ 0.0, h, 0.0 ],
-              [ h, h, 0.0 ],
-              [ m, h, q ],
-              [ q, h, m ],
-              [ 0.0, h, h ],
-              [ -q, h, m ],
-              [ -m, h, q ],
-              [ -h, h, 0.0 ],
-              [ -m, h, -q ],
-              [ -q, h, -m ],
-              [ 0.0, h, -h ],
-              [ q, h, -m ],
-              [ m, h, -q ],
-              [ 0.0, -h, 0.0 ],
-              [ h, -h, 0.0 ],
-              [ m, -h, q ],
-              [ q, -h, m ],
-              [ 0.0, -h, h ],
-              [ -q, -h, m ],
-              [ -m, -h, q ],
-              [ -h, -h, 0.0 ],
-              [ -m, -h, -q ],
-              [ -q, -h, -m ],
-              [ 0.0, -h, -h ],
-              [ q, -h, -m ],
-              [ m, -h, -q ],
-            ],
-
-            indices: [
-              [ 0, 1, 2 ],
-              [ 0, 2, 3 ],
-              [ 0, 3, 4 ],
-              [ 0, 4, 5 ],
-              [ 0, 5, 6 ],
-              [ 0, 6, 7 ],
-              [ 0, 7, 8 ],
-              [ 0, 8, 9 ],
-              [ 0, 9, 10 ],
-              [ 0, 10, 11 ],
-              [ 0, 11, 12 ],
-              [ 0, 12, 1 ],
-              [ 0, 12, 1 ],
-
-              [ 1, 14, 15 ],
-              [ 2, 1, 15 ],
-              [ 2, 15, 16 ],
-              [ 3, 2, 16 ],
-              [ 3, 16, 17 ],
-              [ 4, 3, 17 ],
-              [ 4, 17, 18 ],
-              [ 5, 4, 18 ],
-              [ 5, 18, 19 ],
-              [ 6, 5, 19 ],
-              [ 6, 19, 20 ],
-              [ 7, 6, 20 ],
-              [ 7, 20, 21 ],
-              [ 8, 8, 21 ],
-              [ 8, 21, 22 ],
-              [ 9, 8, 22 ],
-              [ 9, 22, 23 ],
-              [ 10, 9, 23 ],
-              [ 10, 23, 24 ],
-              [ 11, 10, 24 ],
-              [ 11, 24, 25 ],
-              [ 12, 11, 25 ],
-              [ 12, 25, 14 ],
-              [ 1, 12, 14 ],
-
-
-              [ 13, 14, 15 ],
-              [ 13, 15, 16 ],
-              [ 13, 16, 17 ],
-              [ 13, 17, 18 ],
-              [ 13, 18, 19 ],
-              [ 13, 19, 20 ],
-              [ 13, 20, 21 ],
-              [ 13, 21, 22 ],
-              [ 13, 22, 23 ],
-              [ 13, 23, 24 ],
-              [ 13, 24, 25 ],
-              [ 13, 25, 1 ]
-            ]
         };
     },
 
@@ -485,9 +356,6 @@ var Shapes = {
 
         frontVertices = frontVertices.concat(left);
 
-        
-
-        
         for(i = 0; i < left.length; i++){
             var leftVertice = left[i],
                newRVertice = [-leftVertice[0], leftVertice[1], 0.0];
@@ -495,9 +363,6 @@ var Shapes = {
         }
      
         frontVertices = frontVertices.concat(right);
-
-        
-        
         dripVertices = dripVertices.concat(frontVertices);
         for(i = 0; i < frontVertices.length; i++){
             var vertice = frontVertices[i],
@@ -531,8 +396,6 @@ var Shapes = {
            }
        }
        
-       
-
        for(i = 0; i < dripIndices.length; i++){
            if(dripIndices[i][0] > k || dripIndices[i][0] < 0){
                console.log("Index " + i + " at 0 failed: " + dripIndices[i][0]);
@@ -543,15 +406,10 @@ var Shapes = {
            }
        }
        
-
-       
-
         return {
             vertices: dripVertices,
             indices: dripIndices
-        };
-            
-            
+        };     
     },
     
 
@@ -622,11 +480,8 @@ var Shapes = {
                 [-4.0, 1.6, 0.0],
                 [-4.0, -1.6, 0.0],
                 [-3.5, -1.6, 0.0]
-                
-                
-            ]
+            ],
             
-         
         right = [],
         frontVertices = [],
         backVertices = [],
@@ -637,19 +492,12 @@ var Shapes = {
 
         frontVertices = frontVertices.concat(left);
 
-        
-
-        
         for(i = 0; i < left.length; i++){
             var leftVertice = left[i],
                newRVertice = [-leftVertice[0], leftVertice[1], 0.0];
             right.push(newRVertice);
-        }
-     
+        }     
         frontVertices = frontVertices.concat(right);
-
-        
-        
         jellyVertices = jellyVertices.concat(frontVertices);
         for(i = 0; i < frontVertices.length; i++){
             var vertice = frontVertices[i],
@@ -674,17 +522,12 @@ var Shapes = {
                } else {
                    jellyIndices.push([(i + k/2), (i + 2), (i + k/2 + 2)]);
                }
-               
-               
-               
            } else if(jellyVertices[i][1] === jellyVertices[i+1][1]){
                jellyIndices.push([(i + k/2), (i + k/2 + 1), (i + 1)]);
                jellyIndices.push([(i + k/2), (i + 1), i]);
            }
        }
        
-       
-
        for(i = 0; i < jellyIndices.length; i++){
            if(jellyIndices[i][0] > k || jellyIndices[i][0] < 0){
                console.log("Index " + i + " at 0 failed: " + jellyIndices[i][0]);
@@ -695,9 +538,6 @@ var Shapes = {
            }
        }
        
-
-       
-
         return {
             vertices: jellyVertices,
             indices: jellyIndices
@@ -718,7 +558,6 @@ var Shapes = {
            y,
            z;
 
-        //Creates Vertices
         for(i = 0; i < latDiv; i++){
             y = radius - (i / latDiv);
             while(j < longDiv){ 
@@ -731,7 +570,6 @@ var Shapes = {
             j = 0;
         }
 
-        //Creates faces
         j = vertices.length;
         indicies.push([vertices[0], vertices[(longDiv - 1)], vertices[((2 * longDiv) - 1)]]);
         indicies.push([vertices[0], vertices[(2 * longDiv) -1], vertices[(2 * longDiv)]]);
@@ -740,48 +578,17 @@ var Shapes = {
             indicies.push([vertices[i], vertices[(i - 1)], vertices[(i - 1) + longDiv]]);
             indicies.push([vertices[i], vertices[(i - 1) + longDiv], vertices[i + longDiv]]);
         }
-
-        { return {
-                vertices: vertices,
-                indicies: indicies
-        };
-       }
-    },
-
-  
-    sqPyramid: function () {
-        var y = 0.707106781,
-           half = 0.5;
-
-        return {
-            vertices: [
-                [ 0.0, y, 0.0 ],
-                [ -half, 0.0, half ],
-                [ -half, 0.0, -half ],
-                [ half, 0.0, -half ],
-                [ half, 0.0, half ]
-            ],
-
-            indices: [
-                [ 0, 1, 2 ],
-                [ 0, 2, 3 ],
-                [ 0, 3, 4 ],
-                [ 0, 4, 1 ],
-                [ 1, 4, 2 ],
-                [ 4, 3, 2 ],
-
-            ]
-        };
+        
+         return {
+                    vertices: vertices,
+                    indicies: indicies
+                 };
     },
 
 
 
 
-
-    /*
-     * Utility function for turning indexed vertices into a "raw" coordinate array
-     * arranged as triangles.
-     */
+/*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~ To-Array functions  ~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*/
     toRawTriangleArray: function (indexedVertices) {
         var result = [],
             i,
@@ -803,10 +610,6 @@ var Shapes = {
         return result;
     },
 
-    /*
-     * Utility function for turning indexed vertices into a "raw" coordinate array
-     * arranged as line segments.
-     */
     toRawLineArray: function (indexedVertices) {
         var result = [],
             i,
@@ -845,21 +648,16 @@ var Shapes = {
             v2,
             normal;
 
-        // For each face...
         for (i = 0, maxi = indexedVertices.indices.length; i < maxi; i += 1) {
-            // We form vectors from the first and second then second and third vertices.
             p0 = indexedVertices.vertices[indexedVertices.indices[i][0]];
             p1 = indexedVertices.vertices[indexedVertices.indices[i][1]];
             p2 = indexedVertices.vertices[indexedVertices.indices[i][2]];
 
-            // Technically, the first value is not a vector, but v can stand for vertex
-            // anyway, so...
             v0 = new Vector(p0[0], p0[1], p0[2]);
             v1 = new Vector(p1[0], p1[1], p1[2]).subtract(v0);
             v2 = new Vector(p2[0], p2[1], p2[2]).subtract(v0);
             normal = v1.cross(v2).unit();
 
-            // We then use this same normal for every vertex in this face.
             for (j = 0, maxj = indexedVertices.indices[i].length; j < maxj; j += 1) {
                 result = result.concat(
                     [ normal.x(), normal.y(), normal.z() ]
@@ -870,11 +668,6 @@ var Shapes = {
         return result;
     },
 
-    /*
-     * Another utility function for computing normals, this time just converting
-     * every vertex into its unit vector version.  This works mainly for objects
-     * that are centered around the origin.
-     */
     toVertexNormalArray: function (indexedVertices) {
         var result = [],
             i,
@@ -884,9 +677,7 @@ var Shapes = {
             p,
             normal;
 
-        // For each face...
         for (i = 0, maxi = indexedVertices.indices.length; i < maxi; i += 1) {
-            // For each vertex in that face...
             for (j = 0, maxj = indexedVertices.indices[i].length; j < maxj; j += 1) {
                 p = indexedVertices.vertices[indexedVertices.indices[i][j]];
                 normal = new Vector(p[0], p[1], p[2]).unit();
@@ -897,8 +688,5 @@ var Shapes = {
         }
 
         return result;
-    },
-    
-
-
+    }
 };
