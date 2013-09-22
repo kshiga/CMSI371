@@ -261,7 +261,6 @@ $(function () {
         
     });
 
-/*
     test("Look At Tests", function () {
         var m = new Matrix4x4();
         
@@ -272,8 +271,6 @@ $(function () {
                      0, 0, 0, 1],
                  "no camera movement");
 
-        */
     });
-
 
 });
