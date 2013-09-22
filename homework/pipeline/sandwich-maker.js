@@ -170,7 +170,10 @@
             },
             shininess : 1,
             normals : Shapes.toVertexNormalArray(Shapes.crust())
-        }, leftBread = {
+        }; // JD: Watch your syntax!  You had a comma here but these assignments
+           //     were no longer in a var block.
+
+        leftBread = {
             name : "Left Bread",
             color : {
                 r : 0.99,
@@ -241,7 +244,9 @@
             translate : {
                 x : 0.0,
                 y : 0.0,
-                z : -130.0
+                // JD: The original value of z = -130.0 occluded the bread
+                //     because the cube was not "open."
+                z : 150.0
             },
             scale : {
                 x : 70,
@@ -268,7 +273,8 @@
         };
 
         // Build the objects to display.
-        objectsToDraw = [rightBread, background];
+        // JD: leftBread was missing from here; why?
+        objectsToDraw = [leftBread, rightBread, background];
 
         /*~*~*~*~*~*~**~*~*~*~*~*~*~*~* Retrieve Shape Information ~*~*~*~*~*~**~*~*~*~*~*~*~*~**/
         /*
@@ -305,6 +311,24 @@
             object.activeAnim = object.activeAnim || false;
         };
 
+        /*
+           JD: You committed one major last-minute oversight in this final version.
+               Although you successfully implemented texture mapping for one of the
+               objects, you did not accommodate the fact that *the other objects*
+               did not have a texture assigned to them.  This detracts from the
+               quality of your work in two ways:
+               
+               - First, the overall functionality if your program is effectively broken
+                 without your accommodation of this difference in objects.
+                 
+               - Second, there is no indication that you are aware that this is broken
+                 (no questions sent to me, no comments indicating that you know something
+                 is wrong).
+                 
+               You need to improve upon this "thoroughness factor."  It can be very
+               frustrating to be told that code is working and finalized, only to
+               load it up and realize that it actually is not functional.
+        */
         getVertices = function(objectArray) {
             var i, maxi, j, maxj, k, maxk, holdText = gl.createTexture();
 
@@ -363,7 +387,8 @@
                     }
                 }
             }
-        }
+        }; // JD: Missed a semicolon here.
+
         getVertices(objectsToDraw);
 
         /* ~*~*~*~*~*~**~*~*~*~*~*~*~*~* Shader Program ~*~*~*~*~*~**~*~*~*~*~*~*~*~*~ */
@@ -391,7 +416,8 @@
         gl.enableVertexAttribArray(normalVector);
 
         textureCoordAttribute = gl.getAttribLocation(shaderProgram, "aTextureCoord");
-        gl.enableVertexAttribArray(textureCoordAttribute);
+        // JD: Disabled to accommodate non-textured objects.
+//        gl.enableVertexAttribArray(textureCoordAttribute);
 
         samplerUniform = gl.getUniformLocation(shaderProgram, "uSampler");
 
@@ -414,20 +440,24 @@
             gl.bindBuffer(gl.ARRAY_BUFFER, object.specularBuffer);
             gl.vertexAttribPointer(vertexSpecularColor, 3, gl.FLOAT, false, 0, 0);
             gl.uniform1f(shininess, object.shininess);
-            if (object.texture) {
-                gl.bindBuffer(gl.ARRAY_BUFFER, object.textureBuffer);
-                gl.vertexAttribPointer(textureCoordAttribute, object.textureBuffer.itemSize, gl.FLOAT, false, 0, 0);
-
-                gl.activeTexture(gl.TEXTURE0);
-                gl.bindTexture(gl.TEXTURE_2D, object.texture);
-                gl.uniform1i(samplerUniform, 0);
-            }
+            // JD: Disabled to accommodate non-textured objects.
+//            if (object.texture) {
+//                gl.bindBuffer(gl.ARRAY_BUFFER, object.textureBuffer);
+//                gl.vertexAttribPointer(textureCoordAttribute, object.textureBuffer.itemSize, gl.FLOAT, false, 0, 0);
+//
+//                gl.activeTexture(gl.TEXTURE0);
+//                gl.bindTexture(gl.TEXTURE_2D, object.texture);
+//                gl.uniform1i(samplerUniform, 0);
+//            }
 
             ms = ms.scale(object.scale.x, object.scale.y, object.scale.z);
             mt = mt.translate(object.translate.x, object.translate.y, object.translate.z);
             mr = mr.rotate(object.rotate.angle, object.rotate.x, object.rotate.y, object.rotate.z);
             mi = mt.multiply(mr).multiply(ms);
 
+            // JD: This line is somewhat redundant with the one below it (in the if block);
+            //     the code can be restructured such that only one uniformMatrix4fv call is
+            //     present for modelViewMatrix.
             gl.uniformMatrix4fv(modelViewMatrix, gl.FALSE, new Float32Array(mi.toWebGLMatrix().returnMatrix()));
 
             if (parentmi) {
@@ -450,7 +480,7 @@
         };
 
         drawScene = function() {
-            var m = new Matrix4x4
+            var m = new Matrix4x4(); // JD: I had to add the "();" to the end of the line---watch out for these!
             gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
             for ( i = 0, maxi = objectsToDraw.length; i < maxi; i += 1) {
@@ -866,6 +896,21 @@
                 },
                 currentTweenFrame : 0,
             };
+
+            // JD: Upon "Make," your program errors out because finalJelly is undefined,
+            //     which, indeed, it is.  Either this variable was lost in the shuffle,
+            //     or you were never able to get to it.  I didn't have the time to comb
+            //     through your git history to track this down; if you can, I think you
+            //     should, just so you have something that works end to end, even if
+            //     texture mapping is disabled.
+            //
+            //     Unfortunately, this is yet another symptom of the main pitfall seen
+            //     in this work: a great deal of good effort that gets undermined by
+            //     gaps in polish and care.  The types of errors seen here make it look
+            //     like the program was not even tested before committing.  Of course I
+            //     personally know this not to be the case, because I saw things work
+            //     over summer.  But to then see these regressions in the "final"
+            //     submission is a bit of a letdown.
             finalJelly.keyframe = {
                 start : {
                     translate : {
